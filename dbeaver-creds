@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 KEY=babb4a9f774ab853c96c2d653dfe544a
 prefix="${HOME}/.local/share"
-if sw_vers 2>/dev/null; then
+if sw_vers >/dev/null 2>&1; then
     prefix="${HOME}/Library"
 fi
 CONFIG_JSON="${prefix}/DBeaverData/workspace6/General/.dbeaver/credentials-config.json"
