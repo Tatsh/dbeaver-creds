@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Key is from https://github.com/dbeaver/dbeaver/blob/d69a75e63bf0a00e37f6b4ab9c9aa4fcaa0ded23/plugins/org.jkiss.dbeaver.model/src/org/jkiss/dbeaver/model/impl/app/DefaultSecureStorage.java#L32
+# Converted to hexadecimal like so in Python:
+# >>> import struct
+# >>> struct.pack('<16b', 0, 1, 2, etc).hex()
 KEY=babb4a9f774ab853c96c2d653dfe544a
 prefix="${HOME}/.local/share"
 if sw_vers >/dev/null 2>&1; then
