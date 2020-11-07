@@ -1,2 +1,3 @@
 # dbeaver-creds
-Decrypt DBeaverData/credentials-config.json
+
+Decrypt DBeaver's `credentials-config.json` file.
