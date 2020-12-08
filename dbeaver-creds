@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Key is from https://github.com/dbeaver/dbeaver/blob/d69a75e63bf0a00e37f6b4ab9c9aa4fcaa0ded23/plugins/org.jkiss.dbeaver.model/src/org/jkiss/dbeaver/model/impl/app/DefaultSecureStorage.java#L32
+# Key is from https://github.com/dbeaver/dbeaver/blob/devel/plugins/org.jkiss.dbeaver.model/src/org/jkiss/dbeaver/model/impl/app/DefaultSecureStorage.java#L32
 # Converted to hexadecimal like so in Python:
 # >>> import struct
 # >>> struct.pack('<16b', 0, 1, 2, etc).hex()
