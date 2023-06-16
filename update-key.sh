@@ -7,7 +7,7 @@ get-key() {
         fi
         printf '%x' "$n"
     done < <(
-        curl -q 'https://raw.githubusercontent.com/dbeaver/dbeaver/devel/plugins/org.jkiss.dbeaver.model/src/org/jkiss/dbeaver/model/impl/app/DefaultSecureStorage.java' 2>/dev/null |
+        curl -q 'https://raw.githubusercontent.com/dbeaver/dbeaver/devel/plugins/org.jkiss.dbeaver.registry/src/org/jkiss/dbeaver/registry/BaseProjectImpl.java' 2>/dev/null |
             grep -F 'LOCAL_KEY_CACHE =' |
             cut -d= -f2- |
             cut '-d{' -f2- |
