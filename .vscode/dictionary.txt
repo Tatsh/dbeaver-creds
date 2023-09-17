@@ -1,5 +1,7 @@
+appdata
 creds
 dbeaver
+decryptor
 decyrption
 ehthumbs
 esbenp

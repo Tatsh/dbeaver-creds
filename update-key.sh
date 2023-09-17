@@ -13,4 +13,7 @@ get-key() {
         perl -lpe 's/^\s+|\s+$//g' |
         tr ' ' '\n')
 }
-sed -re "s/^KEY=.*/KEY=$(get-key)/" -i ./dbeaver-creds
+key=$(get-key)
+sed -re "s/^KEY=.*/KEY=${key}/" -i ./dbeaver-creds
+sed -re "s/^set KEY=.*/set KEY=${key}/" -i ./dbeaver-creds.bat
+sed -re "s/^  KEY =.*/  KEY = '${key}'/" -i ./DBeaverCreds/DBeaverCreds.psm1
