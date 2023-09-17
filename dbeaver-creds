@@ -8,6 +8,10 @@ elif [ -n "$APPDATA" ]; then
     prefix="${APPDATA}"
 fi
 CONFIG_JSON="$prefix/DBeaverData/workspace6/General/.dbeaver/credentials-config.json"
+if ! [ -r "${CONFIG_JSON}" ]; then
+    echo 'credentials-config.json file not found or could not be read.' >&2
+    exit 1
+fi
 openssl aes-128-cbc -d -K "$KEY" -iv 00000000000000000000000000000000 -in "$CONFIG_JSON" |
     dd bs=1 skip=16 2> /dev/null
 echo
