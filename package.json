@@ -1,0 +1,24 @@
+{
+  "author": "Andrew Udvare <audvare@gmail.com>",
+  "description": "Decrypt DBeaver's credentials-config.json file.",
+  "devDependencies": {
+    "cspell": "^6.31.1",
+    "markdownlint-cli2": "^0.8.1",
+    "prettier": "^3.0.3",
+    "prettier-plugin-sort-json": "^1.0.0"
+  },
+  "license": "MIT",
+  "name": "dbeaver-creds",
+  "repository": "git@github.com:Tatsh/dbeaver-creds.git",
+  "scripts": {
+    "check-formatting": "prettier -c . && shfmt -d -i 4 -ci -sr dbeaver-creds update-key.sh && markdownlint-cli2 '**/*.md' '#node_modules'",
+    "check-spelling": "cspell --no-progress .",
+    "clean-dict": "r=(); while IFS=$\\n read -r w; do ! rg --no-config -qi. -g '!.vscode/dictionary.txt' -m 1 \"$w\" . && r+=(\"$w\"); done < ./.vscode/dictionary.txt; j=$(printf \"|%s\" \"${r[@]}\"); j=\"^(${j:1})$\"; grep -Ev \"${j}\" ./.vscode/dictionary.txt > new && mv new ./.vscode/dictionary.txt",
+    "format": "yarn shfmt && yarn prettier -w .",
+    "qa": "yarn shellcheck && yarn check-spelling && yarn check-formatting",
+    "shellcheck": "shellcheck *.sh dbeaver-creds",
+    "shfmt": "prettier -w . && shfmt -w -i 4 -ci -sr dbeaver-creds update-key.sh && markdownlint-cli2 --fix '**/*.md' '#node_modules'",
+    "update-key": "bash update-key.sh"
+  },
+  "version": "0.0.1"
+}

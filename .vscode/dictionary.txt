@@ -1,0 +1,11 @@
+creds
+dbeaver
+decyrption
+ehthumbs
+esbenp
+shellcheck
+shfmt
+struct
+tatsh
+udvare
+vers

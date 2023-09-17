@@ -1,0 +1,69 @@
+{
+  "dictionaryDefinitions": [
+    {
+      "name": "main",
+      "path": "dictionary.txt"
+    }
+  ],
+  "enableGlobDot": true,
+  "enabledLanguageIds": [
+    "asciidoc",
+    "c",
+    "cmake",
+    "coffeescript",
+    "cpp",
+    "csharp",
+    "css",
+    "dockerfile",
+    "dotenv",
+    "elm",
+    "git-commit",
+    "go",
+    "handlebars",
+    "haskell",
+    "html",
+    "ignore",
+    "jade",
+    "java",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "jsonc",
+    "jsx-tags",
+    "latex",
+    "less",
+    "lua",
+    "makefile",
+    "makefile2",
+    "markdown",
+    "php",
+    "plaintext",
+    "powershell",
+    "properties",
+    "pug",
+    "python",
+    "r",
+    "restructuredtext",
+    "rust",
+    "scala",
+    "scss",
+    "shellscript",
+    "sql",
+    "swift",
+    "text",
+    "toml",
+    "typescript",
+    "typescriptreact",
+    "xml",
+    "yaml",
+    "yml"
+  ],
+  "ignorePaths": ["*.log", ".directory", ".git", ".vscode/extensions.json"],
+  "languageSettings": [
+    {
+      "dictionaries": ["main"],
+      "languageId": "*"
+    }
+  ],
+  "language": "en-GB"
+}
