@@ -6,6 +6,7 @@ decyrption
 ehthumbs
 elif
 esbenp
+mvdan
 shellcheck
 shfmt
 struct

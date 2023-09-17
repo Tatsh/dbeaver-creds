@@ -12,6 +12,11 @@ jobs:
         run: yarn shellcheck
       - name: Check spelling
         run: yarn check-spelling
+      - name: Install sh
+        run: |
+          curl -o shfmt "https://github.com/mvdan/sh/releases/download/v3.7.0/shfmt_v3.7.0_linux_amd64"
+          chmod +x shfmt
+          mv shfmt /usr/local/bin/
       - name: Check formatting
         run: yarn check-formatting
 name: QA
