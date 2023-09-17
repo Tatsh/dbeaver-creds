@@ -9,8 +9,9 @@ Decrypt DBeaver's `credentials-config.json` file and display the output (a JSON 
 You can use this in one of three ways depending on your platform and shell:
 
 - A Bash script that works on Linux, macOS and Windows. It requires `openssl` and `dd` to be in `PATH`.
-- A [PowerShell module](https://www.powershellgallery.com/packages/DBeaverCreds) that exposes function `Show-DBBeaver-Credential-Json` (alias `dbeaver-creds`).
-  This does *not* require `openssl` or `dd` to function.
+- A [PowerShell module](https://www.powershellgallery.com/packages/DBeaverCreds) that exposes function
+  `Show-DBBeaver-Credential-Json` (alias `dbeaver-creds`).
+  This does _not_ require `openssl` or `dd` to function.
 - Windows only: A [Batch script](https://en.wikipedia.org/wiki/Batch_file) script equivalent to the
   Bash script and has the same requirements.
 

@@ -4,6 +4,7 @@ dbeaver
 decryptor
 decyrption
 ehthumbs
+elif
 esbenp
 shellcheck
 shfmt
