@@ -31,6 +31,8 @@ Install-Module -Name DBeaverCreds
 dbeaver-creds
 ```
 
+If the credentials file cannot be found, the exit status will be > 0.
+
 ### PowerShell
 
 ```shell
