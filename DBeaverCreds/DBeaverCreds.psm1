@@ -17,12 +17,15 @@ function Show-DBeaver-Credential-Json {
   try {
     $configJsonData = if ($IsLinux) {
       [System.IO.File]::ReadAllBytes("${env:HOME}/.local/share/DBeaverData/workspace6/General/.dbeaver/credentials-config.json")
-    } elseif ($IsMacOS) {
+    }
+    elseif ($IsMacOS) {
       [System.IO.File]::ReadAllBytes("${env:HOME}/Library/DBeaverData/workspace6/General/.dbeaver/credentials-config.json")
-    } else {
+    }
+    else {
       [System.IO.File]::ReadAllBytes("${env:APPDATA}\DBeaverData\workspace6\General\.dbeaver\credentials-config.json")
     }
-  } catch {
+  }
+  catch {
     Write-Error "credentials-config.json not found or could not be read." -Category ReadError
     Return
   }

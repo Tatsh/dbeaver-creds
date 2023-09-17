@@ -1,4 +1,7 @@
 {
+  "[powershell]": {
+    "editor.defaultFormatter": "ms-vscode.powershell"
+  },
   "cSpell.enabled": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnPaste": true,
@@ -6,12 +9,14 @@
   "editor.formatOnType": true,
   "editor.inlayHints.enabled": "offUnlessPressed",
   "editor.insertSpaces": true,
-  "editor.rulers": [100],
+  "editor.rulers": [
+    100
+  ],
   "editor.tabSize": 2,
   "editor.wordWrapColumn": 100,
   "eslint.lintTask.enable": true,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
-  "yaml.format.printWidth": 100
+  "yaml.format.printWidth": 100,
 }

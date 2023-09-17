@@ -20,5 +20,5 @@
     "shfmt": "prettier -w . && shfmt -w -i 4 -ci -sr dbeaver-creds update-key.sh && markdownlint-cli2 --fix '**/*.md' '#node_modules'",
     "update-key": "bash update-key.sh"
   },
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
