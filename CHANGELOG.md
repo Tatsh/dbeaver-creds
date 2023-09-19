@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added changelog
+
 ### Fixed
 
 - Fixed typo in readme
