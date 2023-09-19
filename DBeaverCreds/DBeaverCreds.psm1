@@ -11,15 +11,16 @@
 #>
 function Show-DBeaver-Credential-Json {
   $KEY = 'babb4a9f774ab853c96c2d653dfe544a'
+  $LINUX_MAC_SUFFIX = 'DBeaverData/workspace6/General/.dbeaver/credentials-config.json'
   $aesAlg = [System.Security.Cryptography.Aes]::Create()
   $aesAlg.Key = [byte[]] -split ($KEY -replace '..', '0x$& ')
   $aesAlg.IV = [byte[]]::new(16)
   try {
     $configJsonData = if ($IsLinux) {
-      [System.IO.File]::ReadAllBytes("${env:HOME}/.local/share/DBeaverData/workspace6/General/.dbeaver/credentials-config.json")
+      [System.IO.File]::ReadAllBytes("${env:HOME}/.local/share/${LINUX_MAC_SUFFIX}")
     }
     elseif ($IsMacOS) {
-      [System.IO.File]::ReadAllBytes("${env:HOME}/Library/DBeaverData/workspace6/General/.dbeaver/credentials-config.json")
+      [System.IO.File]::ReadAllBytes("${env:HOME}/Library/${LINUX_MAC_SUFFIX}")
     }
     else {
       [System.IO.File]::ReadAllBytes("${env:APPDATA}\DBeaverData\workspace6\General\.dbeaver\credentials-config.json")
