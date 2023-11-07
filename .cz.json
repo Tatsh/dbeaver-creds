@@ -1,0 +1,13 @@
+{
+  "commitizen": {
+    "tag_format": "v$version",
+    "version_files": [
+      "DBeaverCreds/DBeaverCreds.psd1",
+      "README.md",
+      "dbeaver-creds.1",
+      "package.json"
+    ],
+    "version_provider": "npm",
+    "version_scheme": "semver"
+  }
+}
