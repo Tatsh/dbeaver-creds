@@ -1,10 +1,8 @@
-analyzer
 appdata
 codeql
 creds
 dbeaver
 decryptor
-decyrption
 ehthumbs
 elif
 esbenp
@@ -14,6 +12,6 @@ sarif
 shellcheck
 shfmt
 struct
+sw_vers
 tatsh
 udvare
-vers
