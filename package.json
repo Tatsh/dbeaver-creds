@@ -5,7 +5,7 @@
     "cspell": "^8.6.0",
     "markdownlint-cli2": "^0.12.1",
     "prettier": "^3.2.5",
-    "prettier-plugin-sort-json": "^3.1.0"
+    "prettier-plugin-sort-json": "^4.0.0"
   },
   "license": "MIT",
   "name": "dbeaver-creds",
