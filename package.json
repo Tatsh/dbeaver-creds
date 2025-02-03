@@ -2,7 +2,7 @@
   "author": "Andrew Udvare <audvare@gmail.com>",
   "description": "Decrypt DBeaver's credentials-config.json file.",
   "devDependencies": {
-    "cspell": "^8.17.2",
+    "cspell": "^8.17.3",
     "markdownlint-cli2": "^0.17.2",
     "prettier": "^3.4.2",
     "prettier-plugin-sort-json": "^4.1.1"
