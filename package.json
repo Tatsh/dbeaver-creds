@@ -4,7 +4,7 @@
   "devDependencies": {
     "cspell": "^8.17.3",
     "markdownlint-cli2": "^0.17.2",
-    "prettier": "^3.5.0",
+    "prettier": "^3.5.1",
     "prettier-plugin-sort-json": "^4.1.1"
   },
   "license": "MIT",
