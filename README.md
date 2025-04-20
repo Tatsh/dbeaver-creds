@@ -1,3 +1,5 @@
+<!-- markdownlint-configure-file {"MD024": { "siblings_only": true } } -->
+
 # dbeaver-creds
 
 [![QA](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml)
