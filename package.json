@@ -3,7 +3,7 @@
   "description": "Decrypt DBeaver's credentials-config.json file.",
   "devDependencies": {
     "cspell": "^9.0.0",
-    "markdownlint-cli2": "^0.17.2",
+    "markdownlint-cli2": "^0.18.0",
     "prettier": "^3.5.3",
     "prettier-plugin-sort-json": "^4.1.1"
   },
