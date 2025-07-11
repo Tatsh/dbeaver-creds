@@ -2,7 +2,7 @@
   Author               = 'Tatsh'
   CompanyName          = ''
   CompatiblePSEditions = @('Windows', 'Linux', 'MacOS')
-  Copyright            = '(c) 2023 Tatsh. All rights reserved.'
+  Copyright            = '(c) 2025 Tatsh. All rights reserved.'
   Description          = 'Decrypt and display your DBeaver credentials. The output is a JSON string.'
   GUID                 = '3d7b60e1-9dce-4b70-9017-989227a491a6'
   HelpInfoURI          = 'https://github.com/Tatsh/dbeaver-creds'
