@@ -1,12 +1,16 @@
 analyzer
+coverallsapp
 creds
 dbeaver
 decryptor
 ehthumbs
 elif
 esbenp
+jsonnet
+libjsonnet
 noninfringement
 psscriptanalyzer
+pwsh
 sarif
 shellcheck
 shfmt

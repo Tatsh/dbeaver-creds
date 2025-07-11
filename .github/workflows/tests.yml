@@ -1,0 +1,25 @@
+---
+jobs:
+  pester:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Pester
+        run: Install-Module -Name Pester -Force -Scope CurrentUser
+        shell: pwsh
+      - name: Run Pester Tests
+        run: |
+          $config = New-PesterConfiguration
+          $config.Run.Path = "."
+          $config.CodeCoverage.Enabled = $true
+          $config.TestResult.Enabled = $true
+          Invoke-Pester -Configuration $config
+      - name: Report Coveralls
+        uses: coverallsapp/github-action@v2
+name: Run Pester Tests
+'on':
+  pull_request:
+    branches: ['master']
+  push:
+    branches: ['master']

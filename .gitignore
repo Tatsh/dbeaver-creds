@@ -1,14 +1,14 @@
-*~
-*.swp*
 *.kate-swp
-# OS generated files
-.directory
+*.swp*
+*~
 .DS_Store
 .DS_Store?
-._*
 .Spotlight-V100/
 .Trashes/
-ehthumbs.db
+._*
+.cspellcache
+.directory
+/.yarn/install-state.gz
 Thumbs.db
-# Other
+ehthumbs.db
 node_modules/

@@ -1,19 +1,92 @@
 {
-  "author": "Andrew Udvare <audvare@gmail.com>",
-  "description": "Decrypt DBeaver's credentials-config.json file.",
+  "contributors": ["Andrew Udvare <audvare@gmail.com>"],
+  "cspell": {
+    "cache": {
+      "useCache": true
+    },
+    "dictionaryDefinitions": [
+      {
+        "name": "main",
+        "path": ".vscode/dictionary.txt"
+      }
+    ],
+    "enableFileTypes": {
+      "*": true
+    },
+    "enableGlobDot": true,
+    "files": ["*"],
+    "ignorePaths": [
+      "*.1",
+      "*.har",
+      "*.lock",
+      ".git/**",
+      ".yarn/**/*.cjs",
+      ".vscode/extensions.json",
+      "man/**"
+    ],
+    "language": "en-GB",
+    "languageSettings": [
+      {
+        "dictionaries": ["main"],
+        "languageId": "*"
+      }
+    ],
+    "useGitignore": true
+  },
   "devDependencies": {
+    "@prettier/plugin-xml": "^3.4.2",
     "cspell": "^9.1.3",
     "markdownlint-cli2": "^0.18.1",
     "prettier": "^3.6.2",
-    "prettier-plugin-sort-json": "^4.1.1"
+    "prettier-plugin-ini": "^1.3.0",
+    "prettier-plugin-sort-json": "^4.1.1",
+    "prettier-plugin-toml": "^2.0.5",
+    "yarn-audit-fix": "^10.1.1"
   },
+  "homepage": "https://tatsh.github.io/dbeaver-creds/",
+  "keywords": ["dbeaver"],
   "license": "MIT",
+  "markdownlint-cli2": {
+    "config": {
+      "MD033": {
+        "allowed_elements": ["kbd"]
+      },
+      "default": true,
+      "line-length": {
+        "code_blocks": false,
+        "line_length": 100,
+        "tables": false
+      }
+    }
+  },
   "name": "dbeaver-creds",
+  "packageManager": "yarn@4.9.2",
+  "prettier": {
+    "endOfLine": "lf",
+    "iniSpaceAroundEquals": true,
+    "jsonRecursiveSort": true,
+    "overrides": [
+      {
+        "files": ["package.json"],
+        "options": {
+          "parser": "json"
+        }
+      }
+    ],
+    "plugins": [
+      "@prettier/plugin-xml",
+      "prettier-plugin-ini",
+      "prettier-plugin-sort-json",
+      "prettier-plugin-toml"
+    ],
+    "printWidth": 100,
+    "reorderKeys": true,
+    "singleQuote": true
+  },
   "repository": "git@github.com:Tatsh/dbeaver-creds.git",
   "scripts": {
     "check-formatting": "prettier -c . && shfmt -d -i 4 -ci -sr dbeaver-creds update-key.sh && markdownlint-cli2 '**/*.md' '#node_modules'",
     "check-spelling": "cspell --no-progress .",
-    "clean-dict": "r=(); while IFS=$\\n read -r w; do ! rg --no-config -qi. -g '!.vscode/dictionary.txt' -m 1 \"$w\" . && r+=(\"$w\"); done < ./.vscode/dictionary.txt; j=$(printf \"|%s\" \"${r[@]}\"); j=\"^(${j:1})$\"; grep -Ev \"${j}\" ./.vscode/dictionary.txt > new && mv new ./.vscode/dictionary.txt",
     "format": "yarn shfmt && yarn prettier -w .",
     "qa": "yarn shellcheck && yarn check-spelling && yarn check-formatting",
     "shellcheck": "shellcheck *.sh dbeaver-creds",
