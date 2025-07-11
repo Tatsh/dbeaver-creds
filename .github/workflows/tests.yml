@@ -18,7 +18,7 @@ jobs:
           Invoke-Pester -Configuration $config
       - name: Report Coveralls
         uses: coverallsapp/github-action@v2
-name: Run Pester Tests
+name: Tests
 'on':
   pull_request:
     branches: ['master']
