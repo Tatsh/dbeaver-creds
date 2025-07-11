@@ -14,6 +14,7 @@ jobs:
           $config.Run.Path = "."
           $config.CodeCoverage.Enabled = $true
           $config.TestResult.Enabled = $true
+          $config.CodeCoverage.Path = ".\DBeaverCreds\DBeaverCreds.psm1"
           Invoke-Pester -Configuration $config
       - name: Report Coveralls
         uses: coverallsapp/github-action@v2

@@ -1,6 +1,6 @@
 $VerbosePreference="Continue"
 BeforeAll {
-  Import-Module -Force "$PSScriptRoot/DBeaverCreds.psm1"
+  Import-Module -Force "${PSScriptRoot}/DBeaverCreds.psm1"
 }
 
 Describe 'DBeaverCreds' {
