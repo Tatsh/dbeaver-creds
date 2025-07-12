@@ -6,7 +6,9 @@ BeforeAll {
 Describe 'DBeaverCreds' {
   BeforeEach {
     Mock -ModuleName DBeaverCreds CreateAes { }
-    Mock -ModuleName DBeaverCreds -RemoveParameterType @('JsonData','AesAlg') DecryptData { return "f" }
+    Mock -ModuleName DBeaverCreds -RemoveParameterType @('JsonData','AesAlg') DecryptData {
+      return "f"
+    }
     Mock -ModuleName DBeaverCreds -RemoveParameterType @('Bytes') GetString { return "f" }
   }
 
@@ -50,6 +52,55 @@ Describe 'GetJsonPath' {
     It 'Returns a macOS path' {
     InModuleScope DBeaverCreds {
       GetJsonPath -Linux $false -Mac $true | Should -Match '/Library/'
+    }
+  }
+
+  Describe 'CreateAes' {
+    It 'Creates an Aes object with the correct key' {
+      InModuleScope DBeaverCreds {
+        $key = 'babb4a9f774ab853c96c2d653dfe544a'
+        $aes = CreateAes -Key $key
+        $aes.Key | Should -BeOfType Byte
+        $aes.Key | Should -HaveCount 16
+        $aes.IV | Should -BeOfType Byte
+        $aes.IV | Should -HaveCount 16
+      }
+    }
+  }
+
+  Describe 'ReadAllBytes' {
+    It 'Reads all bytes from a file' {
+      InModuleScope DBeaverCreds {
+        $path = 'test.json'
+        Write-Output '{"test": "data"}' | Out-File -FilePath $path
+        $data = ReadAllBytes -Path $path
+        $data | Should -BeOfType Byte
+        $data | Should -HaveCount 17
+        Remove-Item -Path $path -Force
+      }
+    }
+  }
+
+  Describe 'GetString' {
+    It 'Converts byte array to string' {
+      InModuleScope DBeaverCreds {
+        $bytes = [byte[]]@(102, 111, 111, 98, 97, 114)
+        $result = GetString -Bytes $bytes -Index 0 -Count $bytes.Length
+        $result | Should -Be 'foobar'
+      }
+    }
+  }
+
+  Describe 'DecryptData' {
+    It 'Decrypts data using AES algorithm' {
+      InModuleScope DBeaverCreds {
+        $aes = CreateAes -Key 'babb4a9f774ab853c96c2d653dfe544a'
+        $encryptedData = $aes.CreateEncryptor().TransformFinalBlock(
+          [byte[]]@(102, 111, 111, 98, 97, 114), 0, 6)
+        $decrypted = DecryptData -JsonData $encryptedData -AesAlg $aes
+        $decrypted | Should -BeOfType Byte
+        $decrypted | Should -HaveCount 6
+      }
     }
   }
 }
