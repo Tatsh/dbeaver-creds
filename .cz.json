@@ -2,9 +2,11 @@
   "commitizen": {
     "tag_format": "v$version",
     "version_files": [
+      ".wiswa.jsonnet",
+      "CITATION.cff",
       "DBeaverCreds/DBeaverCreds.psd1",
       "README.md",
-      "dbeaver-creds.1",
+      "man/dbeaver-creds.1",
       "package.json"
     ],
     "version_provider": "npm",

@@ -1,8 +1,8 @@
 updates:
-  - directory: /
-    package-ecosystem: npm
+  - directory: '/'
+    package-ecosystem: 'npm'
     schedule:
-      interval: weekly
+      interval: 'weekly'
   - directory: '/'
     package-ecosystem: 'github-actions'
     schedule:

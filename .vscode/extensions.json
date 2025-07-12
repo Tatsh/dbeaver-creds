@@ -1,25 +1,19 @@
 {
   "recommendations": [
+    "Grafana.vscode-jsonnet",
     "aaron-bond.better-comments",
     "bierner.markdown-checkbox",
     "buianhthang.xml2json",
-    "bungcip.better-toml",
     "christian-kohler.path-intellisense",
-    "cschlosser.doxdocgen",
     "davidanson.vscode-markdownlint",
     "donjayamanne.githistory",
     "dotjoshjohnson.xml",
     "eamodio.gitlens",
-    "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
     "foxundermoon.shell-format",
     "github.vscode-pull-request-github",
     "henriiik.vscode-sort",
-    "ivangabriele.vscode-git-add-and-commit",
     "jmredfern.sort-selection",
-    "lextudio.restructuredtext",
-    "ms-python.isort",
-    "ms-python.vscode-pylance",
     "naumovs.color-highlight",
     "nhoizey.gremlins",
     "pascalreitermann93.vscode-yaml-sort",
@@ -29,14 +23,13 @@
     "ruiquelhas.vscode-lowercase",
     "ruiquelhas.vscode-uppercase",
     "streetsidesoftware.code-spell-checker",
-    "tcwalther.cython",
+    "tamasfe.even-better-toml",
     "timonwong.shellcheck",
-    "trond-snekvik.simple-rst",
     "tyriar.sort-lines",
     "wayou.vscode-todo-highlight",
     "wmaurer.change-case",
     "zainchen.json",
-    "zengxingxin.sort-js-object-keys",
-    "zeshuaro.vscode-python-poetry"
-  ]
+    "zengxingxin.sort-js-object-keys"
+  ],
+  "unwantedRecommendations": []
 }

@@ -1,7 +1,6 @@
----
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  qa:
+    runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies (Yarn)
@@ -19,11 +18,11 @@ jobs:
           mv shfmt /usr/local/bin/
       - name: Check formatting
         run: yarn check-formatting
-name: QA
+name: 'QA'
 'on':
   pull_request:
     branches:
-      - master
+      - 'master'
   push:
     branches:
-      - master
+      - 'master'
