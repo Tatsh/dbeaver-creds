@@ -3,7 +3,7 @@ jobs:
     runs-on: 'windows-latest'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install Pester
         run: Install-Module -Name Pester -Force -Scope CurrentUser
         shell: pwsh
