@@ -25,7 +25,7 @@ repos:
       - id: 'fix-byte-order-marker'
       - id: 'mixed-line-ending'
     repo: 'https://github.com/pre-commit/pre-commit-hooks'
-    rev: 'v5.0.0'
+    rev: 'v6.0.0'
   - hooks:
       - id: 'check-github-actions'
       - id: 'check-github-workflows'
@@ -36,7 +36,7 @@ repos:
         id: 'check-jsonschema'
         name: 'validate package.json'
     repo: 'https://github.com/python-jsonschema/check-jsonschema'
-    rev: '0.33.0'
+    rev: '0.34.0'
   - hooks:
       - id: 'validate-cff'
     repo: 'https://github.com/citation-file-format/cffconvert'

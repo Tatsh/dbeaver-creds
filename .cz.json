@@ -1,13 +1,15 @@
 {
   "commitizen": {
+    "name": "cz_path",
+    "remove_path_prefixes": ["include", "src"],
     "tag_format": "v$version",
     "version_files": [
       ".wiswa.jsonnet",
       "CITATION.cff",
-      "DBeaverCreds/DBeaverCreds.psd1",
       "README.md",
-      "man/dbeaver-creds.1",
-      "package.json"
+      "package.json",
+      "DBeaverCreds/DBeaverCreds.psd1",
+      "man/dbeaver-creds.1"
     ],
     "version_provider": "npm",
     "version_scheme": "semver"

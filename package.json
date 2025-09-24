@@ -45,6 +45,7 @@
     "prettier-plugin-toml": "^2.0.6",
     "yarn-audit-fix": "^10.1.1"
   },
+  "files": ["LICENSE.txt", "README.md"],
   "homepage": "https://tatsh.github.io/dbeaver-creds/",
   "keywords": ["authentication", "dbeaver", "credentials", "terminal"],
   "license": "MIT",
@@ -62,7 +63,7 @@
     }
   },
   "name": "dbeaver-creds",
-  "packageManager": "yarn@4.9.2",
+  "packageManager": "yarn@4.10.2",
   "prettier": {
     "endOfLine": "lf",
     "iniSpaceAroundEquals": true,

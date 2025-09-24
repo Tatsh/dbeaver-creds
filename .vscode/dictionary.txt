@@ -1,6 +1,7 @@
 analyzer
 bsky
 codeowners
+commitizen
 coveragerc
 coverallsapp
 creds
@@ -24,6 +25,5 @@ shellcheck
 shfmt
 tatsh
 udvare
-vars
 vers
 wiswa
