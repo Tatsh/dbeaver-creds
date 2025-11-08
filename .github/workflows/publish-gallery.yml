@@ -1,0 +1,19 @@
+---
+jobs:
+  publish:
+    env:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Clean up
+        run: Remove-Item -Path .\DBeaverCreds\*.Tests.ps1 -Force -ErrorAction SilentlyContinue
+        shell: pwsh
+      - name: Publish to PowerShell Gallery
+        run: Publish-Module -Name .\DBeaverCreds -NuGetApiKey $env:NUGET_API_KEY
+        shell: pwsh
+name: Publish to PowerShell Gallery
+'on':
+  push:
+    tags:
+      - v*
