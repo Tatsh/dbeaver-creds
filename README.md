@@ -8,7 +8,6 @@
 [![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/dbeaver-creds)](https://github.com/Tatsh/dbeaver-creds/tags)
 [![License](https://img.shields.io/github/license/Tatsh/dbeaver-creds)](https://github.com/Tatsh/dbeaver-creds/blob/master/LICENSE.txt)
 [![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/dbeaver-creds/v0.0.3/master)](https://github.com/Tatsh/dbeaver-creds/compare/v0.0.3...master)
-[![CodeQL](https://github.com/Tatsh/dbeaver-creds/actions/workflows/codeql.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/codeql.yml)
 [![QA](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml)
 [![Tests](https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Tatsh/dbeaver-creds/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/dbeaver-creds?branch=master)
