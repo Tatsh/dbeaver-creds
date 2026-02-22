@@ -1,6 +1,5 @@
 analyzer
 bsky
-codeowners
 commitizen
 coveragerc
 coverallsapp
@@ -11,17 +10,16 @@ docstrings
 elif
 encryptor
 esbenp
-foobar
-htmlcov
+foxundermoon
 jsonnet
 jsonschema
+libera
 libjsonnet
 psscriptanalyzer
-pwsh
-pycache
 sarif
 schemafile
 shellcheck
+shellformat
 shfmt
 tatsh
 udvare

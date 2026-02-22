@@ -2,15 +2,15 @@ jobs:
   qa:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@v6
-      - name: Install dependencies (Yarn)
-        run: yarn
+      - uses: 'actions/checkout@v6'
+      - name: 'Install dependencies (Yarn)'
+        run: 'yarn'
       - name: Install Shellcheck
         run: sudo apt-get install -y shellcheck
       - name: Lint with Shellcheck
         run: yarn shellcheck
-      - name: Check spelling
-        run: yarn check-spelling
+      - name: 'Check spelling'
+        run: 'yarn check-spelling'
       - name: Install sh
         run: |
           curl -o shfmt "https://github.com/mvdan/sh/releases/download/v3.7.0/shfmt_v3.7.0_linux_amd64"
@@ -26,3 +26,5 @@ name: 'QA'
   push:
     branches:
       - 'master'
+permissions:
+  contents: 'read'
