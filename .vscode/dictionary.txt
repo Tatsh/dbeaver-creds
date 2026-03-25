@@ -34,4 +34,5 @@ vendored
 venv
 vers
 wiswa
+yarnrc
 Ångström

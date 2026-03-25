@@ -3,21 +3,39 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: 'actions/checkout@v6'
+      - name: 'Yarn cache'
+        uses: 'actions/cache@v5'
+        with:
+          key: "${{ runner.os }}-yarn-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}"
+          path: '~/.yarn/berry'
+          restore-keys: '${ runner.os }}-yarn'
       - name: 'Install dependencies (Yarn)'
         run: 'yarn'
-      - name: Install Shellcheck
-        run: sudo apt-get install -y shellcheck
-      - name: Lint with Shellcheck
-        run: yarn shellcheck
-      - name: 'Check spelling'
+      - continue-on-error: true
+        id: 'prettier'
+        name: 'Check formatting (Prettier)'
+        run: 'yarn prettier -c .'
+      - continue-on-error: true
+        id: 'markdownlint'
+        name: 'Check formatting (markdownlint)'
+        run: 'yarn markdownlint-cli2 --config package.json --configPointer /markdownlint-cli2'
+      - continue-on-error: true
+        id: 'spelling'
+        name: 'Check spelling'
         run: 'yarn check-spelling'
-      - name: Install sh
+      - name: 'Install Shellcheck'
+        run: 'sudo apt-get install -y shellcheck'
+      - continue-on-error: true
+        id: 'shellcheck'
+        name: 'Lint with Shellcheck'
+        run: 'yarn shellcheck'
+      - if: 'always()'
+        name: 'Check results'
         run: |
-          curl -o shfmt "https://github.com/mvdan/sh/releases/download/v3.7.0/shfmt_v3.7.0_linux_amd64"
-          chmod +x shfmt
-          mv shfmt /usr/local/bin/
-      - name: Check formatting
-        run: yarn check-formatting
+          [ "${{ steps.prettier.outcome }}" = "success" ] &&
+          [ "${{ steps.markdownlint.outcome }}" = "success" ] &&
+          [ "${{ steps.spelling.outcome }}" = "success" ] &&
+          [ "${{ steps.shellcheck.outcome }}" = "success" ]
 name: 'QA'
 'on':
   pull_request:
