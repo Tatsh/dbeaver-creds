@@ -11,7 +11,7 @@
 [![QA](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml)
 [![Tests](https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Tatsh/dbeaver-creds/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/dbeaver-creds?branch=master)
-[![GitHub Pages](https://github.com/Tatsh/dbeaver-creds/badge/pages)](https://Tatsh.github.io/dbeaver-creds/)
+[![GitHub Pages](https://github.com/Tatsh/dbeaver-creds/actions/workflows/pages/pages-build-deployment/badge.svg)](https://tatsh.github.io/dbeaver-creds/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Stargazers](https://img.shields.io/github/stars/Tatsh/dbeaver-creds?logo=github&style=flat)](https://github.com/Tatsh/dbeaver-creds/stargazers)
 [![Prettier](https://img.shields.io/badge/Prettier-enabled-black?logo=prettier)](https://prettier.io/)
