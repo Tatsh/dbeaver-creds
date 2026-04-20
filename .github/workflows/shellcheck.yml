@@ -1,0 +1,28 @@
+jobs:
+  qa:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+      - name: 'Yarn cache'
+        uses: 'actions/cache@v5.0.5'
+        with:
+          key: "${{ runner.os }}-yarn-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}"
+          path: '~/.yarn/berry'
+          restore-keys: '${ runner.os }}-yarn'
+      - name: 'Install dependencies (Yarn)'
+        run: 'yarn'
+      - name: 'Install Shellcheck'
+        run: 'sudo apt-get install -y shellcheck'
+      - id: 'shellcheck'
+        name: 'Lint with Shellcheck'
+        run: 'yarn shellcheck'
+name: 'QA'
+'on':
+  pull_request:
+    branches:
+      - 'master'
+  push:
+    branches:
+      - 'master'
+permissions:
+  contents: 'read'

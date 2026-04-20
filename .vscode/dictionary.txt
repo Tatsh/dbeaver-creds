@@ -1,6 +1,7 @@
 analyzer
 bsky
 commitizen
+cooldown
 coveragerc
 coverallsapp
 creds
@@ -12,6 +13,7 @@ elif
 encryptor
 esbenp
 foxundermoon
+jinja
 jsonnet
 jsonschema
 libera
@@ -19,9 +21,12 @@ libjsonnet
 libsonnet
 mktemp
 mypy
+npmjs
 oneline
 psscriptanalyzer
+pylock
 regen
+ripgreprc
 sarif
 schemafile
 shellcheck

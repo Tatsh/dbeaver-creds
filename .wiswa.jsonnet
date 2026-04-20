@@ -1,4 +1,5 @@
 {
+  uses_user_defaults: true,
   project_type: 'other',
   project_name: 'dbeaver-creds',
   version: '0.0.3',
@@ -7,9 +8,6 @@
   want_main: false,
   want_codeql: false,
   want_tests: false,
-  copilot+: {
-    intro: 'dbeaver-creds is a simple tool to display DBeaver credentials in the terminal.',
-  },
   package_json+: {
     scripts: {
       'check-formatting': "prettier -c . && shfmt -d -i 4 -ci -sr dbeaver-creds update-key.sh && markdownlint-cli2 '**/*.md' '#node_modules'",
