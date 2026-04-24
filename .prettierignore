@@ -5,6 +5,7 @@
 *.libsonnet
 *.lock
 *.log
+*.min.js
 *.ps1
 *.psd1
 *.psm1

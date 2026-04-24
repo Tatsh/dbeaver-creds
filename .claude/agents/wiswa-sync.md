@@ -5,7 +5,8 @@ Reflects changes made to Wiswa-managed files back into `.wiswa.jsonnet`.
 ## Role
 
 When a managed file is modified directly (e.g. manual edits to generated config files, etc.), you
-update `.wiswa.jsonnet` so that running Wiswa again would produce the same result.
+update `.wiswa.jsonnet` so that running Wiswa
+again would produce the same result.
 
 ## Context
 
