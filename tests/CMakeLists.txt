@@ -21,6 +21,11 @@ else()
   set(BACKEND_SOURCE ${CMAKE_SOURCE_DIR}/src/openssl.c)
 endif()
 
+set(API_SOURCES ${CMAKE_SOURCE_DIR}/src/api.c)
+if(WIN32)
+  list(APPEND API_SOURCES ${CMAKE_SOURCE_DIR}/src/win_utf8.c)
+endif()
+
 set(test_include_dirs ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src)
 set(test_compile_options -Wno-unused-parameter -Wno-unused-function)
 set(test_compile_definitions
@@ -47,7 +52,7 @@ dbc_configure_test(test_backend)
 add_test(NAME backend COMMAND test_backend)
 
 # test_api: real backend + real env + real temp file.
-add_executable(test_api test_api.c ${CMAKE_SOURCE_DIR}/src/api.c ${BACKEND_SOURCE})
+add_executable(test_api test_api.c ${API_SOURCES} ${BACKEND_SOURCE})
 dbc_configure_test(test_api)
 add_test(NAME api COMMAND test_api)
 
@@ -57,7 +62,7 @@ if(NOT APPLE)
   add_executable(test_api_mock
     test_api_mock.c
     wrappers.c
-    ${CMAKE_SOURCE_DIR}/src/api.c
+    ${API_SOURCES}
     ${BACKEND_SOURCE})
   dbc_configure_test(test_api_mock)
   target_link_options(test_api_mock PRIVATE -Wl,--wrap=dbc_decrypt_aes_128_cbc)
