@@ -54,7 +54,7 @@ wchar_t *dbc_utf8_to_utf16(const char *src) {
 FILE *dbc_fopen_utf8(const char *path, const char *mode) {
     wchar_t *wpath = dbc_utf8_to_utf16(path);
     if (!wpath) {
-        return nullptr;
+        return nullptr; // LCOV_EXCL_LINE
     }
     wchar_t *wmode = dbc_utf8_to_utf16(mode);
     if (!wmode) {
