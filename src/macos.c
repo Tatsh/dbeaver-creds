@@ -13,10 +13,15 @@ int dbc_decrypt_aes_128_cbc(const unsigned char *key,
     if (cipher_len == 0 || cipher_len % kCCBlockSizeAES128 != 0) {
         return -1;
     }
+    /* CommonCrypto's kCCOptionPKCS7Padding strips padding but does not
+       validate it strictly, so tampered ciphertexts whose last decrypted
+       byte happens to fall in [1, 16] are silently truncated. Decrypt
+       block-aligned and verify PKCS#7 padding by hand to match the
+       OpenSSL/BCrypt behaviour. */
     size_t out_size = 0;
     CCCryptorStatus status = CCCrypt(kCCDecrypt,
                                      kCCAlgorithmAES,
-                                     kCCOptionPKCS7Padding,
+                                     0,
                                      key,
                                      kCCKeySizeAES128,
                                      iv,
@@ -25,9 +30,18 @@ int dbc_decrypt_aes_128_cbc(const unsigned char *key,
                                      plain,
                                      cipher_len,
                                      &out_size);
-    if (status != kCCSuccess) {
+    if (status != kCCSuccess || out_size != cipher_len) {
         return -1;
     }
-    *plain_len = out_size;
+    unsigned char pad = plain[cipher_len - 1];
+    if (pad < 1 || pad > kCCBlockSizeAES128) {
+        return -1;
+    }
+    for (size_t i = 0; i < pad; ++i) {
+        if (plain[cipher_len - 1 - i] != pad) {
+            return -1;
+        }
+    }
+    *plain_len = cipher_len - pad;
     return 0;
 }
