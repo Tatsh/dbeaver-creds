@@ -45,8 +45,10 @@ jobs:
             os: 'macos-13'
           - cibw_archs: 'arm64'
             os: 'macos-latest'
-          - cibw_archs: 'AMD64 ARM64'
+          - cibw_archs: 'AMD64'
             os: 'windows-latest'
+          - cibw_archs: 'ARM64'
+            os: 'windows-11-arm'
   check:
     runs-on: 'ubuntu-latest'
     steps:
