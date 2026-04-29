@@ -132,13 +132,19 @@ static int read_all(const char *path, unsigned char **out, size_t *out_len) {
     return 0;
 }
 
-char *get_dbeaver_credentials(const char *path) {
+static void set_err(enum dbeaver_credentials_error *err, enum dbeaver_credentials_error code) {
+    if (err) {
+        *err = code;
+    }
+}
+
+char *get_dbeaver_credentials(const char *path, enum dbeaver_credentials_error *err) {
     char *owned_path = nullptr;
     if (!path) {
         owned_path = find_config_path();
         if (!owned_path) {
             // LCOV_EXCL_START
-            fprintf(stderr, "Could not determine credentials path.\n");
+            set_err(err, DBEAVER_CREDENTIALS_PATH_UNAVAILABLE);
             return nullptr;
             // LCOV_EXCL_STOP
         }
@@ -147,42 +153,42 @@ char *get_dbeaver_credentials(const char *path) {
     unsigned char *cipher = nullptr;
     size_t cipher_len = 0;
     if (read_all(path, &cipher, &cipher_len) != 0) {
-        fprintf(stderr, "credentials-config.json file not found or could not be read.\n");
+        set_err(err, DBEAVER_CREDENTIALS_FILE_READ_FAILED);
         free(owned_path);
         return nullptr;
     }
     free(owned_path);
     if (cipher_len == 0 || cipher_len % 16 != 0) {
-        fprintf(stderr, "Invalid ciphertext length.\n");
+        set_err(err, DBEAVER_CREDENTIALS_INVALID_CIPHERTEXT);
         free(cipher);
         return nullptr;
     }
     unsigned char *plain = (unsigned char *)malloc(cipher_len);
     if (!plain) {
         // LCOV_EXCL_START
+        set_err(err, DBEAVER_CREDENTIALS_OUT_OF_MEMORY);
         free(cipher);
         return nullptr;
         // LCOV_EXCL_STOP
     }
     size_t plain_len = cipher_len;
     if (dbc_decrypt_aes_128_cbc(kKey, kIv, cipher, cipher_len, plain, &plain_len) != 0) {
-        fprintf(stderr, "Decryption failed.\n");
+        set_err(err, DBEAVER_CREDENTIALS_DECRYPTION_FAILED);
         free(plain);
         free(cipher);
         return nullptr;
     }
     free(cipher);
     if (plain_len <= 16) {
-        // LCOV_EXCL_START
-        fprintf(stderr, "Decryption produced no payload.\n");
+        set_err(err, DBEAVER_CREDENTIALS_EMPTY_PAYLOAD);
         free(plain);
         return nullptr;
-        // LCOV_EXCL_STOP
     }
     size_t json_len = plain_len - 16;
     char *out = (char *)malloc(json_len + 1);
     if (!out) {
         // LCOV_EXCL_START
+        set_err(err, DBEAVER_CREDENTIALS_OUT_OF_MEMORY);
         free(plain);
         return nullptr;
         // LCOV_EXCL_STOP
@@ -190,5 +196,6 @@ char *get_dbeaver_credentials(const char *path) {
     memcpy(out, plain + 16, json_len);
     out[json_len] = '\0';
     free(plain);
+    set_err(err, DBEAVER_CREDENTIALS_OK);
     return out;
 }

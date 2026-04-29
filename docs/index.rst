@@ -84,8 +84,10 @@ C library
    #include <stdlib.h>
 
    int main(void) {
-     char *json = get_dbeaver_credentials(NULL);
+     enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_OK;
+     char *json = get_dbeaver_credentials(NULL, &err);
      if (!json) {
+       fprintf(stderr, "dbeaver-creds failed: %d\n", err);
        return 1;
      }
      puts(json);

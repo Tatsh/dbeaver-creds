@@ -123,8 +123,10 @@ python -m dbeaver_creds [PATH]
 #include <stdlib.h>
 
 int main(void) {
-  char *json = get_dbeaver_credentials(NULL);  // or a literal path
+  enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_OK;
+  char *json = get_dbeaver_credentials(NULL, &err);  // pass a literal path or NULL
   if (!json) {
+    fprintf(stderr, "dbeaver-creds failed: %d\n", err);
     return 1;
   }
   puts(json);

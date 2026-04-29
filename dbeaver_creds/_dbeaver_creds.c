@@ -24,12 +24,43 @@ static PyObject *py_get_dbeaver_credentials(PyObject *self, PyObject *args, PyOb
         path = PyBytes_AS_STRING(path_bytes);
     }
     char *json;
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_OK;
     Py_BEGIN_ALLOW_THREADS;
-    json = get_dbeaver_credentials(path);
+    json = get_dbeaver_credentials(path, &err);
     Py_END_ALLOW_THREADS;
     Py_XDECREF(path_bytes);
     if (!json) {
-        PyErr_SetString(PyExc_RuntimeError, "Failed to read DBeaver credentials.");
+        const char *msg;
+        PyObject *exc_type = PyExc_RuntimeError;
+        switch (err) {
+        case DBEAVER_CREDENTIALS_PATH_UNAVAILABLE:
+            msg = "Could not determine credentials path.";
+            break;
+        case DBEAVER_CREDENTIALS_FILE_READ_FAILED:
+            msg = "credentials-config.json file not found or could not be read.";
+            exc_type = PyExc_FileNotFoundError;
+            break;
+        case DBEAVER_CREDENTIALS_INVALID_CIPHERTEXT:
+            msg = "Invalid ciphertext length.";
+            exc_type = PyExc_ValueError;
+            break;
+        case DBEAVER_CREDENTIALS_DECRYPTION_FAILED:
+            msg = "Decryption failed.";
+            exc_type = PyExc_ValueError;
+            break;
+        case DBEAVER_CREDENTIALS_EMPTY_PAYLOAD:
+            msg = "Decryption produced no payload.";
+            exc_type = PyExc_ValueError;
+            break;
+        case DBEAVER_CREDENTIALS_OUT_OF_MEMORY:
+            PyErr_NoMemory();
+            return nullptr;
+        case DBEAVER_CREDENTIALS_OK:
+        default:
+            msg = "Failed to read DBeaver credentials.";
+            break;
+        }
+        PyErr_SetString(exc_type, msg);
         return nullptr;
     }
     PyObject *result = PyUnicode_FromString(json);
@@ -41,10 +72,29 @@ static PyMethodDef methods[] = {
     {"get_dbeaver_credentials",
      (PyCFunction)(void (*)(void))py_get_dbeaver_credentials,
      METH_VARARGS | METH_KEYWORDS,
-     PyDoc_STR(
-         "get_dbeaver_credentials(path=None) -> str\n\n"
-         "Read and decrypt DBeaver's credentials-config.json. If path is None, "
-         "the platform-default location is used. Returns the JSON payload as a str.")},
+     PyDoc_STR("get_dbeaver_credentials(path: str | os.PathLike[Any] | None = None) -> str\n\n"
+               "Read and decrypt DBeaver's credentials-config.json.\n\n"
+               "Parameters\n"
+               "----------\n"
+               "path : str | os.PathLike[Any] | None\n"
+               "    Filesystem path to the credentials file. If None, the\n"
+               "    platform-default location is used.\n\n"
+               "Returns\n"
+               "-------\n"
+               "str\n"
+               "    The decrypted JSON payload.\n\n"
+               "Raises\n"
+               "------\n"
+               "FileNotFoundError\n"
+               "    The credentials file could not be opened or fully read.\n"
+               "ValueError\n"
+               "    The ciphertext was malformed, decryption failed, or the\n"
+               "    payload was empty after the IV prefix.\n"
+               "MemoryError\n"
+               "    A heap allocation failed while assembling the result.\n"
+               "RuntimeError\n"
+               "    The platform-default credentials path could not be\n"
+               "    determined.")},
     {nullptr, nullptr, 0, nullptr},
 };
 

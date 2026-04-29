@@ -89,12 +89,7 @@ static int unique_root(char *out, size_t cap) {
     if (n == 0 || n >= sizeof(tmp)) {
         return -1;
     }
-    snprintf(out,
-             cap,
-             "%sdbc_mock_%lu_%lu",
-             tmp,
-             (unsigned long)GetCurrentProcessId(),
-             ++counter);
+    snprintf(out, cap, "%sdbc_mock_%lu_%lu", tmp, (unsigned long)GetCurrentProcessId(), ++counter);
     return CreateDirectoryA(out, NULL) ? 0 : -1;
 #else
     const char *tmp = getenv("TMPDIR");
@@ -156,8 +151,10 @@ static void test_strips_16_byte_prefix(void **state) {
     will_return(__wrap_dbc_decrypt_aes_128_cbc, fake_plain);
     will_return(__wrap_dbc_decrypt_aes_128_cbc, (size_t)(sizeof(fake_plain) - 1));
 
-    char *json = get_dbeaver_credentials(nullptr);
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_DECRYPTION_FAILED;
+    char *json = get_dbeaver_credentials(nullptr, &err);
     assert_non_null(json);
+    assert_int_equal(err, DBEAVER_CREDENTIALS_OK);
     assert_string_equal(json, "{\"k\":42}");
     free(json);
 }
@@ -169,8 +166,10 @@ static void test_propagates_backend_failure(void **state) {
 
     will_return(__wrap_dbc_decrypt_aes_128_cbc, -1);
 
-    char *json = get_dbeaver_credentials(nullptr);
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_OK;
+    char *json = get_dbeaver_credentials(nullptr, &err);
     assert_null(json);
+    assert_int_equal(err, DBEAVER_CREDENTIALS_DECRYPTION_FAILED);
 }
 
 static void test_rejects_payload_shorter_than_prefix(void **state) {
@@ -183,8 +182,10 @@ static void test_rejects_payload_shorter_than_prefix(void **state) {
     will_return(__wrap_dbc_decrypt_aes_128_cbc, fake_plain);
     will_return(__wrap_dbc_decrypt_aes_128_cbc, (size_t)16);
 
-    char *json = get_dbeaver_credentials(nullptr);
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_OK;
+    char *json = get_dbeaver_credentials(nullptr, &err);
     assert_null(json);
+    assert_int_equal(err, DBEAVER_CREDENTIALS_EMPTY_PAYLOAD);
 }
 
 int main(void) {

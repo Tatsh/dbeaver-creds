@@ -28,12 +28,20 @@ and this project adheres to
 - Optional `-Path` parameter to the PowerShell `Show-DBeaver-Credential-Json` function (alias
   `dbeaver-creds`); falls back to platform-default discovery when omitted.
 - Public C API function `get_dbeaver_credentials` (declared in `dbeaver-creds.h`) that accepts a
-  path argument and returns the decrypted JSON.
+  path argument and an optional `enum dbeaver_credentials_error *` out-parameter, and returns the
+  decrypted JSON. The library no longer writes diagnostics to stderr; callers translate the error
+  code locally.
+- `enum dbeaver_credentials_error` exposing structured failure codes
+  (`DBEAVER_CREDENTIALS_OK`, `_PATH_UNAVAILABLE`, `_FILE_READ_FAILED`, `_INVALID_CIPHERTEXT`,
+  `_DECRYPTION_FAILED`, `_EMPTY_PAYLOAD`, `_OUT_OF_MEMORY`).
 - Section 3 manpage `dbeaver-creds.h` documenting the C API.
 - Python package `dbeaver-creds` (importable as `dbeaver_creds`) published to PyPI, providing a
   CPython extension that wraps the C library.
   - Public Python API `dbeaver_creds.get_dbeaver_credentials` accepting an optional path
     (`str`, `os.PathLike`, or `None`) and returning the decrypted JSON as a `str`.
+  - Failures raise idiomatic Python exceptions: `FileNotFoundError` when the credentials file is
+    missing or unreadable, `ValueError` for malformed or undecryptable ciphertext, `MemoryError`
+    on allocation failure, and `RuntimeError` when the platform-default path cannot be derived.
   - Console script `dbeaver-creds` installed via pip, accepting an optional `[PATH]` argument.
   - Type stubs and a `py.typed` marker for static type checkers.
 

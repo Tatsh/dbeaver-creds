@@ -98,12 +98,7 @@ static int unique_root(char *out, size_t cap) {
     if (n == 0 || n >= sizeof(tmp)) {
         return -1;
     }
-    snprintf(out,
-             cap,
-             "%sdbc_test_%lu_%lu",
-             tmp,
-             (unsigned long)GetCurrentProcessId(),
-             ++counter);
+    snprintf(out, cap, "%sdbc_test_%lu_%lu", tmp, (unsigned long)GetCurrentProcessId(), ++counter);
     return CreateDirectoryA(out, NULL) ? 0 : -1;
 #else
     const char *tmp = getenv("TMPDIR");
@@ -156,8 +151,10 @@ static int write_creds_blob(const fixture_t *fx, const void *data, size_t len) {
 static void test_returns_decrypted_json(void **state) {
     fixture_t *fx = *state;
     assert_int_equal(write_creds_blob(fx, k_cipher, sizeof(k_cipher)), 0);
-    char *json = get_dbeaver_credentials(nullptr);
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_DECRYPTION_FAILED;
+    char *json = get_dbeaver_credentials(nullptr, &err);
     assert_non_null(json);
+    assert_int_equal(err, DBEAVER_CREDENTIALS_OK);
     assert_string_equal(json, "{\"hello\":\"world\"}");
     free(json);
 }
@@ -168,8 +165,10 @@ static void test_explicit_path_is_used(void **state) {
     char file[1280];
     snprintf(file, sizeof(file), "%s%c%s", fx->root, DBC_PATHSEP, "explicit.bin");
     assert_int_equal(write_file(file, k_cipher, sizeof(k_cipher)), 0);
-    char *json = get_dbeaver_credentials(file);
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_DECRYPTION_FAILED;
+    char *json = get_dbeaver_credentials(file, &err);
     assert_non_null(json);
+    assert_int_equal(err, DBEAVER_CREDENTIALS_OK);
     assert_string_equal(json, "{\"hello\":\"world\"}");
     free(json);
 }
@@ -177,16 +176,20 @@ static void test_explicit_path_is_used(void **state) {
 static void test_returns_null_when_file_missing(void **state) {
     (void)state;
     /* No file written under the temp root: discovery succeeds but read fails. */
-    char *json = get_dbeaver_credentials(nullptr);
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_OK;
+    char *json = get_dbeaver_credentials(nullptr, &err);
     assert_null(json);
+    assert_int_equal(err, DBEAVER_CREDENTIALS_FILE_READ_FAILED);
 }
 
 static void test_returns_null_on_unaligned_ciphertext(void **state) {
     fixture_t *fx = *state;
     const unsigned char garbage[5] = {1, 2, 3, 4, 5};
     assert_int_equal(write_creds_blob(fx, garbage, sizeof(garbage)), 0);
-    char *json = get_dbeaver_credentials(nullptr);
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_OK;
+    char *json = get_dbeaver_credentials(nullptr, &err);
     assert_null(json);
+    assert_int_equal(err, DBEAVER_CREDENTIALS_INVALID_CIPHERTEXT);
 }
 
 static void test_returns_null_on_undecryptable_ciphertext(void **state) {
@@ -195,8 +198,10 @@ static void test_returns_null_on_undecryptable_ciphertext(void **state) {
     memcpy(tampered, k_cipher, sizeof(tampered));
     tampered[sizeof(tampered) - 1] ^= 0xff;
     assert_int_equal(write_creds_blob(fx, tampered, sizeof(tampered)), 0);
-    char *json = get_dbeaver_credentials(nullptr);
+    enum dbeaver_credentials_error err = DBEAVER_CREDENTIALS_OK;
+    char *json = get_dbeaver_credentials(nullptr, &err);
     assert_null(json);
+    assert_int_equal(err, DBEAVER_CREDENTIALS_DECRYPTION_FAILED);
 }
 
 int main(void) {
