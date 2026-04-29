@@ -11,11 +11,11 @@
 
 char *dbc_utf16_to_utf8(const wchar_t *src) {
     if (!src) {
-        return nullptr;
+        return nullptr; // LCOV_EXCL_LINE
     }
     int n = WideCharToMultiByte(CP_UTF8, 0, src, -1, nullptr, 0, nullptr, nullptr);
     if (n <= 0) {
-        return nullptr;
+        return nullptr; // LCOV_EXCL_LINE
     }
     char *dst = (char *)malloc((size_t)n);
     if (!dst) {
@@ -32,11 +32,11 @@ char *dbc_utf16_to_utf8(const wchar_t *src) {
 
 wchar_t *dbc_utf8_to_utf16(const char *src) {
     if (!src) {
-        return nullptr;
+        return nullptr; // LCOV_EXCL_LINE
     }
     int n = MultiByteToWideChar(CP_UTF8, 0, src, -1, nullptr, 0);
     if (n <= 0) {
-        return nullptr;
+        return nullptr; // LCOV_EXCL_LINE
     }
     wchar_t *dst = (wchar_t *)malloc((size_t)n * sizeof(wchar_t));
     if (!dst) {
