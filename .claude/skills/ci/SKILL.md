@@ -22,6 +22,20 @@ changed files, not the entire project.
 You must skip any agents that are not relevant to the changed files (e.g. if no Click command files
 changed, skip the click-auditor).
 
+### When Python code is being committed
+
+If any changed files are under `dbeaver_creds/` or `tests/`, run the following
+agents **in order**:
+
+1. **python-moderniser** - upgrade to modern Python features.
+1. **click-auditor** - validate Click command consistency. **Only run if files under
+   `dbeaver_creds/commands/` changed.**
+1. **docstring-fixer** - fix missing or incomplete docstrings.
+1. **copy-editor** - fix prose in comments, docstrings, and strings.
+1. **test-writer** - generate/update tests for new/changed code. **Skip if the only changes are in
+   `tests/`.**
+1. **qa-fixer** - format and fix lint/spelling issues.
+
 ### When user-facing changes are being committed
 
 - **changelog** - update `CHANGELOG.md` only for **user-facing** changes (behaviour, CLI, public
@@ -29,7 +43,7 @@ changed, skip the click-auditor).
   check if `CHANGELOG.md` was modified (`git diff CHANGELOG.md`). If it was, stage it with the
   relevant commit. Follow `.claude/agents/changelog.md`, including its skip list.
 
-  Files under `dbeaver_creds/`, or dependency/version changes are **candidates**
+  Files under `dbeaver_creds/`, `tests/`, or version changes in `pyproject.toml` are **candidates**
   for the changelog agent only when they **change what users see or
   how the software behaves**. Editing those paths is not sufficient on its own.
 
@@ -51,7 +65,8 @@ file in a commit:
 - `CHANGELOG.md`
 - `.vscode/dictionary.txt`
 
-For example, if a commit contains `main`, and `CHANGELOG.md`, the component is determined by
+For example, if a commit contains `dbeaver_creds/commands/main.py`,
+`tests/test_main_command.py`, and `CHANGELOG.md`, the component is determined by
 the source files only. `CHANGELOG.md` is simply staged alongside them.
 
 If `CHANGELOG.md` is the only file being committed, use the `changelog:` prefix. If
@@ -72,9 +87,10 @@ When all changes are from re-running Wiswa (the project generator) and
 no hand-written code changed, this is a **cruft update**. Indicators:
 
 - Only Wiswa-managed files changed (workflows,
-  `package.json`, `.pre-commit-config.yaml`, `.claude/agents/`, `.claude/rules/`,
-  `CITATION.cff`, `.vscode/dictionary.txt`, `.wiswa.jsonnet`, etc.).
-- No files under the primary module or source directories changed.
+  `package.json`, `pyproject.toml`, `.pre-commit-config.yaml`, `.claude/agents/`, `.claude/rules/`,
+  `CITATION.cff`, `.vscode/dictionary.txt`, `uv.lock`,
+  `.wiswa.jsonnet`, etc.).
+- No files under the primary module or `tests/` changed.
 
 Commit everything in a single commit with the subject `cruft: update`. Include a body summarising
 what changed (e.g. new/updated workflows, updated agent files, dependency version bumps, new managed
@@ -109,12 +125,18 @@ Closes: #123
 
 ### Component prefix rules
 
+For Python files, strip the `dbeaver_creds/` prefix and replace `/` with `.` (like module imports).
+
+- Python file `dbeaver_creds/media.py` → `media:`.
+- Multiple files under `dbeaver_creds/commands/` → `commands:`.
+- Single command file `dbeaver_creds/commands/admin.py` → `commands.admin:`.
 - Workflow file `.github/workflows/qa.yml` → `workflows/qa:`.
 - Multiple workflows → `workflows/*:`.
 - Agent files `.claude/agents/*.md` → `.claude:` or specific agent name.
 - Instruction files across all 3 locations → `project:` (since they span Copilot/Cursor/Claude).
+- Test files `tests/test_media.py` → `tests/test_media:` (or `tests:` for multiple).
 - Dictionary `.vscode/dictionary.txt` → `dictionary:` (only when committed alone).
-- Top-level config (`package.json`, `package.json`) → `project:`.
+- Top-level config (`pyproject.toml`, `package.json`) → `project:`.
 - If changes span many unrelated areas → `project:`.
 - CHANGELOG.md → `changelog:` (only when committed alone).
 - CONTRIBUTING.md → `contributing:`.

@@ -9,6 +9,12 @@ local utils = import 'utils.libsonnet';
   version: '0.0.3',
   want_codeql: false,
   want_tests: false,
+  shared_ignore+: [
+    '*.so',
+    '/compile_commands.json',
+    '/.vs/*',
+    '!/.vs/launch.vs.json',
+  ],
   pyproject+: {
     'build-system': {
       'build-backend': 'scikit_build_core.build',
@@ -36,8 +42,10 @@ local utils = import 'utils.libsonnet';
           'DBeaverCreds/DBeaverCreds.psd1',
           'man/dbeaver-creds.1',
           'man/dbeaver-creds.h.3',
+          'package.json',
         ],
       },
+      hatch:: null,
       poetry+: {
         group+: {
           dev+: {
@@ -49,19 +57,48 @@ local utils = import 'utils.libsonnet';
       },
       'scikit-build': {
         cmake: {
-          define: { BUILD_CLI: 'OFF', BUILD_PYTHON_EXTENSION: 'ON' },
           version: '>=3.26',
+          define: {
+            BUILD_CLI: 'OFF',
+            BUILD_PYTHON_EXTENSION: 'ON',
+          },
         },
         'minimum-version': 'build-system.requires',
+        sdist: {
+          exclude: [
+            '**',
+          ],
+          include: [
+            '/CMakeLists.txt',
+            '/LICENSE.txt',
+            '/README.md',
+            '/dbeaver_creds/**/*.c',
+            '/dbeaver_creds/**/*.py',
+            '/dbeaver_creds/**/*.pyi',
+            '/dbeaver_creds/CMakeLists.txt',
+            '/dbeaver_creds/py.typed',
+            '/include/**/*.h',
+            '/pyproject.toml',
+            '/src/**/*.c',
+            '/src/**/*.h',
+            '/src/CMakeLists.txt',
+          ],
+        },
         wheel: {
-          exclude: ['**/*.c', '**/*.h', '**/CMakeLists.txt'],
-          packages: ['dbeaver_creds'],
+          exclude: [
+            '**/*.c',
+            '**/*.h',
+            '**/CMakeLists.txt',
+          ],
+          packages: [
+            'dbeaver_creds',
+          ],
         },
       },
     },
   },
   package_json+: {
-    scripts: {
+    scripts+: {
       'check-formatting':
         'prettier -c . && shfmt -d -i 4 -ci -sr dbeaver-creds && uv run yapf --diff --parallel --recursive . && markdownlint-cli2 --config package.json --configPointer /markdownlint-cli2',
       'check-spelling': 'cspell --no-progress .',
@@ -87,6 +124,11 @@ local utils = import 'utils.libsonnet';
     },
   },
   prettierignore+: [
+    '*.3',
+    '*.bat',
+    '*.c',
+    '*.h',
+    '*.in',
     '*.ps1',
     '*.psd1',
     '*.psm1',

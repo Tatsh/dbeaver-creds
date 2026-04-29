@@ -1,3 +1,4 @@
+!/.vs/launch.vs.json
 *.1
 *.3
 *.bat
@@ -14,6 +15,7 @@
 *.ps1
 *.psd1
 *.psm1
+*.so
 *~
 .*.swp
 .*_cache/
@@ -24,6 +26,7 @@
 .eslintignore
 .pnp.*
 .shellcheckrc
+.venv/
 /.bash_profile
 /.bashrc
 /.claude/commands
@@ -33,13 +36,22 @@
 /.mcp.json
 /.profile
 /.ripgreprc
-/.venv/
+/.vs/*
 /.wiswa-ci/
 /.yarn/**/*.cjs
 /.yarn/install-state.gz
 /.zprofile
 /.zshrc
 /build/
+/compile_commands.json
 /dist/
+/docs/_build/
+/man/_static/
+/mypy-report*/
+__pycache__/
+cobertura.xml
+coverage.xml
+htmlcov/
+mypy-report.xml
 node_modules/
 pylock*.toml

@@ -19,7 +19,7 @@ concrete repository change, do not edit project files.
 ---
 
 - Do not explain project structure or conventions in comments or docstrings.
-- Use 2 spaces for indentation.
+- Use 2 spaces for indentation except in Python.
 - Files must end with a single newline character.
 - Keep lines shorter than 100 characters.
 - Line endings must be Unix-style (LF).
@@ -39,6 +39,7 @@ concrete repository change, do not edit project files.
 - Run `yarn qa` after any changes to type-check and run QA utilities. Must exit with code 0. Both
   commands must pass before committing.
 - Use `yarn` to invoke Node-based tools (Prettier, markdownlint-cli2, cspell).
+- Use `uv run` to invoke Python tools (pytest, mypy, Ruff).
 - In shell tool calls, assume the working directory is already the repository root (or whatever cwd
   the tool reports). Do not prefix commands with `cd` into that same path unless you need a
   different directory.

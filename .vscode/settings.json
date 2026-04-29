@@ -5,6 +5,16 @@
   "[powershell]": {
     "editor.defaultFormatter": "ms-vscode.powershell"
   },
+  "[python]": {
+    "editor.defaultFormatter": "eeyore.yapf",
+    "editor.formatOnSaveMode": "file",
+    "editor.tabSize": 4
+  },
+  "[restructuredtext]": {
+    "editor.defaultFormatter": "lextudio.restructuredtext",
+    "editor.formatOnSaveMode": "file",
+    "editor.tabSize": 3
+  },
   "[shellscript]": {
     "editor.defaultFormatter": "foxundermoon.shell-format",
     "editor.tabSize": 4
@@ -28,6 +38,25 @@
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.completeFunctionParens": true,
+  "python.analysis.importFormat": "relative",
+  "python.analysis.indexing": true,
+  "python.analysis.inlayHints.callArgumentNames": "all",
+  "python.analysis.inlayHints.functionReturnTypes": true,
+  "python.analysis.inlayHints.pytestParameters": true,
+  "python.analysis.inlayHints.variableTypes": true,
+  "python.analysis.packageIndexDepths": [
+    {
+      "depth": 100,
+      "name": ""
+    }
+  ],
+  "python.languageServer": "Pylance",
+  "restructuredtext.experimental": true,
+  "restructuredtext.linter.disabledLinters": ["rstcheck"],
+  "restructuredtext.linter.doc8.extraArgs": ["--config", "${workspaceFolder}/pyproject.toml"],
+  "restructuredtext.linter.run": "onSave",
   "shellformat.flag": "i 2 -ci -sr",
   "sortJSON.excludedFiles": [],
   "sortJSON.excludedPaths": [],

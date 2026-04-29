@@ -38,6 +38,8 @@ with the changelog.
    1. **Restore the repository** to the pre-bump state: `git checkout -- .`
    1. **Stop work immediately and alert the user.** Do not attempt to work around the failure.
 
+1. **Run `uv lock`** to update `uv.lock` with the new version.
+
 1. **Commit the version bump.** Stage all changed files and commit with
    `git commit -S -s -m 'bump: vOLD → vNEW'` (replace
    OLD/NEW with actual versions).

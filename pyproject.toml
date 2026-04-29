@@ -5,17 +5,26 @@ requires = ["scikit-build-core>=0.10"]
 [dependency-groups]
 dev = [
   "commitizen>=4.13.10",
-  "cryptography>=44.0.0",
+  "cryptography>=46.0.7",
   "cz-path>=0.0.6",
   "mypy>=1.20.2",
   "ruff==0.15.11",
   "ty>=0.0.32",
   "yapf>=0.43.0",
 ]
-tests = ["coveralls>=4.1.0", "pytest>=9.0.3", "pytest-cov>=7.1.0", "pytest-mock>=3.15.1"]
+docs = [
+  "autodoc-pydantic>=2.2.0",
+  "doc8>=2.0.0",
+  "enum-tools[sphinx]>=0.13.0",
+  "esbonio>=2.0.0",
+  "restructuredtext-lint>=2.0.2",
+  "sphinx-datatables>=1.0.0",
+  "sphinx-immaterial>=0.13.9",
+  "sphinx>=9.1.0; python_version >= \"3.13\"",
+  "tomlkit>=0.14.0",
+]
 
 [project]
-authors = [{ name = "Andrew Udvare", email = "audvare@gmail.com" }]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Environment :: Console",
@@ -26,7 +35,6 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Programming Language :: C",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -37,47 +45,49 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = ["click>=8.3.2"]
-description = "Decrypt DBeaver's credentials-config.json file."
-keywords = ["credentials", "dbeaver", "decrypt"]
+description = "Decrypt DBeaver's credentials-config.json file and display the output (a JSON string)."
+keywords = ["authentication", "credentials", "dbeaver", "terminal"]
 license = "MIT"
-license-files = ["LICENSE.txt"]
 name = "dbeaver-creds"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<4.0"
 version = "0.0.3"
+
+[[project.authors]]
+email = "audvare@gmail.com"
+name = "Andrew Udvare"
 
 [project.scripts]
 dbeaver-creds = "dbeaver_creds.main:main"
 
 [project.urls]
-Documentation = "https://tatsh.github.io/dbeaver-creds/"
-Homepage = "https://tatsh.github.io/dbeaver-creds/"
 Issues = "https://github.com/Tatsh/dbeaver-creds/issues"
-Repository = "https://github.com/Tatsh/dbeaver-creds"
+documentation = "https://dbeaver-creds.readthedocs.org"
+homepage = "https://tatsh.github.io/dbeaver-creds/"
+repository = "https://github.com/Tatsh/dbeaver-creds"
 
 [tool.commitizen]
 name = "cz_path"
-remove_path_prefixes = ["dbeaver_creds", "include", "src", "tests"]
+remove_path_prefixes = ["dbeaver_creds", "include", "src"]
 tag_format = "v$version"
 version_files = [
+  ".wiswa.jsonnet",
   "CITATION.cff",
-  "CMakeLists.txt",
   "README.md",
   "dbeaver_creds/__init__.py",
+  "docs/badges.rst",
+  "docs/index.rst",
+  "package.json",
+  "CMakeLists.txt",
+  "DBeaverCreds/DBeaverCreds.psd1",
   "man/dbeaver-creds.1",
   "man/dbeaver-creds.h.3",
   "package.json",
 ]
 version_provider = "pep621"
 
-[tool.coverage.report]
-exclude_also = ["if TYPE_CHECKING:"]
-omit = ["conftest.py", "tests/*/test_*.py", "tests/test_*.py"]
-show_missing = true
-
-[tool.coverage.run]
-branch = true
-omit = ["conftest.py", "tests/*/test_*.py", "tests/test_*.py"]
+[tool.doc8]
+max-line-length = 100
 
 [tool.mypy]
 cache_dir = "~/.cache/mypy"
@@ -92,7 +102,7 @@ warn_unreachable = true
 [tool.pyright]
 deprecateTypingAliases = true
 enableExperimentalFeatures = true
-exclude = [".venv", "**/node_modules", "**/__pycache__", "**/.*", "build", "dist"]
+exclude = [".venv", "**/node_modules", "**/__pycache__", "**/.*"]
 include = ["./dbeaver_creds"]
 pythonPlatform = "Linux"
 pythonVersion = "3.10"
@@ -106,16 +116,11 @@ typeCheckingMode = "off"
 venv = ".venv"
 venvPath = "."
 
-[tool.pytest.ini_options]
-norecursedirs = ["build", "dist", "node_modules"]
-python_files = ["tests.py", "test_*.py", "*_tests.py"]
-testpaths = ["tests"]
-
 [tool.ruff]
 cache-dir = "~/.cache/ruff"
 force-exclude = true
 line-length = 100
-namespace-packages = ["tests"]
+namespace-packages = ["docs", "tests"]
 target-version = "py310"
 unsafe-fixes = true
 
@@ -157,17 +162,24 @@ convention = "numpy"
 max-args = 20
 max-branches = 20
 max-locals = 20
-max-nested-blocks = 6
 max-positional-args = 15
 max-public-methods = 30
 max-returns = 10
-max-statements = 150
+max-statements = 100
 
 [tool.scikit-build]
-cmake.version = ">=3.26"
 minimum-version = "build-system.requires"
-sdist.exclude = ["**"]
-sdist.include = [
+
+[tool.scikit-build.cmake]
+version = ">=3.26"
+
+[tool.scikit-build.cmake.define]
+BUILD_CLI = "OFF"
+BUILD_PYTHON_EXTENSION = "ON"
+
+[tool.scikit-build.sdist]
+exclude = ["**"]
+include = [
   "/CMakeLists.txt",
   "/LICENSE.txt",
   "/README.md",
@@ -182,12 +194,10 @@ sdist.include = [
   "/src/**/*.h",
   "/src/CMakeLists.txt",
 ]
-wheel.exclude = ["**/*.c", "**/*.h", "**/CMakeLists.txt"]
-wheel.packages = ["dbeaver_creds"]
 
-[tool.scikit-build.cmake.define]
-BUILD_CLI = "OFF"
-BUILD_PYTHON_EXTENSION = "ON"
+[tool.scikit-build.wheel]
+exclude = ["**/*.c", "**/*.h", "**/CMakeLists.txt"]
+packages = ["dbeaver_creds"]
 
 [tool.uv]
 default-groups = "all"
@@ -240,4 +250,4 @@ split_penalty_logical_operator = 300
 use_tabs = false
 
 [tool.yapfignore]
-ignore_patterns = [".venv", ".wiswa-ci", "build", "dist", "node_modules"]
+ignore_patterns = [".venv", ".wiswa-ci", "node_modules"]

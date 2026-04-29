@@ -35,6 +35,27 @@ repos:
     repo: 'https://github.com/pre-commit/pre-commit-hooks'
     rev: 'v6.0.0'
   - hooks:
+      - id: 'uv-lock'
+        stages:
+          - 'pre-push'
+      - args:
+          - '--all-groups'
+          - '--frozen'
+        id: 'uv-sync'
+    repo: 'https://github.com/astral-sh/uv-pre-commit'
+    rev: '0.11.8'
+  - hooks:
+      - args:
+          - '--fix'
+        id: 'ruff-check'
+    repo: 'https://github.com/astral-sh/ruff-pre-commit'
+    rev: 'v0.15.12'
+  - hooks:
+      - id: 'yapf'
+        name: 'check Python files are formatted'
+    repo: 'https://github.com/google/yapf'
+    rev: 'v0.43.0'
+  - hooks:
       - id: 'check-github-actions'
       - id: 'check-github-workflows'
       - args:

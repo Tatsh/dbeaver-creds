@@ -15,12 +15,14 @@ and use each product's own mechanics for attaching repo context where needed.
 
 ## Rules (`.claude/rules/`)
 
-| File                                    | Scope                    |
-| --------------------------------------- | ------------------------ |
-| [general](.claude/rules/general.md)     | Project-wide conventions |
-| [json-yaml](.claude/rules/json-yaml.md) | JSON and YAML files      |
-| [toml-ini](.claude/rules/toml-ini.md)   | TOML and INI files       |
-| [markdown](.claude/rules/markdown.md)   | Markdown files           |
+| File                                          | Scope                                 |
+| --------------------------------------------- | ------------------------------------- |
+| [general](.claude/rules/general.md)           | Project-wide conventions              |
+| [python](.claude/rules/python.md)             | Python coding (`**/*.py`, `**/*.pyi`) |
+| [python-tests](.claude/rules/python-tests.md) | Test conventions (`tests/**/*.py`)    |
+| [json-yaml](.claude/rules/json-yaml.md)       | JSON and YAML files                   |
+| [toml-ini](.claude/rules/toml-ini.md)         | TOML and INI files                    |
+| [markdown](.claude/rules/markdown.md)         | Markdown files                        |
 
 ## Skills (`.claude/skills/`)
 
@@ -31,6 +33,13 @@ present).
 
 | Agent                                                        | Purpose                                                     |
 | ------------------------------------------------------------ | ----------------------------------------------------------- |
+| [click-auditor](.claude/agents/click-auditor.md)             | Validate Click command consistency.                         |
+| [coverage-improver](.claude/agents/coverage-improver.md)     | Identify coverage gaps and write tests.                     |
+| [docstring-fixer](.claude/agents/docstring-fixer.md)         | Audit and fix missing/incomplete docstrings.                |
+| [mypy-fixer](.claude/agents/mypy-fixer.md)                   | Fix mypy errors and eliminate `Any`.                        |
+| [python-expert](.claude/agents/python-expert.md)             | General expert-level Python coding (includes mypy/typing).  |
+| [python-moderniser](.claude/agents/python-moderniser.md)     | Upgrade code to modern Python features.                     |
+| [test-writer](.claude/agents/test-writer.md)                 | Generate tests following project patterns.                  |
 | [markdownlint-fixer](.claude/agents/markdownlint-fixer.md)   | Fix markdownlint-cli2 issues.                               |
 | [qa-fixer](.claude/agents/qa-fixer.md)                       | Run `yarn format` and `yarn qa` until clean.                |
 | [workflow-shellcheck](.claude/agents/workflow-shellcheck.md) | ShellCheck embedded Bash in workflow YAML.                  |
