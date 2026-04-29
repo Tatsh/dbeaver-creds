@@ -66,7 +66,7 @@ jobs:
           --exclude '/usr/*' --exclude '${{ github.workspace }}/tests/*'
           --exclude '*/tests/*' --exclude '*cmocka*'
           --output-file ${{ github.workspace }}/coverage.lcov
-          --ignore-errors inconsistent,format
+          --ignore-errors inconsistent,format,unsupported,unused
       - if: "matrix.build-type == 'Debug'"
         name: 'Coveralls'
         uses: 'coverallsapp/github-action@v2'
