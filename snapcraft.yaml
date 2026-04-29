@@ -34,5 +34,5 @@ platforms:
 source-code: 'https://github.com/Tatsh/dbeaver-creds'
 summary: "Decrypt DBeaver's credentials-config.json file."
 title: 'dbeaver-creds'
-version: 'git'
+version: '0.0.3'
 website: 'https://tatsh.github.io/dbeaver-creds/'

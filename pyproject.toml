@@ -82,7 +82,7 @@ version_files = [
   "DBeaverCreds/DBeaverCreds.psd1",
   "man/dbeaver-creds.1",
   "man/dbeaver-creds.h.3",
-  "package.json",
+  "snapcraft.yaml",
 ]
 version_provider = "pep621"
 

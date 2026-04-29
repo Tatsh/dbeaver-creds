@@ -3,8 +3,6 @@ jobs:
     runs-on: '${{ matrix.system.image }}'
     steps:
       - uses: 'actions/checkout@v6.0.2'
-        with:
-          fetch-depth: 0
       - id: 'build'
         name: 'Build Snap package'
         uses: 'snapcore/action-build@v1.3.0'

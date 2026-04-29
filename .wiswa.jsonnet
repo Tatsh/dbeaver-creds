@@ -72,7 +72,7 @@ local utils = import 'utils.libsonnet';
           'DBeaverCreds/DBeaverCreds.psd1',
           'man/dbeaver-creds.1',
           'man/dbeaver-creds.h.3',
-          'package.json',
+          'snapcraft.yaml',
         ],
       },
       hatch:: null,
