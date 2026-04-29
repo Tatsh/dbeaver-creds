@@ -41,6 +41,10 @@ jobs:
           if-no-files-found: 'error'
           name: 'dbeaver-creds-${{ matrix.os }}-${{ matrix.build-type }}'
           path: 'stage/*'
+      - if: "matrix.build-type == 'Release' && github.ref_type == 'tag' && runner.os == 'Windows'"
+        name: 'Install NSIS'
+        shell: 'pwsh'
+        run: 'choco install nsis -y --no-progress'
       - if: "matrix.build-type == 'Release' && github.ref_type == 'tag' && runner.os != 'Linux'"
         name: 'Generate release packages via CPack'
         shell: 'bash'

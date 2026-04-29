@@ -14,6 +14,7 @@ behavior
 bsky
 cdecl
 cdrommsf
+choco
 cibw
 clangarm
 cmocka
