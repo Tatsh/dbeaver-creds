@@ -87,7 +87,7 @@ jobs:
           - 'macos-latest'
           - 'ubuntu-latest'
   native-windows:
-    runs-on: 'windows-latest'
+    runs-on: '${{ matrix.os }}'
     steps:
       - id: 'fixed_workspace'
         name: 'Fix path'
@@ -97,7 +97,7 @@ jobs:
       - uses: 'msys2/setup-msys2@v2'
         with:
           install: 'make'
-          msystem: 'MINGW64'
+          msystem: '${{ matrix.msystem }}'
           pacboy: >-
             cmake:p
             cmocka:p
@@ -140,14 +140,24 @@ jobs:
         uses: 'coverallsapp/github-action@v2'
         with:
           file: 'coverage.lcov'
-          flag-name: 'native-Windows'
+          flag-name: 'native-Windows-${{ matrix.msystem }}'
           parallel: true
     strategy:
       fail-fast: false
       matrix:
-        build-type:
-          - 'Debug'
-          - 'Release'
+        include:
+          - build-type: 'Debug'
+            msystem: 'MINGW64'
+            os: 'windows-latest'
+          - build-type: 'Release'
+            msystem: 'MINGW64'
+            os: 'windows-latest'
+          - build-type: 'Debug'
+            msystem: 'CLANGARM64'
+            os: 'windows-11-arm'
+          - build-type: 'Release'
+            msystem: 'CLANGARM64'
+            os: 'windows-11-arm'
   pwsh-test:
     runs-on: 'windows-latest'
     steps:
