@@ -1,0 +1,30 @@
+{
+  "configurations": [
+    {
+      "cStandard": "c11",
+      "compilerPath": "/usr/bin/gcc",
+      "configurationProvider": "ms-vscode.cmake-tools",
+      "cppStandard": "c++17",
+      "includePath": ["${workspaceFolder}/include", "${workspaceFolder}/src"],
+      "name": "Linux"
+    },
+    {
+      "cStandard": "c11",
+      "configurationProvider": "ms-vscode.cmake-tools",
+      "cppStandard": "c++17",
+      "includePath": ["${workspaceFolder}/include", "${workspaceFolder}/src"],
+      "intelliSenseMode": "macos-clang-arm64",
+      "name": "Mac"
+    },
+    {
+      "cStandard": "c11",
+      "configurationProvider": "ms-vscode.cmake-tools",
+      "cppStandard": "c++17",
+      "includePath": ["${workspaceFolder}/include", "${workspaceFolder}/src"],
+      "intelliSenseMode": "windows-msvc-x64",
+      "name": "Win32"
+    }
+  ],
+  "env": {},
+  "version": 4
+}

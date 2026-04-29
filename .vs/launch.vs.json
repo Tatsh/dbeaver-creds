@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "name": "dbeaver-creds.exe (src\\dbeaver-creds.exe)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "dbeaver-creds.exe (src\\dbeaver-creds.exe)",
+      "type": "default"
+    }
+  ],
+  "defaults": {},
+  "version": "0.2.1"
+}
