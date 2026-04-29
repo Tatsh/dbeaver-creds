@@ -23,7 +23,13 @@
 /.yarn/install-state.gz
 /.zprofile
 /.zshrc
+/.vs/*
+!/.vs/launch.vs.json
 /build/
+/compile_commands.json
 /coverage/
 /dist/
+*.egg-info/
+*.so
+__pycache__/
 node_modules/
