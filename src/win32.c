@@ -18,6 +18,9 @@ int dbc_decrypt_aes_128_cbc(const unsigned char *key,
                             size_t cipher_len,
                             unsigned char *plain,
                             size_t *plain_len) {
+    if (cipher_len == 0 || cipher_len % 16 != 0) {
+        return -1;
+    }
     BCRYPT_ALG_HANDLE alg = nullptr;
     BCRYPT_KEY_HANDLE key_h = nullptr;
     int rc = -1;

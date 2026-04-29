@@ -52,11 +52,14 @@ dbc_configure_test(test_api)
 add_test(NAME api COMMAND test_api)
 
 # test_api_mock: mocked backend via -Wl,--wrap=dbc_decrypt_aes_128_cbc.
-add_executable(test_api_mock
-  test_api_mock.c
-  wrappers.c
-  ${CMAKE_SOURCE_DIR}/src/api.c
-  ${BACKEND_SOURCE})
-dbc_configure_test(test_api_mock)
-target_link_options(test_api_mock PRIVATE -Wl,--wrap=dbc_decrypt_aes_128_cbc)
-add_test(NAME api_mock COMMAND test_api_mock)
+# Apple's ld64 does not implement --wrap, so the target is gated on non-Apple.
+if(NOT APPLE)
+  add_executable(test_api_mock
+    test_api_mock.c
+    wrappers.c
+    ${CMAKE_SOURCE_DIR}/src/api.c
+    ${BACKEND_SOURCE})
+  dbc_configure_test(test_api_mock)
+  target_link_options(test_api_mock PRIVATE -Wl,--wrap=dbc_decrypt_aes_128_cbc)
+  add_test(NAME api_mock COMMAND test_api_mock)
+endif()
