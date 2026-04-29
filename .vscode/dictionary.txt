@@ -17,11 +17,13 @@ clangarm
 cmocka
 cmocka's
 commitizen
+commonprogramdata
 conftest
 conv
 cooldown
 coveragerc
 coverallsapp
+cpack
 cpython
 creds
 ctest
@@ -47,6 +49,11 @@ endfunction
 esac
 esbenp
 esbonio
+fileflags
+fileflagsmask
+fileos
+filesubtype
+fileversion
 foxundermoon
 fprintf
 freethreading
@@ -60,6 +67,7 @@ gmock
 graphviz
 hoverxref
 htmlcov
+ifdef
 intersphinx
 isort
 itertools
@@ -72,11 +80,13 @@ kwargs
 kwlist
 lextudio
 libcmocka
+libdbeaver
 libera
 libsonnet
 linters
 lpwstr
 maml
+manpages
 mktemp
 modindex
 monkeypatch
@@ -86,6 +96,7 @@ myproject
 mypy
 namedtuples
 npmjs
+nsis
 ntstatus
 nullptr
 numpy
@@ -96,6 +107,8 @@ padder
 pathlib
 pathsep
 plistlib
+proc
+productversion
 psscriptanalyzer
 pycache
 pydantic
@@ -132,8 +145,10 @@ stddef
 stdlib
 strequal
 tatsh
+tolower
 tomlkit
 tomllib
+toplevel
 tostring
 ubsan
 ubyte
@@ -143,6 +158,7 @@ vedantmgoyal
 vendored
 venv
 vers
+versioninfo
 virtualenv
 vstest
 wargc

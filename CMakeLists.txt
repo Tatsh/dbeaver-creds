@@ -1,7 +1,12 @@
 include(CheckTypeSize)
 
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
-project(dbeaver-creds VERSION 0.0.3 LANGUAGES C)
+project(dbeaver-creds
+        VERSION 0.0.3
+        LANGUAGES C
+        DESCRIPTION "Decrypt DBeaver's credentials-config.json file."
+        HOMEPAGE_URL "https://github.com/Tatsh/dbeaver-creds")
+string(TIMESTAMP DBC_COPYRIGHT_YEAR "%Y" UTC)
 
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
   set(CMAKE_C_STANDARD 23)
@@ -92,8 +97,51 @@ endif()
 
 if(NOT SKBUILD)
   install(FILES include/dbeaver-creds.h DESTINATION include)
-  install(FILES man/dbeaver-creds.1 DESTINATION share/man/man1)
-  install(FILES man/dbeaver-creds.h.3 DESTINATION share/man/man3 OPTIONAL)
+  install(FILES man/dbeaver-creds.1 DESTINATION man/man1)
+  install(FILES man/dbeaver-creds.h.3 DESTINATION man/man3 OPTIONAL)
+  install(FILES LICENSE.txt README.md DESTINATION share/dbeaver-creds)
+
+  set(CPACK_PACKAGE_NAME "dbeaver-creds")
+  set(CPACK_PACKAGE_VENDOR "Tatsh")
+  set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+  set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_DESCRIPTION}")
+  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}")
+  set(CPACK_PACKAGING_INSTALL_PREFIX "")
+  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
+  set(CPACK_THREADS 0)
+  if(WIN32)
+    set(CPACK_GENERATOR "NSIS;ZIP")
+    # NSIS pre-include block: requests user-level execution (no admin elevation
+    # prompt) and stamps the setup .exe with the same Windows version metadata
+    # the CLI .exe carries via src/version.rc.in.
+    set(CPACK_NSIS_DEFINES "RequestExecutionLevel user
+VIProductVersion \\\"${PROJECT_VERSION}.0\\\"
+VIAddVersionKey \\\"ProductName\\\" \\\"${CPACK_PACKAGE_NAME}\\\"
+VIAddVersionKey \\\"CompanyName\\\" \\\"${CPACK_PACKAGE_VENDOR}\\\"
+VIAddVersionKey \\\"FileDescription\\\" \\\"${CPACK_PACKAGE_NAME} installer.\\\"
+VIAddVersionKey \\\"FileVersion\\\" \\\"${PROJECT_VERSION}\\\"
+VIAddVersionKey \\\"ProductVersion\\\" \\\"${PROJECT_VERSION}.0\\\"
+VIAddVersionKey \\\"LegalCopyright\\\" \\\"Copyright (c) ${DBC_COPYRIGHT_YEAR} ${CPACK_PACKAGE_VENDOR}.\\\"
+VIAddVersionKey \\\"Comments\\\" \\\"${PROJECT_HOMEPAGE_URL}\\\"")
+    set(CPACK_NSIS_INSTALL_ROOT "$COMMONPROGRAMDATA")
+    set(CPACK_NSIS_CONTACT "https://bsky.app/profile/tatsh.bsky.social")
+    set(CPACK_NSIS_MANIFEST_DPI_AWARE ON)
+    set(CPACK_NSIS_URL_INFO_ABOUT "${PROJECT_HOMEPAGE_URL}/issues")
+    set(CPACK_NSIS_MODIFY_PATH ON)
+  else()
+    set(CPACK_GENERATOR "ZIP")
+  endif()
+  string(TOLOWER "${CMAKE_SYSTEM_NAME}" _dbc_sys)
+  string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" _dbc_proc)
+  if(_dbc_sys STREQUAL "darwin")
+    set(_dbc_os_label "macos-${_dbc_proc}")
+  else()
+    set(_dbc_os_label "${_dbc_sys}-${_dbc_proc}")
+  endif()
+  set(CPACK_PACKAGE_FILE_NAME
+      "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${_dbc_os_label}")
+  include(CPack)
 endif()
 
 if(BUILD_DOCS)

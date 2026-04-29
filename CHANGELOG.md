@@ -41,6 +41,16 @@ and this project adheres to
   correctly. The CLI also calls `SetConsoleOutputCP(CP_UTF8)` so JSON output renders correctly
   in the Windows console.
 - Section 3 manpage `dbeaver-creds.h` documenting the C API.
+- Prebuilt release archives generated via CPack and attached to each GitHub release:
+  - ZIP archive per OS/architecture
+    (`dbeaver-creds-<version>-{linux-x86_64,linux-aarch64,macos-x86_64,macos-arm64,windows-amd64,windows-arm64}.zip`)
+    containing the `bin/dbeaver-creds[.exe]` binary, `lib64/` static library, `include/`
+    public header, `man/man{1,3}/` manpages, and `share/dbeaver-creds/{LICENSE.txt,README.md}`
+    in a relocatable FHS layout (extract anywhere; copy to `/usr/local` or similar).
+  - NSIS installer for Windows (`dbeaver-creds-<version>-windows-{amd64,arm64}.exe`) installing
+    to `%COMMONPROGRAMDATA%\dbeaver-creds\` (no admin elevation required), with an optional
+    "Add to PATH" step. Both the installer EXE and the installed `dbeaver-creds.exe` carry
+    full Windows version metadata (Product/File version, Company, Description, Copyright).
 - Python package `dbeaver-creds` (importable as `dbeaver_creds`) published to PyPI, providing a
   CPython extension that wraps the C library.
   - Public Python API `dbeaver_creds.get_dbeaver_credentials` accepting an optional path
