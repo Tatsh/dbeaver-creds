@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "scikit_build_core.build"
-requires = ["scikit-build-core>=0.10"]
+requires = ["scikit-build-core>=0.12.2"]
 
 [dependency-groups]
 dev = [
