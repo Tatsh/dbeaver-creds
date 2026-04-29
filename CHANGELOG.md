@@ -24,6 +24,12 @@ and this project adheres to
 - Public C API function `get_dbeaver_credentials` (declared in `dbeaver-creds.h`) that accepts a
   path argument and returns the decrypted JSON.
 - Section 3 manpage `dbeaver-creds.h` documenting the C API.
+- Python package `dbeaver-creds` (importable as `dbeaver_creds`) published to PyPI, providing a
+  CPython extension that wraps the C library.
+  - Public Python API `dbeaver_creds.get_dbeaver_credentials` accepting an optional path
+    (`str`, `os.PathLike`, or `None`) and returning the decrypted JSON as a `str`.
+  - Console script `dbeaver-creds` installed via pip, accepting an optional `[PATH]` argument.
+  - Type stubs and a `py.typed` marker for static type checkers.
 
 ### Changed
 
