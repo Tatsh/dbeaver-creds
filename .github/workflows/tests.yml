@@ -124,14 +124,10 @@ jobs:
         name: 'Generate coverage information'
         run: >-
           lcov --capture --directory ${{ steps.fixed_workspace.outputs.out }}/build
-          --exclude 'D:/*' --output-file coverage.lcov
-        shell: 'msys2 {0}'
-      - if: "matrix.build-type == 'Debug'"
-        name: 'Filter coverage information'
-        run: >-
-          lcov --remove coverage.lcov '/usr/*' '*/tests/*' '*/test_*'
-          '${{ steps.fixed_workspace.outputs.out }}/tests/*' '*cmocka*'
-          --output-file coverage.lcov --ignore-errors unused
+          --exclude '/usr/*'
+          --exclude '${{ steps.fixed_workspace.outputs.out }}/tests/*'
+          --exclude '*/tests/*' --exclude '*cmocka*'
+          --output-file coverage.lcov
         shell: 'msys2 {0}'
       - if: "matrix.build-type == 'Debug'"
         name: 'Coveralls'
