@@ -92,12 +92,18 @@ static int write_file(const char *path, const void *data, size_t len) {
 
 static int unique_root(char *out, size_t cap) {
 #if defined(_WIN32)
+    static unsigned long counter = 0;
     char tmp[MAX_PATH];
     DWORD n = GetTempPathA(sizeof(tmp), tmp);
     if (n == 0 || n >= sizeof(tmp)) {
         return -1;
     }
-    snprintf(out, cap, "%sdbc_test_%lu", tmp, (unsigned long)GetCurrentProcessId());
+    snprintf(out,
+             cap,
+             "%sdbc_test_%lu_%lu",
+             tmp,
+             (unsigned long)GetCurrentProcessId(),
+             ++counter);
     return CreateDirectoryA(out, NULL) ? 0 : -1;
 #else
     const char *tmp = getenv("TMPDIR");
