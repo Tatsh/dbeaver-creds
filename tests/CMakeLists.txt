@@ -63,3 +63,16 @@ if(NOT APPLE)
   target_link_options(test_api_mock PRIVATE -Wl,--wrap=dbc_decrypt_aes_128_cbc)
   add_test(NAME api_mock COMMAND test_api_mock)
 endif()
+
+# test_backend_win32: exercises every BCrypt failure path in src/win32.c by
+# wrapping each BCrypt call. Windows-only; relies on GCC/Clang --wrap.
+if(WIN32)
+  add_executable(test_backend_win32 test_backend_win32.c ${CMAKE_SOURCE_DIR}/src/win32.c)
+  dbc_configure_test(test_backend_win32)
+  target_link_options(test_backend_win32 PRIVATE
+    -Wl,--wrap=BCryptOpenAlgorithmProvider
+    -Wl,--wrap=BCryptSetProperty
+    -Wl,--wrap=BCryptGenerateSymmetricKey
+    -Wl,--wrap=BCryptDecrypt)
+  add_test(NAME backend_win32 COMMAND test_backend_win32)
+endif()
