@@ -31,7 +31,7 @@ int dbc_decrypt_aes_128_cbc(const unsigned char *key,
                                      cipher_len,
                                      &out_size);
     if (status != kCCSuccess || out_size != cipher_len) {
-        return -1;  // LCOV_EXCL_LINE
+        return -1; // LCOV_EXCL_LINE
     }
     unsigned char pad = plain[cipher_len - 1];
     if (pad < 1 || pad > kCCBlockSizeAES128) {
@@ -39,7 +39,7 @@ int dbc_decrypt_aes_128_cbc(const unsigned char *key,
     }
     for (size_t i = 0; i < pad; ++i) {
         if (plain[cipher_len - 1 - i] != pad) {
-            return -1;  // LCOV_EXCL_LINE
+            return -1; // LCOV_EXCL_LINE
         }
     }
     *plain_len = cipher_len - pad;
