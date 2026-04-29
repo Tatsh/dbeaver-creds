@@ -5,9 +5,6 @@ asan
 autobrief
 behavior
 bsky
-ccaes
-cccbc
-ccmode
 cdecl
 cibw
 cmocka
@@ -15,7 +12,6 @@ commitizen
 conftest
 conv
 cooldown
-corecrypto
 coveragerc
 coverallsapp
 cpython
@@ -29,7 +25,6 @@ decryptor
 denable
 docstrings
 doxyfile
-egor
 elif
 encryptor
 endfunction
@@ -55,6 +50,7 @@ libsonnet
 maml
 mktemp
 msvc
+msystem
 mypy
 norecursedirs
 npmjs
@@ -62,6 +58,7 @@ ntstatus
 nullptr
 numpy
 oneline
+pacboy
 padder
 pathsep
 psscriptanalyzer
@@ -92,7 +89,6 @@ softprops
 stddef
 strequal
 tatsh
-tensin
 testpaths
 tostring
 ubsan

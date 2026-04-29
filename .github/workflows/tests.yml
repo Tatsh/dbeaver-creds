@@ -28,6 +28,7 @@ jobs:
     if: 'always()'
     needs:
       - 'native'
+      - 'native-windows'
       - 'pwsh-test'
     runs-on: 'ubuntu-latest'
     steps:
@@ -86,6 +87,70 @@ jobs:
         os:
           - 'macos-latest'
           - 'ubuntu-latest'
+  native-windows:
+    runs-on: 'windows-latest'
+    steps:
+      - id: 'fixed_workspace'
+        name: 'Fix path'
+        run: >-
+          echo out=$("${{ github.workspace }}" -Replace "\\","/") | Out-File
+          -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+      - uses: 'msys2/setup-msys2@v2'
+        with:
+          install: 'make'
+          msystem: 'MINGW64'
+          pacboy: >-
+            cmake:p
+            cmocka:p
+            lcov:p
+            ninja:p
+            openssl:p
+            toolchain:p
+          update: true
+      - uses: 'actions/checkout@v6.0.2'
+        with:
+          fetch-depth: 0
+      - name: 'Configure'
+        run: >-
+          cmake -G Ninja -B ${{ steps.fixed_workspace.outputs.out }}/build
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          -DBUILD_TESTS=ON -DENABLE_COVERAGE=ON
+        shell: 'msys2 {0}'
+      - name: 'Build'
+        run: 'cmake --build ${{ steps.fixed_workspace.outputs.out }}/build --verbose'
+        shell: 'msys2 {0}'
+      - name: 'Run tests'
+        run: >-
+          ctest --test-dir ${{ steps.fixed_workspace.outputs.out }}/build
+          --output-on-failure --verbose
+        shell: 'msys2 {0}'
+      - if: "matrix.build-type == 'Debug'"
+        name: 'Generate coverage information'
+        run: >-
+          lcov --capture --directory ${{ steps.fixed_workspace.outputs.out }}/build
+          --exclude 'D:/*' --output-file coverage.lcov
+          --ignore-errors inconsistent,format
+        shell: 'msys2 {0}'
+      - if: "matrix.build-type == 'Debug'"
+        name: 'Filter coverage information'
+        run: >-
+          lcov --remove coverage.lcov '/usr/*' '*/tests/*' '*cmocka*'
+          --output-file coverage.lcov
+          --ignore-errors unused,inconsistent
+        shell: 'msys2 {0}'
+      - if: "matrix.build-type == 'Debug'"
+        name: 'Coveralls'
+        uses: 'coverallsapp/github-action@v2'
+        with:
+          file: 'coverage.lcov'
+          flag-name: 'native-Windows'
+          parallel: true
+    strategy:
+      fail-fast: false
+      matrix:
+        build-type:
+          - 'Debug'
+          - 'Release'
   pwsh-test:
     runs-on: 'windows-latest'
     steps:
