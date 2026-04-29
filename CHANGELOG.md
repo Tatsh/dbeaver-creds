@@ -15,7 +15,7 @@ and this project adheres to
 - Added changelog
 - C library and `dbeaver-creds` CLI binary that decrypt DBeaver's `credentials-config.json` without
   requiring `openssl` or `dd`, with selectable cryptography backends:
-  - `native` backend using corecrypto on macOS and BCrypt on Windows.
+  - `native` backend using CommonCrypto on macOS and BCrypt on Windows.
   - `openssl` backend for cross-platform builds.
   - Backend selection via the CMake option `DBEAVER_CREDS_BACKEND=native|openssl`, with
     auto-detection by default.

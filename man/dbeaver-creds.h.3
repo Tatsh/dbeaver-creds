@@ -53,7 +53,7 @@ The implementation is selected at build time by the CMake variable
 .BR DBEAVER_CREDS_BACKEND :
 either
 .B native
-(corecrypto on macOS, BCrypt/CNG on Windows) or
+(CommonCrypto on macOS, BCrypt/CNG on Windows) or
 .BR openssl .
 The choice is invisible at the API surface; only the linkage requirements differ.
 .SH EXAMPLE

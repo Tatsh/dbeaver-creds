@@ -1,7 +1,6 @@
 #include "compat.h"
 
-#include <corecrypto/ccaes.h>
-#include <corecrypto/ccmode.h>
+#include <CommonCrypto/CommonCryptor.h>
 
 #include "backend.h"
 
@@ -11,28 +10,24 @@ int dbc_decrypt_aes_128_cbc(const unsigned char *key,
                             size_t cipher_len,
                             unsigned char *plain,
                             size_t *plain_len) {
-    if (cipher_len == 0 || cipher_len % 16 != 0) {
+    if (cipher_len == 0 || cipher_len % kCCBlockSizeAES128 != 0) {
         return -1;
     }
-    const struct ccmode_cbc *cbc = ccaes_cbc_decrypt_mode();
-    cccbc_ctx_decl(cbc->size, ctx);
-    cccbc_iv_decl(cbc->block_size, iv_ctx);
-    cccbc_init(cbc, ctx, 16, key);
-    cccbc_set_iv(cbc, iv_ctx, iv);
-    cccbc_update(cbc, ctx, iv_ctx, cipher_len / 16, cipher, plain);
-    cccbc_ctx_clear(cbc->size, ctx);
-    cccbc_iv_clear(cbc->block_size, iv_ctx);
-
-    /* corecrypto operates on whole blocks only, so PKCS#7 padding is removed manually. */
-    unsigned char pad = plain[cipher_len - 1];
-    if (pad < 1 || pad > 16) {
+    size_t out_size = 0;
+    CCCryptorStatus status = CCCrypt(kCCDecrypt,
+                                     kCCAlgorithmAES,
+                                     kCCOptionPKCS7Padding,
+                                     key,
+                                     kCCKeySizeAES128,
+                                     iv,
+                                     cipher,
+                                     cipher_len,
+                                     plain,
+                                     cipher_len,
+                                     &out_size);
+    if (status != kCCSuccess) {
         return -1;
     }
-    for (size_t i = 0; i < pad; ++i) {
-        if (plain[cipher_len - 1 - i] != pad) {
-            return -1;
-        }
-    }
-    *plain_len = cipher_len - pad;
+    *plain_len = out_size;
     return 0;
 }

@@ -3,8 +3,7 @@ include(CheckTypeSize)
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 project(dbeaver-creds VERSION 0.0.3 LANGUAGES C)
 
-if((CMAKE_C_COMPILER_ID STREQUAL "MSVC" AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 19.37.0.0)
-    OR CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
   set(CMAKE_C_STANDARD 23)
 else()
   set(CMAKE_C_STANDARD 11)
@@ -49,7 +48,7 @@ endfunction()
 
 set(DBEAVER_CREDS_BACKEND ""
     CACHE STRING
-    "Crypto backend: 'native' (corecrypto/BCrypt) or 'openssl'. Empty = auto-detect.")
+    "Crypto backend: 'native' (CommonCrypto/BCrypt) or 'openssl'. Empty = auto-detect.")
 set_property(CACHE DBEAVER_CREDS_BACKEND PROPERTY STRINGS "" "native" "openssl")
 
 if(DBEAVER_CREDS_BACKEND STREQUAL "")
