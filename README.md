@@ -45,10 +45,12 @@ Install-Module -Name DBeaverCreds
 ## Usage
 
 ```shell
-dbeaver-creds
+dbeaver-creds [PATH]
 ```
 
-If the credentials file cannot be found, the exit status will be > 0.
+If `PATH` is given, the file at that location is decrypted. Otherwise the
+platform-default credentials path is used. If the credentials file cannot be
+found, the exit status will be > 0.
 
 ### PowerShell
 
@@ -56,6 +58,8 @@ If the credentials file cannot be found, the exit status will be > 0.
 Show-DBeaver-Credential-Json
 # or the alias:
 dbeaver-creds
+# With an explicit path:
+Show-DBeaver-Credential-Json -Path 'C:\custom\credentials-config.json'
 ```
 
 ## Development

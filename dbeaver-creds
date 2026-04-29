@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # Decrypt and display your DBeaver credentials. The output is a JSON string.
+# Usage: dbeaver-creds [PATH]
 KEY=babb4a9f774ab853c96c2d653dfe544a
-prefix="$HOME/.local/share"
-if sw_vers > /dev/null 2>&1; then
-    prefix="$HOME/Library"
-elif [ -n "$APPDATA" ]; then
-    prefix="${APPDATA}"
+if [ -n "$1" ]; then
+    CONFIG_JSON="$1"
+else
+    prefix="$HOME/.local/share"
+    if sw_vers > /dev/null 2>&1; then
+        prefix="$HOME/Library"
+    elif [ -n "$APPDATA" ]; then
+        prefix="${APPDATA}"
+    fi
+    CONFIG_JSON="$prefix/DBeaverData/workspace6/General/.dbeaver/credentials-config.json"
 fi
-CONFIG_JSON="$prefix/DBeaverData/workspace6/General/.dbeaver/credentials-config.json"
 if ! [ -r "${CONFIG_JSON}" ]; then
     echo 'credentials-config.json file not found or could not be read.' >&2
     exit 1

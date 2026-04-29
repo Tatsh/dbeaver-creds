@@ -20,7 +20,13 @@ and this project adheres to
   - Backend selection via the CMake option `DBEAVER_CREDS_BACKEND=native|openssl`, with
     auto-detection by default.
 - Optional `[PATH]` argument to the `dbeaver-creds` command to decrypt a credentials file at a
-  specific location.
+  specific location. When omitted, the command falls back to platform-default discovery.
+  - Supported in the C `dbeaver-creds` binary.
+  - Supported in the Bash `dbeaver-creds` script.
+  - Supported in the Batch `dbeaver-creds.bat` script.
+  - Supported in the Python console script `dbeaver-creds`.
+- Optional `-Path` parameter to the PowerShell `Show-DBeaver-Credential-Json` function (alias
+  `dbeaver-creds`); falls back to platform-default discovery when omitted.
 - Public C API function `get_dbeaver_credentials` (declared in `dbeaver-creds.h`) that accepts a
   path argument and returns the decrypted JSON.
 - Section 3 manpage `dbeaver-creds.h` documenting the C API.
@@ -34,6 +40,8 @@ and this project adheres to
 ### Changed
 
 - Updated the `dbeaver-creds(1)` manpage to document the optional `[PATH]` argument.
+- Updated the readme usage section to document the optional path argument across the Bash, Batch,
+  and PowerShell script flavours.
 
 ### Fixed
 

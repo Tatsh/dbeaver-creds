@@ -40,16 +40,27 @@ function GetJsonPath {
   .SYNOPSIS
   Decrypt and display your DBeaver credentials. The output is a JSON string.
 
+  .PARAMETER Path
+  Optional path to credentials-config.json. Defaults to the platform-specific
+  location.
+
   .EXAMPLE
-    # Show the credentials.
+    # Show the credentials from the default location.
     Show-DBeaver-Credential-Json
 
     # Use the alias.
     dbeaver-creds
+
+    # Read from an explicit path.
+    Show-DBeaver-Credential-Json -Path 'C:\custom\credentials-config.json'
 #>
 function Show-DBeaver-Credential-Json {
+  Param ([string]$Path)
+  if (-not $Path) {
+    $Path = GetJsonPath -Linux $IsLinux -Mac $IsMacOs
+  }
   try {
-    $configJsonData = ReadAllBytes -Path (GetJsonPath -Linux $IsLinux -Mac $IsMacOs)
+    $configJsonData = ReadAllBytes -Path $Path
   } catch {
     Write-Error -Category ReadError -Message 'credentials-config.json not found or could not be read.'
     return
