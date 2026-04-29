@@ -140,6 +140,20 @@ jobs:
           files: |
             dist/*.tar.gz
             dist/*.whl
+  publish-gallery:
+    env:
+      NUGET_API_KEY: '${{ secrets.NUGET_API_KEY }}'
+    needs:
+      - 'check'
+    runs-on: 'windows-latest'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+      - name: 'Clean up'
+        run: 'Remove-Item -Path .\DBeaverCreds\*.Tests.ps1 -Force -ErrorAction SilentlyContinue'
+        shell: 'pwsh'
+      - name: 'Publish to PowerShell Gallery'
+        run: 'Publish-Module -Name .\DBeaverCreds -NuGetApiKey $env:NUGET_API_KEY'
+        shell: 'pwsh'
 name: 'Publish'
 'on':
   push:
