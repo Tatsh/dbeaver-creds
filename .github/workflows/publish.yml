@@ -1,0 +1,148 @@
+jobs:
+  build-sdist:
+    needs:
+      - 'check'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/setup-python@v6.2.0'
+        with:
+          python-version: '3.13'
+      - name: 'Install uv'
+        uses: 'astral-sh/setup-uv@v8.1.0'
+      - name: 'Build sdist'
+        run: 'uv build --sdist'
+      - uses: 'actions/upload-artifact@v4'
+        with:
+          name: 'sdist'
+          path: 'dist/*.tar.gz'
+  build-wheels:
+    needs:
+      - 'check'
+    runs-on: '${{ matrix.os }}'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'pypa/cibuildwheel@v3.2.0'
+        env:
+          CIBW_ARCHS: '${{ matrix.cibw_archs }}'
+          CIBW_BEFORE_ALL_LINUX: 'yum install -y openssl-devel || apk add openssl-dev'
+          CIBW_BUILD: 'cp310-* cp311-* cp312-* cp313-* cp314-* cp314t-*'
+          CIBW_ENABLE: 'cpython-freethreading'
+          CIBW_SKIP: '*-win32 pp*'
+      - uses: 'actions/upload-artifact@v4'
+        with:
+          name: 'wheels-${{ matrix.os }}-${{ matrix.cibw_archs }}'
+          path: './wheelhouse/*.whl'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cibw_archs: 'x86_64'
+            os: 'ubuntu-latest'
+          - cibw_archs: 'aarch64'
+            os: 'ubuntu-24.04-arm'
+          - cibw_archs: 'x86_64'
+            os: 'macos-13'
+          - cibw_archs: 'arm64'
+            os: 'macos-latest'
+          - cibw_archs: 'AMD64 ARM64'
+            os: 'windows-latest'
+  check:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+      - env:
+          COMMIT_SHA: '${{ github.sha }}'
+          GH_TOKEN: '${{ github.token }}'
+        id: 'check'
+        name: 'Wait for workflows'
+        run: |
+          set +e
+          sha="$COMMIT_SHA"
+          required_workflows=('Build' 'Tests')
+          optional_workflows=('PSScriptAnalyzer' 'Prettier' 'QA' 'Spelling' 'clang-format' 'markdownlint')
+          process_workflow() {
+            local workflow="$1" treat_missing="$2"
+            local run status conclusion
+            run=$(gh run list --workflow "$workflow" --commit "$sha" --json status,conclusion --jq '.[0]')
+            if [[ -z "$run" || "$run" == 'null' ]]; then
+              if [[ "$treat_missing" == 'pending' ]]; then
+                echo "Required workflow '$workflow' has not registered a run yet; waiting."
+                return 2
+              fi
+              echo "Optional workflow '$workflow' did not run for this commit; skipping."
+              return 0
+            fi
+            status=$(echo "$run" | jq -r '.status')
+            conclusion=$(echo "$run" | jq -r '.conclusion')
+            case "$conclusion" in
+              failure|cancelled|timed_out|startup_failure|action_required)
+                echo "::error::Workflow '$workflow' ${conclusion}."
+                return 1
+                ;;
+              success|skipped|neutral)
+                return 0
+                ;;
+              *)
+                if [[ "$status" == 'completed' ]]; then
+                  echo "::error::Workflow '$workflow' completed with unexpected conclusion '${conclusion}'."
+                  return 1
+                fi
+                echo "Workflow '$workflow' still pending (status=${status})."
+                return 2
+                ;;
+            esac
+          }
+          for i in $(seq 1 30); do
+            all_done=true
+            for workflow in "${required_workflows[@]}"; do
+              rc=0
+              process_workflow "$workflow" pending || rc=$?
+              [[ $rc -eq 1 ]] && exit 1
+              [[ $rc -eq 2 ]] && all_done=false
+            done
+            for workflow in "${optional_workflows[@]}"; do
+              rc=0
+              process_workflow "$workflow" skip || rc=$?
+              [[ $rc -eq 1 ]] && exit 1
+              [[ $rc -eq 2 ]] && all_done=false
+            done
+            if [[ "$all_done" == 'true' ]]; then
+              echo 'All required workflows succeeded.'
+              exit 0
+            fi
+            echo "Waiting 60s for workflows to complete (attempt ${i}/30)..."
+            sleep 60
+          done
+          echo '::error::Timed out waiting for workflows.'
+          exit 1
+  publish:
+    needs:
+      - 'build-sdist'
+      - 'build-wheels'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/download-artifact@v4'
+        with:
+          merge-multiple: true
+          path: 'dist'
+          pattern: 'wheels-*'
+      - uses: 'actions/download-artifact@v4'
+        with:
+          name: 'sdist'
+          path: 'dist'
+      - uses: 'pypa/gh-action-pypi-publish@release/v1'
+      - uses: 'softprops/action-gh-release@v3.0.0'
+        with:
+          draft: true
+          files: |
+            dist/*.tar.gz
+            dist/*.whl
+name: 'Publish'
+'on':
+  push:
+    tags:
+      - 'v*'
+permissions:
+  contents: 'write'
+  id-token: 'write'

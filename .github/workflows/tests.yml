@@ -1,10 +1,97 @@
 jobs:
-  test:
+  asan-test:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+        with:
+          fetch-depth: 0
+      - name: 'Install dependencies'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcmocka-dev libssl-dev
+      - name: 'Configure'
+        run: >-
+          cmake -B ${{ github.workspace }}/build
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          -DBUILD_TESTS=ON -DENABLE_ASAN=ON -DENABLE_UBSAN=ON
+      - name: 'Build'
+        run: 'cmake --build ${{ github.workspace }}/build --verbose'
+      - name: 'Run tests'
+        run: 'ctest --test-dir ${{ github.workspace }}/build --output-on-failure --verbose'
+    strategy:
+      fail-fast: false
+      matrix:
+        build-type:
+          - 'Debug'
+          - 'RelWithDebInfo'
+  coveralls-finish:
+    if: 'always()'
+    needs:
+      - 'native'
+      - 'pwsh-test'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Coveralls finished'
+        uses: 'coverallsapp/github-action@v2'
+        with:
+          parallel-finished: true
+  native:
+    runs-on: '${{ matrix.os }}'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+        with:
+          fetch-depth: 0
+      - if: "runner.os == 'Linux'"
+        name: 'Install dependencies (Linux)'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov libcmocka-dev libssl-dev
+      - if: "runner.os == 'macOS'"
+        name: 'Install dependencies (macOS)'
+        run: 'brew install cmocka lcov openssl@3'
+      - name: 'Configure'
+        run: >-
+          cmake -B ${{ github.workspace }}/build
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          -DBUILD_TESTS=ON -DENABLE_COVERAGE=ON
+      - name: 'Build'
+        run: 'cmake --build ${{ github.workspace }}/build --verbose'
+      - name: 'Run tests'
+        run: 'ctest --test-dir ${{ github.workspace }}/build --output-on-failure --verbose'
+      - if: "matrix.build-type == 'Debug'"
+        name: 'Generate coverage information'
+        run: >-
+          lcov --capture --directory ${{ github.workspace }}/build
+          --output-file ${{ github.workspace }}/coverage.lcov
+          --ignore-errors inconsistent,format
+      - if: "matrix.build-type == 'Debug'"
+        name: 'Filter coverage information'
+        run: >-
+          lcov --remove ${{ github.workspace }}/coverage.lcov '/usr/*' '*/tests/*' '*cmocka*'
+          --output-file ${{ github.workspace }}/coverage.lcov
+          --ignore-errors unused,inconsistent
+      - if: "matrix.build-type == 'Debug'"
+        name: 'Coveralls'
+        uses: 'coverallsapp/github-action@v2'
+        with:
+          file: '${{ github.workspace }}/coverage.lcov'
+          flag-name: 'native-${{ runner.os }}'
+          parallel: true
+    strategy:
+      fail-fast: false
+      matrix:
+        build-type:
+          - 'Debug'
+          - 'Release'
+        os:
+          - 'macos-latest'
+          - 'ubuntu-latest'
+  pwsh-test:
     runs-on: 'windows-latest'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-      - name: Run Pester Tests
+      - name: 'Checkout code'
+        uses: 'actions/checkout@v6.0.2'
+      - name: 'Run Pester Tests'
         run: |
           $config = New-PesterConfiguration
           $config.Run.Path = "."
@@ -12,8 +99,11 @@ jobs:
           $config.TestResult.Enabled = $true
           $config.CodeCoverage.Path = ".\DBeaverCreds\DBeaverCreds.psm1"
           Invoke-Pester -Configuration $config
-      - name: Report Coveralls
-        uses: coverallsapp/github-action@v2
+      - name: 'Report Coveralls'
+        uses: 'coverallsapp/github-action@v2'
+        with:
+          flag-name: 'pwsh'
+          parallel: true
 name: 'Tests'
 'on':
   pull_request:

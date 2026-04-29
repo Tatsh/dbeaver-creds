@@ -1,0 +1,65 @@
+jobs:
+  check:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+      - env:
+          COMMIT_SHA: '${{ github.sha }}'
+          GH_TOKEN: '${{ github.token }}'
+        id: 'check'
+        name: 'Wait for workflows'
+        run: |
+          sha="$COMMIT_SHA"
+          for i in $(seq 1 30); do
+            all_done=true
+            for workflow in Build Prettier Spelling clang-format markdownlint; do
+              run=$(gh run list --workflow "$workflow" --commit "$sha" --json status,conclusion --jq '.[0]')
+              if [[ -z "$run" || "$run" == 'null' ]]; then
+                echo "Workflow '$workflow' did not run for this commit; treating as optional."
+                continue
+              fi
+              status=$(echo "$run" | jq -r '.status')
+              conclusion=$(echo "$run" | jq -r '.conclusion')
+              case "$conclusion" in
+                failure|cancelled|timed_out|startup_failure|action_required)
+                  echo "::error::Workflow '$workflow' ${conclusion}."
+                  exit 1
+                  ;;
+                success|skipped|neutral)
+                  ;;
+                *)
+                  if [[ "$status" == 'completed' ]]; then
+                    echo "::error::Workflow '$workflow' completed with unexpected conclusion '${conclusion}'."
+                    exit 1
+                  fi
+                  echo "Workflow '$workflow' still pending (status=${status})."
+                  all_done=false
+                  ;;
+              esac
+            done
+            if [[ "$all_done" == 'true' ]]; then
+              echo 'All required workflows succeeded.'
+              exit 0
+            fi
+            echo "Waiting 60s for workflows to complete (attempt ${i}/30)..."
+            sleep 60
+          done
+          echo '::error::Timed out waiting for workflows.'
+          exit 1
+  update-winget:
+    needs:
+      - 'check'
+    runs-on: 'windows-latest'
+    steps:
+      - uses: 'vedantmgoyal9/winget-releaser@main'
+        with:
+          identifier: 'Tatsh.dbeaver-creds'
+          max-versions-to-keep: 3
+          token: '${{ secrets.WINGET_TOKEN }}'
+name: 'Publish to WinGet'
+'on':
+  release:
+    types:
+      - 'released'
+permissions:
+  contents: 'read'
