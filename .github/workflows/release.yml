@@ -31,7 +31,7 @@ jobs:
           set +e
           tag="$HEAD_BRANCH"
           sha="$HEAD_SHA"
-          required_workflows=('Build' 'Publish' 'Tests')
+          required_workflows=('AppImage' 'Build' 'Flatpak' 'Publish' 'Snap' 'Tests')
           optional_workflows=('PSScriptAnalyzer' 'Prettier' 'QA' 'Spelling' 'clang-format' 'markdownlint')
           all_success=true
           process_workflow() {
@@ -142,11 +142,14 @@ name: 'Release'
     types:
       - 'completed'
     workflows:
+      - 'AppImage'
       - 'Build'
+      - 'Flatpak'
       - 'PSScriptAnalyzer'
       - 'Prettier'
       - 'Publish'
       - 'QA'
+      - 'Snap'
       - 'Spelling'
       - 'Tests'
       - 'clang-format'

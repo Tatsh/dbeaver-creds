@@ -1,0 +1,132 @@
+jobs:
+  build:
+    runs-on: '${{ matrix.system.image }}'
+    steps:
+      - uses: 'actions/checkout@v6.0.2'
+      - name: 'Install build dependencies'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build libssl-dev wget file
+      - id: 'meta'
+        name: 'Read project version'
+        run: |
+          version=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "filename=dbeaver-creds-${version}-${{ matrix.system.arch }}.AppImage" >> "$GITHUB_OUTPUT"
+      - name: 'Build native binary into AppDir'
+        run: |
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_CLI=ON \
+            -DBUILD_PYTHON_EXTENSION=OFF \
+            -DBUILD_TESTS=OFF \
+            -DCMAKE_INSTALL_PREFIX=/usr
+          cmake --build build
+          DESTDIR="${{ github.workspace }}/AppDir" cmake --install build
+      - name: 'Stage AppImage metadata'
+        run: |
+          version='${{ steps.meta.outputs.version }}'
+          arch='${{ matrix.system.arch }}'
+          ws='${{ github.workspace }}'
+          cat > "${ws}/AppDir/dbeaver-creds.desktop" <<EOF
+          [Desktop Entry]
+          Type=Application
+          Name=dbeaver-creds
+          Exec=dbeaver-creds
+          Icon=dbeaver-creds
+          Categories=Utility;
+          Terminal=true
+          X-AppImage-Version=${version}
+          EOF
+          wget -O "${ws}/AppDir/dbeaver-creds.svg" \
+            'https://raw.githubusercontent.com/KDE/breeze-icons/refs/heads/master/icons/preferences/32/preferences-other.svg'
+          mkdir -p "${ws}/AppDir/usr/share/metainfo"
+          cat > "${ws}/AppDir/usr/share/metainfo/sh.tat.dbeaver-creds.appdata.xml" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <component type="desktop-application">
+            <id>sh.tat.dbeaver-creds</id>
+            <metadata_license>FSFAP</metadata_license>
+            <project_license>MIT</project_license>
+            <name>dbeaver-creds</name>
+            <summary>Decrypt DBeaver credentials-config.json</summary>
+            <description>
+              <p>Decrypt DBeaver's credentials-config.json file and display the JSON.</p>
+            </description>
+            <launchable type="desktop-id">dbeaver-creds.desktop</launchable>
+            <url type="homepage">${{ github.server_url }}/${{ github.repository }}</url>
+          </component>
+          EOF
+      - name: 'Build AppImage'
+        run: |
+          arch='${{ matrix.system.arch }}'
+          wget -O appimagetool \
+            "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-${arch}.AppImage"
+          chmod +x appimagetool
+          # Avoid FUSE dependency on the runner by extracting and using AppRun.
+          ./appimagetool --appimage-extract
+          mkdir -p dist
+          ARCH="${arch}" ./squashfs-root/AppRun \
+            "${{ github.workspace }}/AppDir" \
+            "dist/${{ steps.meta.outputs.filename }}"
+      - name: 'Test AppImage'
+        run: |
+          rm -fr squashfs-root
+          ./dist/${{ steps.meta.outputs.filename }} --appimage-extract >/dev/null
+          test -x ./squashfs-root/usr/bin/dbeaver-creds
+          file ./squashfs-root/usr/bin/dbeaver-creds | grep -q ELF
+      - name: 'Upload Artifacts'
+        uses: 'actions/upload-artifact@v7.0.1'
+        with:
+          if-no-files-found: 'error'
+          name: 'dbeaver-creds-appimage-${{ matrix.system.arch }}'
+          path: 'dist/*.AppImage'
+      - name: 'Generate SBOM'
+        uses: 'anchore/sbom-action@v0.24.0'
+        env:
+          SYFT_SOURCE_NAME: 'dbeaver-creds'
+          SYFT_SOURCE_VERSION: '${{ steps.meta.outputs.version }}'
+        with:
+          path: 'dist/'
+          output-file: 'sbom.spdx.json'
+          upload-artifact: false
+      - name: 'Attest'
+        uses: 'actions/attest@v4.1.0'
+        with:
+          subject-path: 'dist/*.AppImage'
+      - name: 'Attest SBOM'
+        uses: 'actions/attest@v4.1.0'
+        with:
+          sbom-path: 'sbom.spdx.json'
+          subject-path: 'dist/*.AppImage'
+      - if: "github.ref_type == 'tag'"
+        name: 'Upload package'
+        uses: 'softprops/action-gh-release@v3.0.0'
+        with:
+          draft: true
+          fail_on_unmatched_files: true
+          files: 'dist/*.AppImage'
+    strategy:
+      matrix:
+        system:
+          - arch: 'x86_64'
+            image: 'ubuntu-latest'
+          - arch: 'aarch64'
+            image: 'ubuntu-24.04-arm'
+name: 'AppImage'
+'on':
+  push:
+    branches:
+      - 'master'
+    paths:
+      - '**/*.c'
+      - '**/*.h'
+      - '**/CMakeLists.txt'
+      - '.github/workflows/appimage.yml'
+      - 'pyproject.toml'
+    tags:
+      - 'v*'
+  workflow_dispatch: null
+permissions:
+  attestations: 'write'
+  contents: 'write'
+  id-token: 'write'

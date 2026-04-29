@@ -1,0 +1,38 @@
+apps:
+  dbeaver-creds:
+    command: 'usr/bin/dbeaver-creds'
+    plugs:
+      - 'home'
+base: 'core24'
+confinement: 'strict'
+contact: 'https://github.com/Tatsh/dbeaver-creds/issues'
+description: "Decrypt DBeaver's credentials-config.json file and display the JSON."
+donation: 'https://buymeacoffee.com/Tatsh'
+grade: 'stable'
+issues: 'https://github.com/Tatsh/dbeaver-creds/issues'
+license: 'MIT'
+name: 'dbeaver-creds'
+parts:
+  dbeaver-creds:
+    build-packages:
+      - 'libssl-dev'
+    cmake-parameters:
+      - '-DCMAKE_INSTALL_PREFIX=/usr'
+      - '-DCMAKE_BUILD_TYPE=Release'
+      - '-DBUILD_CLI=ON'
+      - '-DBUILD_PYTHON_EXTENSION=OFF'
+      - '-DBUILD_TESTS=OFF'
+    plugin: 'cmake'
+    source: '.'
+    stage-packages:
+      - 'libssl3t64'
+platforms:
+  amd64:
+    build-on: 'amd64'
+  arm64:
+    build-on: 'arm64'
+source-code: 'https://github.com/Tatsh/dbeaver-creds'
+summary: "Decrypt DBeaver's credentials-config.json file."
+title: 'dbeaver-creds'
+version: 'git'
+website: 'https://tatsh.github.io/dbeaver-creds/'

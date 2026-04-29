@@ -1,0 +1,18 @@
+app-id: 'sh.tat.dbeaver-creds'
+command: 'dbeaver-creds'
+finish-args:
+  - '--filesystem=home'
+modules:
+  - buildsystem: 'cmake-ninja'
+    config-opts:
+      - '-DCMAKE_BUILD_TYPE=Release'
+      - '-DBUILD_CLI=ON'
+      - '-DBUILD_PYTHON_EXTENSION=OFF'
+      - '-DBUILD_TESTS=OFF'
+    name: 'dbeaver-creds'
+    sources:
+      - path: '.'
+        type: 'dir'
+runtime: 'org.freedesktop.Platform'
+runtime-version: '24.08'
+sdk: 'org.freedesktop.Sdk'

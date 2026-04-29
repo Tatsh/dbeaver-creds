@@ -1,6 +1,8 @@
 analyzer
+anchore
 Ångström
 appimage
+appimagetool
 archs
 asan
 asyncio
@@ -37,6 +39,7 @@ dbuild
 dcmake
 decryptor
 denable
+destdir
 docstrings
 doctree
 doctrees
@@ -54,6 +57,7 @@ fileflagsmask
 fileos
 filesubtype
 fileversion
+flathub
 foxundermoon
 fprintf
 freethreading
@@ -78,6 +82,7 @@ jsonnet
 jsonschema
 kwargs
 kwlist
+launchable
 lextudio
 libcmocka
 libdbeaver
@@ -87,6 +92,7 @@ linters
 lpwstr
 maml
 manpages
+metainfo
 mktemp
 modindex
 monkeypatch
@@ -136,6 +142,7 @@ shellcheck
 shellformat
 shfmt
 skbuild
+snapcore
 snapcraft
 soabi
 softprops
@@ -144,6 +151,7 @@ sphinxcontrib
 stddef
 stdlib
 strequal
+syft
 tatsh
 tolower
 tomlkit

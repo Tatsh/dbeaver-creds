@@ -41,7 +41,7 @@ jobs:
           if-no-files-found: 'error'
           name: 'dbeaver-creds-${{ matrix.os }}-${{ matrix.build-type }}'
           path: 'stage/*'
-      - if: "matrix.build-type == 'Release' && github.ref_type == 'tag'"
+      - if: "matrix.build-type == 'Release' && github.ref_type == 'tag' && runner.os != 'Linux'"
         name: 'Generate release packages via CPack'
         shell: 'bash'
         run: |
@@ -50,7 +50,7 @@ jobs:
           (cd '${{ github.workspace }}/build' && \
             cpack -C '${{ matrix.build-type }}' \
                   -B '${{ github.workspace }}/release-stage')
-      - if: "matrix.build-type == 'Release' && github.ref_type == 'tag'"
+      - if: "matrix.build-type == 'Release' && github.ref_type == 'tag' && runner.os != 'Linux'"
         name: 'Attach Release artifacts to draft GitHub release'
         uses: 'softprops/action-gh-release@v3.0.0'
         with:
