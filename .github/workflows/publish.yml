@@ -12,7 +12,7 @@ jobs:
         uses: 'astral-sh/setup-uv@v8.1.0'
       - name: 'Build sdist'
         run: 'uv build --sdist'
-      - uses: 'actions/upload-artifact@v4'
+      - uses: 'actions/upload-artifact@v7'
         with:
           name: 'sdist'
           path: 'dist/*.tar.gz'
@@ -22,14 +22,14 @@ jobs:
     runs-on: '${{ matrix.os }}'
     steps:
       - uses: 'actions/checkout@v6.0.2'
-      - uses: 'pypa/cibuildwheel@v3.2.0'
+      - uses: 'pypa/cibuildwheel@v3.4.1'
         env:
           CIBW_ARCHS: '${{ matrix.cibw_archs }}'
           CIBW_BEFORE_ALL_LINUX: 'yum install -y openssl-devel || apk add openssl-dev'
           CIBW_BUILD: 'cp310-* cp311-* cp312-* cp313-* cp314-* cp314t-*'
           CIBW_ENABLE: 'cpython-freethreading'
           CIBW_SKIP: '*-win32 pp*'
-      - uses: 'actions/upload-artifact@v4'
+      - uses: 'actions/upload-artifact@v7'
         with:
           name: 'wheels-${{ matrix.os }}-${{ matrix.cibw_archs }}'
           path: './wheelhouse/*.whl'
@@ -124,12 +124,12 @@ jobs:
       - 'build-wheels'
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/download-artifact@v4'
+      - uses: 'actions/download-artifact@v8'
         with:
           merge-multiple: true
           path: 'dist'
           pattern: 'wheels-*'
-      - uses: 'actions/download-artifact@v4'
+      - uses: 'actions/download-artifact@v8'
         with:
           name: 'sdist'
           path: 'dist'
