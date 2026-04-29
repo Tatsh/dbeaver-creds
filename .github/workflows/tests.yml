@@ -63,15 +63,10 @@ jobs:
         name: 'Generate coverage information'
         run: >-
           lcov --capture --directory ${{ github.workspace }}/build
+          --exclude '/usr/*' --exclude '${{ github.workspace }}/tests/*'
+          --exclude '*/tests/*' --exclude '*cmocka*'
           --output-file ${{ github.workspace }}/coverage.lcov
           --ignore-errors inconsistent,format
-      - if: "matrix.build-type == 'Debug'"
-        name: 'Filter coverage information'
-        run: >-
-          lcov --remove ${{ github.workspace }}/coverage.lcov
-          '/usr/*' '*/tests/*' '*/test_*' '${{ github.workspace }}/tests/*' '*cmocka*'
-          --output-file ${{ github.workspace }}/coverage.lcov
-          --ignore-errors unused,inconsistent
       - if: "matrix.build-type == 'Debug'"
         name: 'Coveralls'
         uses: 'coverallsapp/github-action@v2'
@@ -134,7 +129,8 @@ jobs:
       - if: "matrix.build-type == 'Debug'"
         name: 'Filter coverage information'
         run: >-
-          lcov --remove coverage.lcov '/usr/*' '*/tests/*' '*cmocka*'
+          lcov --remove coverage.lcov '/usr/*' '*/tests/*' '*/test_*'
+          '${{ steps.fixed_workspace.outputs.out }}/tests/*' '*cmocka*'
           --output-file coverage.lcov --ignore-errors unused
         shell: 'msys2 {0}'
       - if: "matrix.build-type == 'Debug'"
