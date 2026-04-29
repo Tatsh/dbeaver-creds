@@ -32,6 +32,26 @@
       :target: https://coveralls.io/github/Tatsh/dbeaver-creds?branch=master
       :alt: Coverage Status
 
+   .. image:: https://img.shields.io/badge/C-00599C?logo=c
+      :target: https://en.wikipedia.org/wiki/C_(programming_language)
+      :alt: C
+
+   .. image:: https://img.shields.io/badge/CMake-6E6E6E?logo=cmake
+      :target: https://cmake.org/
+      :alt: CMake
+
+   .. image:: https://img.shields.io/powershellgallery/v/DBeaverCreds
+      :target: https://www.powershellgallery.com/packages/DBeaverCreds
+      :alt: PowerShell Gallery Version (including pre-releases)
+
+   .. image:: https://img.shields.io/powershellgallery/p/DBeaverCreds?label=powershell+platforms+supported
+      :target: https://www.powershellgallery.com/packages/DBeaverCreds
+      :alt: PowerShell Gallery Platform Support
+
+   .. image:: https://img.shields.io/powershellgallery/dt/DBeaverCreds
+      :target: https://www.powershellgallery.com/packages/DBeaverCreds
+      :alt: PowerShell Gallery Downloads
+
    .. image:: https://img.shields.io/badge/Dependabot-enabled-blue?logo=dependabot
       :target: https://github.com/dependabot
       :alt: Dependabot

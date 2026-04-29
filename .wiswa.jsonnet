@@ -9,6 +9,36 @@ local utils = import 'utils.libsonnet';
   version: '0.0.3',
   want_codeql: false,
   want_tests: false,
+  custom_project_badges: [
+    {
+      anchor: '[![Tests](https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml/badge.svg)]',
+      href: 'https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml',
+    },
+    {
+      anchor: '[![Coverage Status](https://coveralls.io/repos/github/Tatsh/dbeaver-creds/badge.svg?branch=master)]',
+      href: 'https://coveralls.io/github/Tatsh/dbeaver-creds?branch=master',
+    },
+    {
+      anchor: '[![C](https://img.shields.io/badge/C-00599C?logo=c)]',
+      href: '<https://en.wikipedia.org/wiki/C_(programming_language)>',
+    },
+    {
+      anchor: '[![CMake](https://img.shields.io/badge/CMake-6E6E6E?logo=cmake)]',
+      href: 'https://cmake.org/',
+    },
+    {
+      anchor: '[![PowerShell Gallery Version (including pre-releases)](https://img.shields.io/powershellgallery/v/DBeaverCreds)]',
+      href: 'https://www.powershellgallery.com/packages/DBeaverCreds',
+    },
+    {
+      anchor: '[![PowerShell Gallery Platform Support](https://img.shields.io/powershellgallery/p/DBeaverCreds?label=powershell+platforms+supported)]',
+      href: 'https://www.powershellgallery.com/packages/DBeaverCreds',
+    },
+    {
+      anchor: '[![PowerShell Gallery Downloads](https://img.shields.io/powershellgallery/dt/DBeaverCreds)]',
+      href: 'https://www.powershellgallery.com/packages/DBeaverCreds',
+    },
+  ],
   shared_ignore+: [
     '*.so',
     '/compile_commands.json',
