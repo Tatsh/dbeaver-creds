@@ -60,13 +60,16 @@ jobs:
       - name: 'Run tests'
         run: 'ctest --test-dir ${{ github.workspace }}/build --output-on-failure --verbose'
       - if: "matrix.build-type == 'Debug'"
+        name: 'Drop test-source coverage data'
+        run: |
+          find ${{ github.workspace }}/build -name 'test_*.c.gcda' -delete
+          find ${{ github.workspace }}/build -name 'wrappers.c.gcda' -delete
+      - if: "matrix.build-type == 'Debug'"
         name: 'Generate coverage information'
         run: >-
           lcov --capture --directory ${{ github.workspace }}/build
-          --exclude '/usr/*' --exclude '${{ github.workspace }}/tests/*'
-          --exclude '*/tests/*' --exclude '*cmocka*'
           --output-file ${{ github.workspace }}/coverage.lcov
-          --ignore-errors inconsistent,format,unsupported,unused
+          --ignore-errors inconsistent,format,unsupported
       - if: "matrix.build-type == 'Debug'"
         name: 'Coveralls'
         uses: 'coverallsapp/github-action@v2'
@@ -121,12 +124,15 @@ jobs:
           --output-on-failure --verbose
         shell: 'msys2 {0}'
       - if: "matrix.build-type == 'Debug'"
+        name: 'Drop test-source coverage data'
+        run: |
+          find ${{ steps.fixed_workspace.outputs.out }}/build -name 'test_*.c.gcda' -delete
+          find ${{ steps.fixed_workspace.outputs.out }}/build -name 'wrappers.c.gcda' -delete
+        shell: 'msys2 {0}'
+      - if: "matrix.build-type == 'Debug'"
         name: 'Generate coverage information'
         run: >-
           lcov --capture --directory ${{ steps.fixed_workspace.outputs.out }}/build
-          --exclude '/usr/*'
-          --exclude '${{ steps.fixed_workspace.outputs.out }}/tests/*'
-          --exclude '*/tests/*' --exclude '*cmocka*'
           --output-file coverage.lcov
         shell: 'msys2 {0}'
       - if: "matrix.build-type == 'Debug'"

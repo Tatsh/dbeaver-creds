@@ -34,6 +34,7 @@ esbenp
 foxundermoon
 freethreading
 fsanitize
+gcda
 gcov
 gmock
 graphviz
