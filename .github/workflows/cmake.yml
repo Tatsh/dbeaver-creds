@@ -36,7 +36,7 @@ jobs:
           bin=$(find "${{ github.workspace }}/build/src" -maxdepth 2 -name 'dbeaver-creds' -o -name 'dbeaver-creds.exe' | head -1)
           if [ -n "$bin" ]; then cp "$bin" stage/; fi
       - name: 'Upload workflow artifacts'
-        uses: 'actions/upload-artifact@v4'
+        uses: 'actions/upload-artifact@v7'
         with:
           if-no-files-found: 'error'
           name: 'dbeaver-creds-${{ matrix.os }}-${{ matrix.build-type }}'
