@@ -1,8 +1,21 @@
 jobs:
   check:
+    outputs:
+      has_winget_token: '${{ steps.check_secret.outputs.has_winget_token }}'
     runs-on: 'ubuntu-latest'
     steps:
       - uses: 'actions/checkout@v6.0.2'
+      - env:
+          WINGET_TOKEN: '${{ secrets.WINGET_TOKEN }}'
+        id: 'check_secret'
+        name: 'Check WINGET_TOKEN is set'
+        run: |
+          if [[ -n "$WINGET_TOKEN" ]]; then
+            echo 'has_winget_token=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'has_winget_token=false' >> "$GITHUB_OUTPUT"
+            echo '::warning::WINGET_TOKEN secret is empty; the update-winget job will be skipped.'
+          fi
       - env:
           COMMIT_SHA: '${{ github.sha }}'
           GH_TOKEN: '${{ github.token }}'
@@ -47,6 +60,7 @@ jobs:
           echo '::error::Timed out waiting for workflows.'
           exit 1
   update-winget:
+    if: "needs.check.outputs.has_winget_token == 'true'"
     needs:
       - 'check'
     runs-on: 'windows-latest'
