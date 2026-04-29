@@ -57,6 +57,7 @@ jobs:
         os:
           - 'macos-latest'
           - 'ubuntu-latest'
+          - 'windows-11-arm'
           - 'windows-latest'
 name: 'Build'
 'on':
