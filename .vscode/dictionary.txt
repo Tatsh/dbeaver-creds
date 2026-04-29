@@ -127,6 +127,7 @@ softprops
 soupsieve
 sphinxcontrib
 stddef
+stdlib
 strequal
 tatsh
 tomlkit

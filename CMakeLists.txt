@@ -93,7 +93,7 @@ endif()
 if(NOT SKBUILD)
   install(FILES include/dbeaver-creds.h DESTINATION include)
   install(FILES man/dbeaver-creds.1 DESTINATION share/man/man1)
-  install(FILES man/dbeaver-creds.h.3 DESTINATION share/man/man3)
+  install(FILES man/dbeaver-creds.h.3 DESTINATION share/man/man3 OPTIONAL)
 endif()
 
 if(BUILD_DOCS)

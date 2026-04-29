@@ -24,6 +24,14 @@
       :target: https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml
       :alt: QA
 
+   .. image:: https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml/badge.svg
+      :target: https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml
+      :alt: Tests
+
+   .. image:: https://coveralls.io/repos/github/Tatsh/dbeaver-creds/badge.svg?branch=master
+      :target: https://coveralls.io/github/Tatsh/dbeaver-creds?branch=master
+      :alt: Coverage Status
+
    .. image:: https://img.shields.io/badge/Dependabot-enabled-blue?logo=dependabot
       :target: https://github.com/dependabot
       :alt: Dependabot

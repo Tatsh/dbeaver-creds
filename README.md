@@ -10,6 +10,8 @@
 [![License](https://img.shields.io/github/license/Tatsh/dbeaver-creds)](https://github.com/Tatsh/dbeaver-creds/blob/master/LICENSE.txt)
 [![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/dbeaver-creds/v0.0.3/master)](https://github.com/Tatsh/dbeaver-creds/compare/v0.0.3...master)
 [![QA](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml)
+[![Tests](https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml)
+[![Coverage Status](https://coveralls.io/repos/github/Tatsh/dbeaver-creds/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/dbeaver-creds?branch=master)
 [![Dependabot](https://img.shields.io/badge/Dependabot-enabled-blue?logo=dependabot)](https://github.com/dependabot)
 [![Documentation Status](https://readthedocs.org/projects/dbeaver-creds/badge/?version=latest)](https://dbeaver-creds.readthedocs.org/?badge=latest)
 [![mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
@@ -30,16 +32,47 @@
 
 Decrypt DBeaver's `credentials-config.json` file and display the output (a JSON string).
 
-You can use this in one of three ways depending on your platform and shell:
+This project ships in six flavours so you can use it in whichever language or
+shell suits you:
 
-- A Bash script that works on Linux, macOS and Windows. It requires `openssl` and `dd` to be in `PATH`.
-- A [PowerShell module](https://www.powershellgallery.com/packages/DBeaverCreds) that exposes function
-  `Show-DBeaver-Credential-Json` (alias `dbeaver-creds`).
-  This does _not_ require `openssl` or `dd` to function.
-- Windows only: A [Batch script](https://en.wikipedia.org/wiki/Batch_file) script equivalent to the
-  Bash script and has the same requirements.
+- **Python module** (`pip install dbeaver-creds`) - importable as `dbeaver_creds`
+  and exposes a `dbeaver-creds` console script. C-extension under the hood, no
+  external dependencies on your machine.
+- **Native CLI binary** built from this source tree via CMake. Single static
+  binary, no runtime dependencies beyond the chosen crypto backend (CommonCrypto
+  on macOS, BCrypt on Windows, OpenSSL on Linux).
+- **C library** (`#include <dbeaver-creds.h>`) - link
+  `dbeaver_creds_core.a` and call `get_dbeaver_credentials(path)`.
+- **Bash script** that works on Linux, macOS, and Windows. Requires `openssl`
+  and `dd` to be in `PATH`.
+- **PowerShell module**
+  ([DBeaverCreds](https://www.powershellgallery.com/packages/DBeaverCreds))
+  exposing `Show-DBeaver-Credential-Json` (alias `dbeaver-creds`). Pure
+  .NET; no external dependencies.
+- **Batch script** (Windows only) equivalent to the Bash script with the
+  same `openssl` + `dd` requirements.
 
 ## Installation
+
+### Python
+
+```shell
+pip install dbeaver-creds
+```
+
+### Native CLI / C library
+
+```shell
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+sudo cmake --install build
+```
+
+`DBEAVER_CREDS_BACKEND=native|openssl` (passed via `-D`) overrides the auto-detected backend
+(`native` = CommonCrypto on macOS / BCrypt on Windows; `openssl` =
+cross-platform).
+
+### Shell scripts
 
 Place `dbeaver-creds` (or `dbeaver-creds.bat`) in `PATH`.
 
@@ -51,19 +84,55 @@ Install-Module -Name DBeaverCreds
 
 ## Usage
 
+All entry points accept an optional path argument; if absent, the
+platform-default credentials path is used. If the credentials file cannot be
+read, the exit status is non-zero.
+
+### Native CLI / Bash / Batch
+
 ```shell
 dbeaver-creds [PATH]
 ```
 
-If `PATH` is given, the file at that location is decrypted. Otherwise the
-platform-default credentials path is used. If the credentials file cannot be
-found, the exit status will be > 0.
+### Python
+
+```python
+from dbeaver_creds import get_dbeaver_credentials
+
+print(get_dbeaver_credentials())                  # default path
+print(get_dbeaver_credentials('/some/where.json'))  # explicit
+```
+
+Or use the console script installed by `pip`:
+
+```shell
+dbeaver-creds [PATH]
+python -m dbeaver_creds [PATH]
+```
+
+### C library
+
+```c
+#include <dbeaver-creds.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+  char *json = get_dbeaver_credentials(NULL);  // or a literal path
+  if (!json) {
+    return 1;
+  }
+  puts(json);
+  free(json);
+  return 0;
+}
+```
 
 ### PowerShell
 
-```shell
+```powershell
 Show-DBeaver-Credential-Json
-# or the alias:
+# Or the alias:
 dbeaver-creds
 # With an explicit path:
 Show-DBeaver-Credential-Json -Path 'C:\custom\credentials-config.json'

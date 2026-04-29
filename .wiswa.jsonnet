@@ -78,6 +78,7 @@ local utils = import 'utils.libsonnet';
             '/dbeaver_creds/CMakeLists.txt',
             '/dbeaver_creds/py.typed',
             '/include/**/*.h',
+            '/man/dbeaver-creds.1',
             '/pyproject.toml',
             '/src/**/*.c',
             '/src/**/*.h',
