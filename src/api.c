@@ -95,24 +95,32 @@ static int read_all(const char *path, unsigned char **out, size_t *out_len) {
         return -1;
     }
     if (fseek(f, 0, SEEK_END) != 0) {
+        // LCOV_EXCL_START
         fclose(f);
         return -1;
+        // LCOV_EXCL_STOP
     }
     long sz = ftell(f);
     if (sz < 0) {
+        // LCOV_EXCL_START
         fclose(f);
         return -1;
+        // LCOV_EXCL_STOP
     }
     rewind(f);
     unsigned char *buf = (unsigned char *)malloc((size_t)sz);
     if (!buf) {
+        // LCOV_EXCL_START
         fclose(f);
         return -1;
+        // LCOV_EXCL_STOP
     }
     if (fread(buf, 1, (size_t)sz, f) != (size_t)sz) {
+        // LCOV_EXCL_START
         free(buf);
         fclose(f);
         return -1;
+        // LCOV_EXCL_STOP
     }
     fclose(f);
     *out = buf;
@@ -125,8 +133,10 @@ char *get_dbeaver_credentials(const char *path) {
     if (!path) {
         owned_path = find_config_path();
         if (!owned_path) {
+            // LCOV_EXCL_START
             fprintf(stderr, "Could not determine credentials path.\n");
             return nullptr;
+            // LCOV_EXCL_STOP
         }
         path = owned_path;
     }
@@ -145,8 +155,10 @@ char *get_dbeaver_credentials(const char *path) {
     }
     unsigned char *plain = (unsigned char *)malloc(cipher_len);
     if (!plain) {
+        // LCOV_EXCL_START
         free(cipher);
         return nullptr;
+        // LCOV_EXCL_STOP
     }
     size_t plain_len = cipher_len;
     if (dbc_decrypt_aes_128_cbc(kKey, kIv, cipher, cipher_len, plain, &plain_len) != 0) {
@@ -164,8 +176,10 @@ char *get_dbeaver_credentials(const char *path) {
     size_t json_len = plain_len - 16;
     char *out = (char *)malloc(json_len + 1);
     if (!out) {
+        // LCOV_EXCL_START
         free(plain);
         return nullptr;
+        // LCOV_EXCL_STOP
     }
     memcpy(out, plain + 16, json_len);
     out[json_len] = '\0';

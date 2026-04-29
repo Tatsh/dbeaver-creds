@@ -76,3 +76,24 @@ if(WIN32)
     -Wl,--wrap=BCryptDecrypt)
   add_test(NAME backend_win32 COMMAND test_backend_win32)
 endif()
+
+# test_backend_openssl: exercises every EVP failure path in src/openssl.c by
+# wrapping the EVP_* calls. Skipped on Apple (ld64 lacks --wrap) and when
+# OpenSSL development files aren't available.
+if(NOT APPLE)
+  find_package(OpenSSL QUIET)
+  if(OpenSSL_FOUND)
+    add_executable(test_backend_openssl
+      test_backend_openssl.c
+      ${CMAKE_SOURCE_DIR}/src/openssl.c)
+    dbc_configure_test(test_backend_openssl)
+    target_link_libraries(test_backend_openssl PRIVATE OpenSSL::Crypto)
+    target_link_options(test_backend_openssl PRIVATE
+      -Wl,--wrap=EVP_CIPHER_CTX_new
+      -Wl,--wrap=EVP_CIPHER_CTX_free
+      -Wl,--wrap=EVP_DecryptInit_ex
+      -Wl,--wrap=EVP_DecryptUpdate
+      -Wl,--wrap=EVP_DecryptFinal_ex)
+    add_test(NAME backend_openssl COMMAND test_backend_openssl)
+  endif()
+endif()

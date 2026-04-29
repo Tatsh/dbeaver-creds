@@ -68,7 +68,8 @@ jobs:
       - if: "matrix.build-type == 'Debug'"
         name: 'Filter coverage information'
         run: >-
-          lcov --remove ${{ github.workspace }}/coverage.lcov '/usr/*' '*/tests/*' '*cmocka*'
+          lcov --remove ${{ github.workspace }}/coverage.lcov
+          '/usr/*' '*/tests/*' '*/test_*' '${{ github.workspace }}/tests/*' '*cmocka*'
           --output-file ${{ github.workspace }}/coverage.lcov
           --ignore-errors unused,inconsistent
       - if: "matrix.build-type == 'Debug'"
