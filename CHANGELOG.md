@@ -13,6 +13,21 @@ and this project adheres to
 ### Added
 
 - Added changelog
+- C library and `dbeaver-creds` CLI binary that decrypt DBeaver's `credentials-config.json` without
+  requiring `openssl` or `dd`, with selectable cryptography backends:
+  - `native` backend using corecrypto on macOS and BCrypt on Windows.
+  - `openssl` backend for cross-platform builds.
+  - Backend selection via the CMake option `DBEAVER_CREDS_BACKEND=native|openssl`, with
+    auto-detection by default.
+- Optional `[PATH]` argument to the `dbeaver-creds` command to decrypt a credentials file at a
+  specific location.
+- Public C API function `get_dbeaver_credentials` (declared in `dbeaver-creds.h`) that accepts a
+  path argument and returns the decrypted JSON.
+- Section 3 manpage `dbeaver-creds.h` documenting the C API.
+
+### Changed
+
+- Updated the `dbeaver-creds(1)` manpage to document the optional `[PATH]` argument.
 
 ### Fixed
 

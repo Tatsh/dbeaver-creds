@@ -4,8 +4,14 @@
 dbeaver-creds \- display your DBeaver credentials.
 .SH SYNOPSIS
 .B dbeaver-creds
+.RI [ PATH ]
 .SH DESCRIPTION
 .P
 Decrypt and display your DBeaver credentials. The output is a JSON string.
+.P
+If
+.I PATH
+is given, it is used as the credentials file location. Otherwise the
+platform-default path is used.
 .P
 If the credentials file cannot be found, the exit status will be > 0.

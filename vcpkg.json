@@ -1,0 +1,21 @@
+{
+  "dependencies": [
+    {
+      "name": "cmocka",
+      "platform": "linux | mingw"
+    }
+  ],
+  "description": "Decrypt DBeaver's credentials-config.json file and display the JSON.",
+  "documentation": "https://tatsh.github.io/dbeaver-creds/",
+  "features": {
+    "openssl": {
+      "dependencies": ["openssl"],
+      "description": "Build with the OpenSSL backend instead of the native crypto library."
+    }
+  },
+  "homepage": "https://tatsh.github.io/dbeaver-creds/",
+  "license": "MIT",
+  "maintainers": ["Andrew Udvare <audvare@gmail.com>"],
+  "name": "dbeaver-creds",
+  "version": "0.0.3"
+}

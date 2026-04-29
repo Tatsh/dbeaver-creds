@@ -1,0 +1,77 @@
+.TH dbeaver-creds.h 3 "April 2026" "dbeaver-creds 0.0.3" "Library Functions"
+.SH NAME
+dbeaver-creds.h, get_dbeaver_credentials \- read and decrypt DBeaver's credentials-config.json.
+.SH SYNOPSIS
+.nf
+.B #include <dbeaver-creds.h>
+.PP
+.BI "char *get_dbeaver_credentials(const char *" path );
+.fi
+.SH DESCRIPTION
+.B get_dbeaver_credentials()
+locates DBeaver's
+.I credentials-config.json,
+decrypts it with AES-128-CBC, removes the 16-byte plaintext prefix that
+DBeaver writes, and returns the resulting JSON payload as a NUL-terminated
+UTF-8 string.
+.PP
+If
+.I path
+is non-NULL it is used directly. If it is NULL the platform-default path
+is computed and used:
+.RS
+.IP \(bu 2
+.BR $XDG_DATA_HOME/DBeaverData/workspace6/General/.dbeaver/credentials-config.json
+on Linux, falling back to
+.B $HOME/.local/share
+when
+.B XDG_DATA_HOME
+is unset.
+.IP \(bu 2
+.B $HOME/Library/DBeaverData/workspace6/General/.dbeaver/credentials-config.json
+on macOS.
+.IP \(bu 2
+.B %APPDATA%/DBeaverData/workspace6/General/.dbeaver/credentials-config.json
+on Windows.
+.RE
+.SH RETURN VALUE
+On success, a pointer to a newly allocated, NUL-terminated UTF-8 string. The caller owns
+the buffer and must release it with
+.BR free (3).
+.PP
+On failure the function returns
+.B NULL
+and writes a diagnostic message to standard error. Failure modes include: the credentials
+file cannot be located or read, the ciphertext is malformed (length not a multiple of 16),
+the underlying crypto backend rejects the input, or memory allocation fails.
+.SH THREAD SAFETY
+.B get_dbeaver_credentials()
+is reentrant. It does not read or modify any process-global state beyond the environment
+variables it inspects to locate the configuration file.
+.SH BACKENDS
+The implementation is selected at build time by the CMake variable
+.BR DBEAVER_CREDS_BACKEND :
+either
+.B native
+(corecrypto on macOS, BCrypt/CNG on Windows) or
+.BR openssl .
+The choice is invisible at the API surface; only the linkage requirements differ.
+.SH EXAMPLE
+.nf
+.B #include <stdio.h>
+.B #include <stdlib.h>
+.B #include <dbeaver-creds.h>
+.PP
+.B int main(void) {
+.B "    char *json = get_dbeaver_credentials(NULL);"
+.B "    if (!json) {"
+.B "        return 1;"
+.B "    }"
+.B "    puts(json);"
+.B "    free(json);"
+.B "    return 0;"
+.B }
+.fi
+.SH SEE ALSO
+.BR dbeaver-creds (1),
+.BR free (3).
