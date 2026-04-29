@@ -10,7 +10,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-04-22T13:43:31.572338253Z"
+exclude-newer = "2026-04-22T22:14:54.809972724Z"
 exclude-newer-span = "P1W"
 
 [[package]]
@@ -551,7 +551,7 @@ wheels = [
 
 [[package]]
 name = "dbeaver-creds"
-version = "0.0.3"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "click" },

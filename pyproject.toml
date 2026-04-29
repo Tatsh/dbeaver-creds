@@ -51,7 +51,7 @@ license = "MIT"
 name = "dbeaver-creds"
 readme = "README.md"
 requires-python = ">=3.10,<4.0"
-version = "0.0.3"
+version = "0.1.0"
 
 [[project.authors]]
 email = "audvare@gmail.com"

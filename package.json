@@ -119,5 +119,5 @@
     "ty": "uv run ty check",
     "update-key": "python3 update-key.py"
   },
-  "version": "0.0.3"
+  "version": "0.1.0"
 }

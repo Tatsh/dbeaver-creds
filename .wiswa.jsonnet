@@ -6,7 +6,7 @@ local utils = import 'utils.libsonnet';
   description: "Decrypt DBeaver's credentials-config.json file and display the output (a JSON string).",
   keywords: ['authentication', 'credentials', 'dbeaver', 'terminal'],
   project_name: 'dbeaver-creds',
-  version: '0.0.3',
+  version: '0.1.0',
   want_codeql: false,
   want_tests: false,
   custom_project_badges: [

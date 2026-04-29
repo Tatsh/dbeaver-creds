@@ -6,7 +6,7 @@
   Description          = 'Decrypt and display your DBeaver credentials. The output is a JSON string.'
   GUID                 = '3d7b60e1-9dce-4b70-9017-989227a491a6'
   HelpInfoURI          = 'https://github.com/Tatsh/dbeaver-creds'
-  ModuleVersion        = '0.0.3'
+  ModuleVersion        = '0.1.0'
   PowerShellVersion    = '5.1'
   RequiredAssemblies   = @()
   RequiredModules      = @()

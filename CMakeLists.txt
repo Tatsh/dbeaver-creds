@@ -2,7 +2,7 @@ include(CheckTypeSize)
 
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 project(dbeaver-creds
-        VERSION 0.0.3
+        VERSION 0.1.0
         LANGUAGES C
         DESCRIPTION "Decrypt DBeaver's credentials-config.json file."
         HOMEPAGE_URL "https://github.com/Tatsh/dbeaver-creds")
