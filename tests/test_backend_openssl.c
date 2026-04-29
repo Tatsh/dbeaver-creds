@@ -75,6 +75,29 @@ static void invoke_and_assert_failure(void) {
     assert_int_equal(rc, -1);
 }
 
+/* Covers src/openssl.c line 14 - cipher_len validation. */
+static void test_rejects_zero_length(void **state) {
+    (void)state;
+    unsigned char plain[16];
+    size_t plain_len = sizeof(plain);
+    int rc = dbc_decrypt_aes_128_cbc(k_key, k_iv, k_cipher, 0, plain, &plain_len);
+    assert_int_equal(rc, -1);
+}
+
+/* Covers src/openssl.c lines 33-35 - success path (`rc = 0`, `*plain_len`
+ * assignment) when every EVP call succeeds. */
+static void test_success_path(void **state) {
+    (void)state;
+    will_return(__wrap_EVP_CIPHER_CTX_new, fake_ctx());
+    will_return(__wrap_EVP_DecryptInit_ex, 1);
+    will_return(__wrap_EVP_DecryptUpdate, 1);
+    will_return(__wrap_EVP_DecryptFinal_ex, 1);
+    unsigned char plain[16];
+    size_t plain_len = sizeof(plain);
+    int rc = dbc_decrypt_aes_128_cbc(k_key, k_iv, k_cipher, sizeof(k_cipher), plain, &plain_len);
+    assert_int_equal(rc, 0);
+}
+
 /* Covers src/openssl.c line 18 - EVP_CIPHER_CTX_new() returns NULL. */
 static void test_ctx_new_returns_null(void **state) {
     (void)state;
@@ -111,6 +134,8 @@ static void test_decrypt_final_failure(void **state) {
 
 int main(void) {
     const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_rejects_zero_length),
+        cmocka_unit_test(test_success_path),
         cmocka_unit_test(test_ctx_new_returns_null),
         cmocka_unit_test(test_decrypt_init_failure),
         cmocka_unit_test(test_decrypt_update_failure),
