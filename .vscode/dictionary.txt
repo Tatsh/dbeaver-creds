@@ -75,6 +75,7 @@ libcmocka
 libera
 libsonnet
 linters
+lpwstr
 maml
 mktemp
 modindex
@@ -144,8 +145,14 @@ venv
 vers
 virtualenv
 vstest
+wargc
+wargv
+wbase
 wchar
 wcsnicmp
+wfopen
+wmode
+wpath
 werror
 wextra
 winegcc

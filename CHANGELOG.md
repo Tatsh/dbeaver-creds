@@ -34,6 +34,12 @@ and this project adheres to
 - `enum dbeaver_credentials_error` exposing structured failure codes
   (`DBEAVER_CREDENTIALS_OK`, `_PATH_UNAVAILABLE`, `_FILE_READ_FAILED`, `_INVALID_CIPHERTEXT`,
   `_DECRYPTION_FAILED`, `_EMPTY_PAYLOAD`, `_OUT_OF_MEMORY`).
+- Full UTF-8 path handling on Windows: `%APPDATA%` is read via `GetEnvironmentVariableW`,
+  the explicit-path argument supplied to the `dbeaver-creds` CLI is read from
+  `GetCommandLineW`/`CommandLineToArgvW`, and file I/O routes through `_wfopen`. Paths
+  containing non-ASCII characters (for example user names outside the active code page) work
+  correctly. The CLI also calls `SetConsoleOutputCP(CP_UTF8)` so JSON output renders correctly
+  in the Windows console.
 - Section 3 manpage `dbeaver-creds.h` documenting the C API.
 - Python package `dbeaver-creds` (importable as `dbeaver_creds`) published to PyPI, providing a
   CPython extension that wraps the C library.

@@ -7,6 +7,8 @@
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+#include "win_utf8.h"
 #endif
 
 #include <dbeaver-creds.h>
@@ -31,23 +33,32 @@ static const unsigned char kIv[16] = {0};
 
 static char *find_config_path(void) {
 #if defined(_WIN32)
-    DWORD needed = GetEnvironmentVariableA("APPDATA", nullptr, 0);
+    DWORD needed = GetEnvironmentVariableW(L"APPDATA", nullptr, 0);
     if (needed == 0) {
         return nullptr;
     }
-    char *base = (char *)malloc(needed);
-    if (!base) {
-        return nullptr;
+    wchar_t *wbase = (wchar_t *)malloc((size_t)needed * sizeof(wchar_t));
+    if (!wbase) {
+        return nullptr; // LCOV_EXCL_LINE
     }
-    if (GetEnvironmentVariableA("APPDATA", base, needed) != needed - 1) {
-        free(base);
+    if (GetEnvironmentVariableW(L"APPDATA", wbase, needed) != needed - 1) {
+        // LCOV_EXCL_START
+        free(wbase);
         return nullptr;
+        // LCOV_EXCL_STOP
+    }
+    char *base = dbc_utf16_to_utf8(wbase);
+    free(wbase);
+    if (!base) {
+        return nullptr; // LCOV_EXCL_LINE
     }
     size_t n = strlen(base) + strlen(DBC_PATH_SUFFIX) + 1;
     char *path = (char *)malloc(n);
     if (!path) {
+        // LCOV_EXCL_START
         free(base);
         return nullptr;
+        // LCOV_EXCL_STOP
     }
     snprintf(path, n, "%s%s", base, DBC_PATH_SUFFIX);
     free(base);
@@ -94,7 +105,11 @@ static char *find_config_path(void) {
 }
 
 static int read_all(const char *path, unsigned char **out, size_t *out_len) {
+#if defined(_WIN32)
+    FILE *f = dbc_fopen_utf8(path, "rb");
+#else
     FILE *f = fopen(path, "rb");
+#endif
     if (!f) {
         return -1;
     }
