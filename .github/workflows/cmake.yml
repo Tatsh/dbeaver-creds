@@ -27,6 +27,27 @@ jobs:
         run: 'python -m pip install --upgrade build'
       - name: 'Build Python wheel'
         run: 'python -m build --wheel'
+      - name: 'Stage artifacts'
+        shell: 'bash'
+        run: |
+          set -e
+          mkdir -p stage
+          cp dist/*.whl stage/
+          bin=$(find "${{ github.workspace }}/build/src" -maxdepth 2 -name 'dbeaver-creds' -o -name 'dbeaver-creds.exe' | head -1)
+          if [ -n "$bin" ]; then cp "$bin" stage/; fi
+      - name: 'Upload workflow artifacts'
+        uses: 'actions/upload-artifact@v4'
+        with:
+          if-no-files-found: 'error'
+          name: 'dbeaver-creds-${{ matrix.os }}-${{ matrix.build-type }}'
+          path: 'stage/*'
+      - if: "matrix.build-type == 'Release' && github.ref_type == 'tag'"
+        name: 'Attach Release artifacts to draft GitHub release'
+        uses: 'softprops/action-gh-release@v3.0.0'
+        with:
+          draft: true
+          fail_on_unmatched_files: true
+          files: 'stage/*'
     strategy:
       fail-fast: false
       matrix:
@@ -59,5 +80,7 @@ name: 'Build'
       - '**/CMakeLists.txt'
       - '.github/workflows/cmake.yml'
       - 'pyproject.toml'
+    tags:
+      - 'v*'
 permissions:
-  contents: 'read'
+  contents: 'write'
