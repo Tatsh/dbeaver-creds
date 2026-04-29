@@ -23,7 +23,8 @@ endif()
 
 set(test_include_dirs ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src)
 set(test_compile_options -Wno-unused-parameter -Wno-unused-function)
-set(test_compile_definitions _POSIX_C_SOURCE=200809L)
+set(test_compile_definitions
+    _POSIX_C_SOURCE=200809L $<$<PLATFORM_ID:Darwin>:_DARWIN_C_SOURCE>)
 
 function(dbc_configure_test target)
   target_include_directories(${target} PRIVATE ${test_include_dirs})
