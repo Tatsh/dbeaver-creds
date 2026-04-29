@@ -8,6 +8,7 @@ bsky
 cdecl
 cibw
 cmocka
+cmocka's
 commitizen
 conftest
 conv
@@ -58,6 +59,7 @@ ntstatus
 nullptr
 numpy
 oneline
+outm
 pacboy
 padder
 pathsep
