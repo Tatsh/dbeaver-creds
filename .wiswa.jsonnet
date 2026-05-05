@@ -7,6 +7,7 @@ local utils = import 'utils.libsonnet';
   keywords: ['authentication', 'credentials', 'dbeaver', 'terminal'],
   project_name: 'dbeaver-creds',
   version: '0.1.0',
+  security_policy_supported_versions: { '0.1.x': ':white_check_mark:' },
   want_codeql: false,
   want_tests: false,
   custom_project_badges: [
