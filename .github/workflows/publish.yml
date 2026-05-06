@@ -124,6 +124,7 @@ jobs:
       - 'build-wheels'
     runs-on: 'ubuntu-latest'
     steps:
+      - uses: 'actions/checkout@v6.0.2'
       - uses: 'actions/download-artifact@v8'
         with:
           merge-multiple: true
@@ -133,6 +134,11 @@ jobs:
         with:
           name: 'sdist'
           path: 'dist'
+      - name: 'Stage shell and batch scripts for release'
+        run: |
+          mkdir -p release-scripts
+          cp dbeaver-creds release-scripts/dbeaver-creds.sh
+          cp dbeaver-creds.bat release-scripts/dbeaver-creds.bat
       - uses: 'pypa/gh-action-pypi-publish@release/v1'
       - uses: 'softprops/action-gh-release@v3.0.0'
         with:
@@ -140,6 +146,8 @@ jobs:
           files: |
             dist/*.tar.gz
             dist/*.whl
+            release-scripts/dbeaver-creds.sh
+            release-scripts/dbeaver-creds.bat
   publish-gallery:
     env:
       NUGET_API_KEY: '${{ secrets.NUGET_API_KEY }}'

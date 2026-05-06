@@ -58,6 +58,9 @@ and this project adheres to
     (`dbeaver-creds_<version>_{amd64,arm64}.snap`). Each packages the native `dbeaver-creds`
     binary so that end users have an installer that matches their distribution's convention
     without building from source.
+  - Standalone shell scripts: the Bash flavour (`dbeaver-creds.sh`) and the Windows Batch
+    flavour (`dbeaver-creds.bat`) are attached directly to the release for environments where
+    the native binary is impractical.
 - Python package `dbeaver-creds` (importable as `dbeaver_creds`) published to PyPI, providing a
   CPython extension that wraps the C library.
   - Public Python API `dbeaver_creds.get_dbeaver_credentials` accepting an optional path
