@@ -46,6 +46,18 @@ local utils = import 'utils.libsonnet';
     '/.vs/*',
     '!/.vs/launch.vs.json',
   ],
+  github+: {
+    dependabot+: {
+      updates+: [
+        {
+          cooldown: { 'default-days': 7 },
+          directory: '/',
+          'package-ecosystem': 'vcpkg',
+          schedule: { interval: 'weekly' },
+        },
+      ],
+    },
+  },
   pyproject+: {
     'build-system': {
       'build-backend': 'scikit_build_core.build',

@@ -29,4 +29,10 @@ updates:
     package-ecosystem: 'uv'
     schedule:
       interval: 'weekly'
+  - cooldown:
+      default-days: 7
+    directory: '/'
+    package-ecosystem: 'vcpkg'
+    schedule:
+      interval: 'weekly'
 version: 2
