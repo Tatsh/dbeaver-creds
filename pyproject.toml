@@ -51,7 +51,7 @@ license = "MIT"
 name = "dbeaver-creds"
 readme = "README.md"
 requires-python = ">=3.10,<4.0"
-version = "0.1.0"
+version = "0.1.1"
 
 [[project.authors]]
 email = "audvare@gmail.com"
@@ -82,6 +82,7 @@ version_files = [
   "DBeaverCreds/DBeaverCreds.psd1",
   "man/dbeaver-creds.1",
   "man/dbeaver-creds.h.3",
+  "sh.tat.dbeaver-creds.yml",
   "snapcraft.yaml",
 ]
 version_provider = "pep621"

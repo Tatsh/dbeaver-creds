@@ -11,8 +11,9 @@ modules:
       - '-DBUILD_TESTS=OFF'
     name: 'dbeaver-creds'
     sources:
-      - path: '.'
-        type: 'dir'
+      - tag: 'v0.1.1'
+        type: 'git'
+        url: 'https://github.com/Tatsh/dbeaver-creds.git'
 runtime: 'org.freedesktop.Platform'
 runtime-version: '24.08'
 sdk: 'org.freedesktop.Sdk'

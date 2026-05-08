@@ -6,7 +6,7 @@ local utils = import 'utils.libsonnet';
   description: "Decrypt DBeaver's credentials-config.json file and display the output (a JSON string).",
   keywords: ['authentication', 'credentials', 'dbeaver', 'terminal'],
   project_name: 'dbeaver-creds',
-  version: '0.1.0',
+  version: '0.1.1',
   security_policy_supported_versions: { '0.1.x': ':white_check_mark:' },
   want_codeql: false,
   want_tests: false,
@@ -58,6 +58,24 @@ local utils = import 'utils.libsonnet';
       ],
     },
   },
+  snapcraft+: {
+    parts+: {
+      'dbeaver-creds'+: {
+        source: 'https://github.com/Tatsh/dbeaver-creds.git',
+        'source-type': 'git',
+        'source-tag': 'v0.1.1',
+      },
+    },
+  },
+  flatpak+: {
+    modules: [super.modules[0] {
+      sources: [{
+        type: 'git',
+        url: 'https://github.com/Tatsh/dbeaver-creds.git',
+        tag: 'v0.1.1',
+      }],
+    }],
+  },
   pyproject+: {
     'build-system': {
       'build-backend': 'scikit_build_core.build',
@@ -85,6 +103,7 @@ local utils = import 'utils.libsonnet';
           'DBeaverCreds/DBeaverCreds.psd1',
           'man/dbeaver-creds.1',
           'man/dbeaver-creds.h.3',
+          'sh.tat.dbeaver-creds.yml',
           'snapcraft.yaml',
         ],
       },

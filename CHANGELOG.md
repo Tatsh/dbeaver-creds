@@ -10,6 +10,19 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-08
+
+### Changed
+
+- Bumped the `click` runtime requirement from `>=8.3.2` to `>=8.3.3`.
+- Snapcraft and Flatpak manifests now build from the tagged Git source rather than the local
+  working tree, so end users get a reproducible build that matches the released tag.
+
+### Fixed
+
+- The Bash (`dbeaver-creds.sh`) and Windows Batch (`dbeaver-creds.bat`) scripts are now attached
+  to each GitHub release as documented.
+
 ## [0.1.0] - 2026-04-29
 
 ### Added
@@ -94,7 +107,8 @@ and this project adheres to
 
 - Upgrade dependencies
 
-[unreleased]: https://github.com/Tatsh/dbeaver-creds/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/Tatsh/dbeaver-creds/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/Tatsh/dbeaver-creds/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Tatsh/dbeaver-creds/compare/v0.0.3...v0.1.0
 [0.0.3]: https://github.com/Tatsh/dbeaver-creds/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/Tatsh/dbeaver-creds/compare/v0.0.1...v0.0.2

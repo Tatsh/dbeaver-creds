@@ -23,7 +23,9 @@ parts:
       - '-DBUILD_PYTHON_EXTENSION=OFF'
       - '-DBUILD_TESTS=OFF'
     plugin: 'cmake'
-    source: '.'
+    source: 'https://github.com/Tatsh/dbeaver-creds.git'
+    source-tag: 'v0.1.1'
+    source-type: 'git'
     stage-packages:
       - 'libssl3t64'
 platforms:
@@ -34,5 +36,5 @@ platforms:
 source-code: 'https://github.com/Tatsh/dbeaver-creds'
 summary: "Decrypt DBeaver's credentials-config.json file."
 title: 'dbeaver-creds'
-version: '0.1.0'
+version: '0.1.1'
 website: 'https://tatsh.github.io/dbeaver-creds/'
