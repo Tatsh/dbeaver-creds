@@ -44,7 +44,7 @@ repos:
           - '--frozen'
         id: 'uv-sync'
     repo: 'https://github.com/astral-sh/uv-pre-commit'
-    rev: '0.11.12'
+    rev: '0.11.13'
   - hooks:
       - args:
           - '--fix'
