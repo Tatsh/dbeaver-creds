@@ -1,8 +1,8 @@
 {
   "_wiswa": {
     "commandLine": "wiswa",
-    "lastRun": "2026-04-29T13:43:40Z",
-    "version": "bf5d6e5"
+    "lastRun": "2026-05-10T23:22:02Z",
+    "version": "d6ab093-dirty"
   },
   "contributors": ["Andrew Udvare <audvare@gmail.com>"],
   "cspell": {
@@ -100,7 +100,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Tatsh/dbeaver-creds.git"
+    "url": "git+https://github.com/Tatsh/dbeaver-creds.git"
   },
   "scripts": {
     "check-formatting": "prettier -c . && shfmt -d -i 4 -ci -sr dbeaver-creds && uv run yapf --diff --parallel --recursive . && markdownlint-cli2 --config package.json --configPointer /markdownlint-cli2",

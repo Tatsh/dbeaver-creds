@@ -24,34 +24,6 @@
       :target: https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml
       :alt: QA
 
-   .. image:: https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml/badge.svg
-      :target: https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml
-      :alt: Tests
-
-   .. image:: https://coveralls.io/repos/github/Tatsh/dbeaver-creds/badge.svg?branch=master
-      :target: https://coveralls.io/github/Tatsh/dbeaver-creds?branch=master
-      :alt: Coverage Status
-
-   .. image:: https://img.shields.io/badge/C-00599C?logo=c
-      :target: https://en.wikipedia.org/wiki/C_(programming_language)
-      :alt: C
-
-   .. image:: https://img.shields.io/badge/CMake-6E6E6E?logo=cmake
-      :target: https://cmake.org/
-      :alt: CMake
-
-   .. image:: https://img.shields.io/powershellgallery/v/DBeaverCreds
-      :target: https://www.powershellgallery.com/packages/DBeaverCreds
-      :alt: PowerShell Gallery Version (including pre-releases)
-
-   .. image:: https://img.shields.io/powershellgallery/p/DBeaverCreds?label=powershell+platforms+supported
-      :target: https://www.powershellgallery.com/packages/DBeaverCreds
-      :alt: PowerShell Gallery Platform Support
-
-   .. image:: https://img.shields.io/powershellgallery/dt/DBeaverCreds
-      :target: https://www.powershellgallery.com/packages/DBeaverCreds
-      :alt: PowerShell Gallery Downloads
-
    .. image:: https://img.shields.io/badge/Dependabot-enabled-blue?logo=dependabot
       :target: https://github.com/dependabot
       :alt: Dependabot
@@ -87,6 +59,34 @@
    .. image:: https://img.shields.io/badge/Prettier-black?logo=prettier
       :target: https://prettier.io/
       :alt: Prettier
+
+   .. image:: https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml/badge.svg
+      :target: https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml
+      :alt: Tests
+
+   .. image:: https://coveralls.io/repos/github/Tatsh/dbeaver-creds/badge.svg?branch=master
+      :target: https://coveralls.io/github/Tatsh/dbeaver-creds?branch=master
+      :alt: Coverage Status
+
+   .. image:: https://img.shields.io/badge/C-00599C?logo=c
+      :target: <https://en.wikipedia.org/wiki/C_(programming_language)>
+      :alt: C
+
+   .. image:: https://img.shields.io/badge/CMake-6E6E6E?logo=cmake
+      :target: https://cmake.org/
+      :alt: CMake
+
+   .. image:: https://img.shields.io/powershellgallery/v/DBeaverCreds
+      :target: https://www.powershellgallery.com/packages/DBeaverCreds
+      :alt: PowerShell Gallery Version (including pre-releases)
+
+   .. image:: https://img.shields.io/powershellgallery/p/DBeaverCreds?label=powershell+platforms+supported
+      :target: https://www.powershellgallery.com/packages/DBeaverCreds
+      :alt: PowerShell Gallery Platform Support
+
+   .. image:: https://img.shields.io/powershellgallery/dt/DBeaverCreds
+      :target: https://www.powershellgallery.com/packages/DBeaverCreds
+      :alt: PowerShell Gallery Downloads
 
    .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fpublic.api.bsky.app%2Fxrpc%2Fapp.bsky.actor.getProfile%2F%3Factor%3Ddid%3Aplc%3Auq42idtvuccnmtl57nsucz72%26query%3D%24.followersCount%26style%3Dsocial%26logo%3Dbluesky%26label%3DFollow%2520%40Tatsh&query=%24.followersCount&style=social&logo=bluesky&label=Follow%20%40Tatsh
       :target: https://bsky.app/profile/Tatsh.bsky.social

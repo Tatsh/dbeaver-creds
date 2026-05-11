@@ -1,8 +1,10 @@
 !/.vs/launch.vs.json
 *.1
 *.3
+*.7
 *.bat
 *.c
+*.desktop
 *.h
 *.in
 *.j2
@@ -55,3 +57,4 @@ htmlcov/
 mypy-report.xml
 node_modules/
 pylock*.toml
+vcpkg*.json

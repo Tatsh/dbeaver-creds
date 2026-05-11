@@ -79,7 +79,7 @@ local utils = import 'utils.libsonnet';
   pyproject+: {
     'build-system': {
       'build-backend': 'scikit_build_core.build',
-      requires: ['scikit-build-core>=0.10'],
+      requires: ['scikit-build-core>=0.12.2'],
     },
     project+: {
       classifiers: utils.pyprojectClassifiers(settings, [
@@ -195,6 +195,7 @@ local utils = import 'utils.libsonnet';
     '*.ps1',
     '*.psd1',
     '*.psm1',
+    'vcpkg*.json',
   ],
   gitignore+: ['/coverage/'],
 }

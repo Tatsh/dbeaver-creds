@@ -86,7 +86,6 @@ kwlist
 launchable
 lextudio
 libcmocka
-libdbeaver
 libera
 libsonnet
 linters
@@ -114,6 +113,7 @@ padder
 pathlib
 pathsep
 plistlib
+preapproved
 proc
 productversion
 psscriptanalyzer
@@ -175,17 +175,17 @@ wargv
 wbase
 wchar
 wcsnicmp
-wfopen
-wmode
-wpath
 werror
 wextra
+wfopen
 winegcc
 winget
 winprefs
 wiswa
 wiswa's
 wmain
+wmode
+wpath
 wpedantic
 xdecref
 yapf
