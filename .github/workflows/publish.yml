@@ -4,7 +4,7 @@ jobs:
       - 'check'
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
       - uses: 'actions/setup-python@v6.2.0'
         with:
           python-version: '3.13'
@@ -21,7 +21,7 @@ jobs:
       - 'check'
     runs-on: '${{ matrix.os }}'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
       - uses: 'pypa/cibuildwheel@v4.1.0'
         env:
           CIBW_ARCHS: '${{ matrix.cibw_archs }}'
@@ -52,7 +52,7 @@ jobs:
   check:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
       - env:
           COMMIT_SHA: '${{ github.sha }}'
           GH_TOKEN: '${{ github.token }}'
@@ -124,7 +124,7 @@ jobs:
       - 'build-wheels'
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
       - uses: 'actions/download-artifact@v8'
         with:
           merge-multiple: true
@@ -140,7 +140,7 @@ jobs:
           cp dbeaver-creds release-scripts/dbeaver-creds.sh
           cp dbeaver-creds.bat release-scripts/dbeaver-creds.bat
       - uses: 'pypa/gh-action-pypi-publish@release/v1'
-      - uses: 'softprops/action-gh-release@v3.0.0'
+      - uses: 'softprops/action-gh-release@v3.0.1'
         with:
           draft: true
           files: |
@@ -155,7 +155,7 @@ jobs:
       - 'check'
     runs-on: 'windows-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
       - name: 'Clean up'
         run: 'Remove-Item -Path .\DBeaverCreds\*.Tests.ps1 -Force -ErrorAction SilentlyContinue'
         shell: 'pwsh'

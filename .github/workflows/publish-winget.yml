@@ -4,7 +4,7 @@ jobs:
       has_winget_token: '${{ steps.check_secret.outputs.has_winget_token }}'
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
       - env:
           WINGET_TOKEN: '${{ secrets.WINGET_TOKEN }}'
         id: 'check_secret'
