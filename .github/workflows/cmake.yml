@@ -2,7 +2,7 @@ jobs:
   build:
     runs-on: '${{ matrix.os }}'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
       - if: "runner.os == 'Linux'"
         name: 'Install dependencies (Linux)'
         run: |
@@ -56,7 +56,7 @@ jobs:
                   -B '${{ github.workspace }}/release-stage')
       - if: "matrix.build-type == 'Release' && github.ref_type == 'tag' && runner.os != 'Linux'"
         name: 'Attach Release artifacts to draft GitHub release'
-        uses: 'softprops/action-gh-release@v3.0.0'
+        uses: 'softprops/action-gh-release@v3.0.1'
         with:
           draft: true
           fail_on_unmatched_files: true

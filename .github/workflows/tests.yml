@@ -2,7 +2,7 @@ jobs:
   asan-test:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
         with:
           fetch-depth: 0
       - name: 'Install dependencies'
@@ -39,7 +39,7 @@ jobs:
   native:
     runs-on: '${{ matrix.os }}'
     steps:
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
         with:
           fetch-depth: 0
       - if: "runner.os == 'Linux'"
@@ -106,7 +106,7 @@ jobs:
             openssl:p
             toolchain:p
           update: true
-      - uses: 'actions/checkout@v6.0.2'
+      - uses: 'actions/checkout@v7'
         with:
           fetch-depth: 0
       - name: 'Configure'
@@ -162,7 +162,7 @@ jobs:
     runs-on: 'windows-latest'
     steps:
       - name: 'Checkout code'
-        uses: 'actions/checkout@v6.0.2'
+        uses: 'actions/checkout@v7'
       - name: 'Run Pester Tests'
         run: |
           $config = New-PesterConfiguration
