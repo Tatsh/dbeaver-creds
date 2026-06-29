@@ -1,5 +1,6 @@
 #include "compat.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,7 +38,7 @@ static char *find_config_path(void) {
     if (needed == 0) {
         return nullptr;
     }
-    wchar_t *wbase = (wchar_t *)malloc((size_t)needed * sizeof(wchar_t));
+    wchar_t *wbase = (wchar_t *)calloc((size_t)needed, sizeof(wchar_t));
     if (!wbase) {
         return nullptr; // LCOV_EXCL_LINE
     }
@@ -52,7 +53,12 @@ static char *find_config_path(void) {
     if (!base) {
         return nullptr; // LCOV_EXCL_LINE
     }
-    size_t n = strlen(base) + strlen(DBC_PATH_SUFFIX) + 1;
+    size_t base_len = strlen(base);
+    if (base_len > SIZE_MAX - sizeof(DBC_PATH_SUFFIX)) {
+        free(base);
+        return nullptr;
+    }
+    size_t n = base_len + sizeof(DBC_PATH_SUFFIX);
     char *path = (char *)malloc(n);
     if (!path) {
         // LCOV_EXCL_START
@@ -68,7 +74,11 @@ static char *find_config_path(void) {
     if (!home || !*home) {
         return nullptr; // LCOV_EXCL_LINE
     }
-    size_t n = strlen(home) + strlen(DBC_PATH_SUFFIX) + 1;
+    size_t home_len = strlen(home);
+    if (home_len > SIZE_MAX - sizeof(DBC_PATH_SUFFIX)) {
+        return nullptr; // LCOV_EXCL_LINE
+    }
+    size_t n = home_len + sizeof(DBC_PATH_SUFFIX);
     char *path = (char *)malloc(n);
     if (!path) {
         return nullptr; // LCOV_EXCL_LINE
@@ -94,7 +104,12 @@ static char *find_config_path(void) {
         infix = "/.local/share";
         // LCOV_EXCL_STOP
     }
-    size_t n = strlen(prefix) + strlen(infix) + strlen(DBC_PATH_SUFFIX) + 1;
+    size_t prefix_len = strlen(prefix);
+    size_t infix_len = strlen(infix);
+    if (prefix_len > SIZE_MAX - infix_len - sizeof(DBC_PATH_SUFFIX)) {
+        return nullptr; // LCOV_EXCL_LINE
+    }
+    size_t n = prefix_len + infix_len + sizeof(DBC_PATH_SUFFIX);
     char *path = (char *)malloc(n);
     if (!path) {
         return nullptr; // LCOV_EXCL_LINE
