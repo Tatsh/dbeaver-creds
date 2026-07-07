@@ -37,6 +37,8 @@ jobs:
         with:
           parallel-finished: true
   native:
+    env:
+      HOMEBREW_NO_REQUIRE_TAP_TRUST: '1'
     runs-on: '${{ matrix.os }}'
     steps:
       - uses: 'actions/checkout@v7'
