@@ -70,6 +70,7 @@ genindex
 globaltoc
 gmock
 graphviz
+handoff
 hoverxref
 htmlcov
 ifdef
@@ -149,6 +150,7 @@ soabi
 softprops
 soupsieve
 sphinxcontrib
+statusline
 stddef
 stdlib
 strequal
