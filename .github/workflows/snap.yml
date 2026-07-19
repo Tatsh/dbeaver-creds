@@ -16,12 +16,12 @@ jobs:
           name: 'dbeaver-creds-snap-${{ matrix.system.arch }}'
           path: '*.snap'
       - name: 'Attest'
-        uses: 'actions/attest@v4.1.1'
+        uses: 'actions/attest@v4.2.0'
         with:
           subject-path: '*.snap'
       - if: "github.ref_type == 'tag'"
         name: 'Upload package'
-        uses: 'softprops/action-gh-release@v3.0.1'
+        uses: 'softprops/action-gh-release@v3.0.2'
         with:
           draft: true
           fail_on_unmatched_files: true
