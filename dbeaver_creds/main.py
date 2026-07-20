@@ -18,7 +18,7 @@ def main(path: Path | None) -> None:
 
     If PATH is given, it is read from there. Otherwise the platform-default
     location is used.
-    """  # noqa: DOC501
+    """  # ruff:ignore[docstring-missing-exception]
     try:
         payload = get_dbeaver_credentials(path)
     except RuntimeError as exc:
