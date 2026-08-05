@@ -50,6 +50,7 @@ endfunction
 esac
 esbenp
 esbonio
+failglob
 fileflags
 fileflagsmask
 fileos
@@ -138,6 +139,7 @@ setattr
 shellcheck
 shellformat
 shfmt
+shopt
 skbuild
 snapcore
 snapcraft
