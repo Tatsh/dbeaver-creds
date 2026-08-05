@@ -3,7 +3,6 @@ anchore
 Ångström
 appimage
 appimagetool
-archs
 asan
 asyncio
 autobrief
@@ -15,7 +14,6 @@ bsky
 cdecl
 cdrommsf
 choco
-cibw
 clangarm
 cmocka
 cmocka's
@@ -27,7 +25,6 @@ cooldown
 coveragerc
 coverallsapp
 cpack
-cpython
 creds
 ctest
 ctypes
@@ -61,7 +58,6 @@ fileversion
 flathub
 foxundermoon
 fprintf
-freethreading
 fsanitize
 functools
 gcda
@@ -102,7 +98,6 @@ msystem
 myproject
 mypy
 namedtuples
-npmjs
 nsis
 ntstatus
 nullptr
@@ -165,6 +160,8 @@ ubsan
 ubyte
 udvare
 undecryptable
+undraft
+undrafted
 vedantmgoyal
 vendored
 venv
@@ -187,9 +184,11 @@ wiswa
 wiswa's
 wmain
 wmode
+worktree
 wpath
 wpedantic
 xdecref
 yapf
 yapfignore
 yarnrc
+zizmor
