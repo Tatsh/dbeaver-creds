@@ -2,9 +2,10 @@ jobs:
   asan-test:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v7'
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: 'Install dependencies'
         run: |
           sudo apt-get update
@@ -33,7 +34,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Coveralls finished'
-        uses: 'coverallsapp/github-action@v2'
+        uses: 'coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329'
         with:
           parallel-finished: true
   native:
@@ -41,9 +42,10 @@ jobs:
       HOMEBREW_NO_REQUIRE_TAP_TRUST: '1'
     runs-on: '${{ matrix.os }}'
     steps:
-      - uses: 'actions/checkout@v7'
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         with:
           fetch-depth: 0
+          persist-credentials: false
       - if: "runner.os == 'Linux'"
         name: 'Install dependencies (Linux)'
         run: |
@@ -74,7 +76,7 @@ jobs:
           --ignore-errors inconsistent,format,unsupported
       - if: "matrix.build-type == 'Debug'"
         name: 'Coveralls'
-        uses: 'coverallsapp/github-action@v2'
+        uses: 'coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329'
         with:
           file: '${{ github.workspace }}/coverage.lcov'
           flag-name: 'native-${{ runner.os }}'
@@ -96,7 +98,7 @@ jobs:
         run: >-
           echo out=$("${{ github.workspace }}" -Replace "\\","/") | Out-File
           -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-      - uses: 'msys2/setup-msys2@v2'
+      - uses: 'msys2/setup-msys2@66cd2cce69caa17b53920067426061ca1de3a884'
         with:
           install: 'make'
           msystem: '${{ matrix.msystem }}'
@@ -108,38 +110,49 @@ jobs:
             openssl:p
             toolchain:p
           update: true
-      - uses: 'actions/checkout@v7'
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         with:
           fetch-depth: 0
-      - name: 'Configure'
+          persist-credentials: false
+      - env:
+          WORKSPACE: '${{ steps.fixed_workspace.outputs.out }}'
+        name: 'Configure'
         run: >-
-          cmake -G Ninja -B ${{ steps.fixed_workspace.outputs.out }}/build
+          cmake -G Ninja -B "${WORKSPACE}/build"
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           -DBUILD_TESTS=ON -DENABLE_COVERAGE=ON
         shell: 'msys2 {0}'
-      - name: 'Build'
-        run: 'cmake --build ${{ steps.fixed_workspace.outputs.out }}/build --verbose'
+      - env:
+          WORKSPACE: '${{ steps.fixed_workspace.outputs.out }}'
+        name: 'Build'
+        run: 'cmake --build "${WORKSPACE}/build" --verbose'
         shell: 'msys2 {0}'
-      - name: 'Run tests'
+      - env:
+          WORKSPACE: '${{ steps.fixed_workspace.outputs.out }}'
+        name: 'Run tests'
         run: >-
-          ctest --test-dir ${{ steps.fixed_workspace.outputs.out }}/build
+          ctest --test-dir "${WORKSPACE}/build"
           --output-on-failure --verbose
         shell: 'msys2 {0}'
-      - if: "matrix.build-type == 'Debug'"
+      - env:
+          WORKSPACE: '${{ steps.fixed_workspace.outputs.out }}'
+        if: "matrix.build-type == 'Debug'"
         name: 'Drop test-source coverage data'
         run: |
-          find ${{ steps.fixed_workspace.outputs.out }}/build -name 'test_*.c.gcda' -delete
-          find ${{ steps.fixed_workspace.outputs.out }}/build -name 'wrappers.c.gcda' -delete
+          find "${WORKSPACE}/build" -name 'test_*.c.gcda' -delete
+          find "${WORKSPACE}/build" -name 'wrappers.c.gcda' -delete
         shell: 'msys2 {0}'
-      - if: "matrix.build-type == 'Debug'"
+      - env:
+          WORKSPACE: '${{ steps.fixed_workspace.outputs.out }}'
+        if: "matrix.build-type == 'Debug'"
         name: 'Generate coverage information'
         run: >-
-          lcov --capture --directory ${{ steps.fixed_workspace.outputs.out }}/build
+          lcov --capture --directory "${WORKSPACE}/build"
           --output-file coverage.lcov
         shell: 'msys2 {0}'
       - if: "matrix.build-type == 'Debug'"
         name: 'Coveralls'
-        uses: 'coverallsapp/github-action@v2'
+        uses: 'coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329'
         with:
           file: 'coverage.lcov'
           flag-name: 'native-Windows-${{ matrix.msystem }}'
@@ -164,7 +177,9 @@ jobs:
     runs-on: 'windows-latest'
     steps:
       - name: 'Checkout code'
-        uses: 'actions/checkout@v7'
+        uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          persist-credentials: false
       - name: 'Run Pester Tests'
         run: |
           $config = New-PesterConfiguration
@@ -174,7 +189,7 @@ jobs:
           $config.CodeCoverage.Path = ".\DBeaverCreds\DBeaverCreds.psm1"
           Invoke-Pester -Configuration $config
       - name: 'Report Coveralls'
-        uses: 'coverallsapp/github-action@v2'
+        uses: 'coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329'
         with:
           flag-name: 'pwsh'
           parallel: true
@@ -186,3 +201,5 @@ name: 'Tests'
   push:
     branches:
       - 'master'
+permissions:
+  contents: 'read'

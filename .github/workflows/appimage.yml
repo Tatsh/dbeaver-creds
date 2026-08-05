@@ -2,7 +2,9 @@ jobs:
   build:
     runs-on: '${{ matrix.system.image }}'
     steps:
-      - uses: 'actions/checkout@v7'
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          persist-credentials: false
       - name: 'Install build dependencies'
         run: |
           sudo apt-get update
@@ -23,9 +25,11 @@ jobs:
             -DCMAKE_INSTALL_PREFIX=/usr
           cmake --build build
           DESTDIR="${{ github.workspace }}/AppDir" cmake --install build
-      - name: 'Stage AppImage metadata'
+      - env:
+          VERSION: '${{ steps.meta.outputs.version }}'
+        name: 'Stage AppImage metadata'
         run: |
-          version='${{ steps.meta.outputs.version }}'
+          version="${VERSION}"
           arch='${{ matrix.system.arch }}'
           ws='${{ github.workspace }}'
           cat > "${ws}/AppDir/dbeaver-creds.desktop" <<EOF
@@ -56,7 +60,9 @@ jobs:
             <url type="homepage">${{ github.server_url }}/${{ github.repository }}</url>
           </component>
           EOF
-      - name: 'Build AppImage'
+      - env:
+          FILENAME: '${{ steps.meta.outputs.filename }}'
+        name: 'Build AppImage'
         run: |
           arch='${{ matrix.system.arch }}'
           wget -O appimagetool \
@@ -67,21 +73,23 @@ jobs:
           mkdir -p dist
           ARCH="${arch}" ./squashfs-root/AppRun \
             "${{ github.workspace }}/AppDir" \
-            "dist/${{ steps.meta.outputs.filename }}"
-      - name: 'Test AppImage'
+            "dist/${FILENAME}"
+      - env:
+          FILENAME: '${{ steps.meta.outputs.filename }}'
+        name: 'Test AppImage'
         run: |
           rm -fr squashfs-root
-          ./dist/${{ steps.meta.outputs.filename }} --appimage-extract >/dev/null
+          "./dist/${FILENAME}" --appimage-extract >/dev/null
           test -x ./squashfs-root/usr/bin/dbeaver-creds
           file ./squashfs-root/usr/bin/dbeaver-creds | grep -q ELF
       - name: 'Upload Artifacts'
-        uses: 'actions/upload-artifact@v7.0.1'
+        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
         with:
           if-no-files-found: 'error'
           name: 'dbeaver-creds-appimage-${{ matrix.system.arch }}'
           path: 'dist/*.AppImage'
       - name: 'Generate SBOM'
-        uses: 'anchore/sbom-action@v0.24.0'
+        uses: 'anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610'
         env:
           SYFT_SOURCE_NAME: 'dbeaver-creds'
           SYFT_SOURCE_VERSION: '${{ steps.meta.outputs.version }}'
@@ -90,21 +98,27 @@ jobs:
           output-file: 'sbom.spdx.json'
           upload-artifact: false
       - name: 'Attest'
-        uses: 'actions/attest@v4.2.1'
+        uses: 'actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d'
         with:
           subject-path: 'dist/*.AppImage'
       - name: 'Attest SBOM'
-        uses: 'actions/attest@v4.2.1'
+        uses: 'actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d'
         with:
           sbom-path: 'sbom.spdx.json'
           subject-path: 'dist/*.AppImage'
-      - if: "github.ref_type == 'tag'"
+      - env:
+          GH_TOKEN: '${{ github.token }}'
+          TAG: '${{ github.ref_name }}'
+        if: "github.ref_type == 'tag'"
         name: 'Upload package'
-        uses: 'softprops/action-gh-release@v3.0.2'
-        with:
-          draft: true
-          fail_on_unmatched_files: true
-          files: 'dist/*.AppImage'
+        run: |
+          set -e
+          shopt -s failglob
+          files=(dist/*.AppImage)
+          gh release view "${TAG}" >/dev/null 2>&1 ||
+            gh release create "${TAG}" --draft --title "${TAG}" --notes '' || true
+          gh release upload "${TAG}" "${files[@]}" --clobber
+        shell: 'bash'
     strategy:
       matrix:
         system:

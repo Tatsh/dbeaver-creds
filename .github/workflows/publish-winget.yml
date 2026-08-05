@@ -4,7 +4,9 @@ jobs:
       has_winget_token: '${{ steps.check_secret.outputs.has_winget_token }}'
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v7'
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          persist-credentials: false
       - env:
           WINGET_TOKEN: '${{ secrets.WINGET_TOKEN }}'
         id: 'check_secret'
@@ -65,7 +67,7 @@ jobs:
       - 'check'
     runs-on: 'windows-latest'
     steps:
-      - uses: 'vedantmgoyal9/winget-releaser@main'
+      - uses: 'vedantmgoyal9/winget-releaser@b3a5dae0047c6180023acba3f548c55fdf6b7193'
         with:
           identifier: 'Tatsh.dbeaver-creds'
           max-versions-to-keep: 3

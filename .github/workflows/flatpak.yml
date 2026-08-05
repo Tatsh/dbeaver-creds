@@ -5,7 +5,9 @@ jobs:
       options: '--privileged'
     runs-on: '${{ matrix.system.image }}'
     steps:
-      - uses: 'actions/checkout@v7'
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          persist-credentials: false
       - id: 'flatpak_bundle'
         name: 'Set Flatpak bundle filename'
         run: |
@@ -13,28 +15,34 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
           echo "filename=sh.tat.dbeaver-creds-${version}-${{ matrix.system.arch }}.flatpak" >> "$GITHUB_OUTPUT"
       - name: 'Build Flatpak'
-        uses: 'flatpak/flatpak-github-actions/flatpak-builder@v6.7'
+        uses: 'flatpak/flatpak-github-actions/flatpak-builder@401fe28a8384095fc1531b9d320b292f0ee45adb'
         with:
           arch: '${{ matrix.system.arch }}'
           bundle: '${{ steps.flatpak_bundle.outputs.filename }}'
           manifest-path: 'sh.tat.dbeaver-creds.yml'
       - name: 'Upload Artifacts'
-        uses: 'actions/upload-artifact@v7.0.1'
+        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
         with:
           if-no-files-found: 'error'
           name: 'sh.tat.dbeaver-creds-${{ steps.flatpak_bundle.outputs.version }}-${{ matrix.system.arch }}'
           path: '${{ steps.flatpak_bundle.outputs.filename }}'
       - name: 'Attest'
-        uses: 'actions/attest@v4.2.1'
+        uses: 'actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d'
         with:
           subject-path: '${{ steps.flatpak_bundle.outputs.filename }}'
-      - if: "github.ref_type == 'tag'"
+      - env:
+          FILENAME: '${{ steps.flatpak_bundle.outputs.filename }}'
+          GH_TOKEN: '${{ github.token }}'
+          TAG: '${{ github.ref_name }}'
+        if: "github.ref_type == 'tag'"
         name: 'Upload package'
-        uses: 'softprops/action-gh-release@v3.0.2'
-        with:
-          draft: true
-          fail_on_unmatched_files: true
-          files: '${{ steps.flatpak_bundle.outputs.filename }}'
+        run: |
+          set -e
+          test -f "${FILENAME}"
+          gh release view "${TAG}" >/dev/null 2>&1 ||
+            gh release create "${TAG}" --draft --title "${TAG}" --notes '' || true
+          gh release upload "${TAG}" "${FILENAME}" --clobber
+        shell: 'bash'
     strategy:
       matrix:
         system:
