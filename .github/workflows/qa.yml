@@ -53,6 +53,8 @@ jobs:
           restore-keys: '${{ runner.os }}-yarn'
       - name: 'Install dependencies (Yarn)'
         run: 'yarn'
+      - name: 'Place the built C extension beside its stub'
+        run: 'cp .venv/lib/python*/site-packages/dbeaver_creds/*.so dbeaver_creds/'
       - name: 'Lint with Pyright'
         run: 'yarn pyright'
   ruff:
