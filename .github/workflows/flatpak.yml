@@ -27,7 +27,7 @@ jobs:
           name: 'sh.tat.dbeaver-creds-${{ steps.flatpak_bundle.outputs.version }}-${{ matrix.system.arch }}'
           path: '${{ steps.flatpak_bundle.outputs.filename }}'
       - name: 'Attest'
-        uses: 'actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d'
+        uses: 'actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6'
         with:
           subject-path: '${{ steps.flatpak_bundle.outputs.filename }}'
       - env:
