@@ -98,11 +98,11 @@ jobs:
           output-file: 'sbom.spdx.json'
           upload-artifact: false
       - name: 'Attest'
-        uses: 'actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d'
+        uses: 'actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6'
         with:
           subject-path: 'dist/*.AppImage'
       - name: 'Attest SBOM'
-        uses: 'actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d'
+        uses: 'actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6'
         with:
           sbom-path: 'sbom.spdx.json'
           subject-path: 'dist/*.AppImage'
