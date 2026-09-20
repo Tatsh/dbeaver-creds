@@ -67,7 +67,7 @@ jobs:
       - 'check'
     runs-on: 'windows-latest'
     steps:
-      - uses: 'vedantmgoyal9/winget-releaser@b3a5dae0047c6180023acba3f548c55fdf6b7193'
+      - uses: 'vedantmgoyal9/winget-releaser@a8fff44b123f115ce4c21543edf8b677376fc7e0'
         with:
           identifier: 'Tatsh.dbeaver-creds'
           max-versions-to-keep: 3
