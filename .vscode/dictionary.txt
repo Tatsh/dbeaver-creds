@@ -19,9 +19,9 @@ cmocka
 cmocka's
 commitizen
 commonprogramdata
+concrt
 conftest
 conv
-cooldown
 coveragerc
 coverallsapp
 cpack
@@ -71,7 +71,6 @@ handoff
 hoverxref
 htmlcov
 ifdef
-intersphinx
 isort
 itertools
 iwyu
@@ -95,6 +94,9 @@ mktemp
 modindex
 monkeypatch
 msvc
+msvcp
+msvcprtd
+msvcrtd
 msystem
 myproject
 mypy
@@ -144,7 +146,6 @@ skbuild
 snapcore
 snapcraft
 soabi
-softprops
 soupsieve
 sphinxcontrib
 statusline
@@ -160,10 +161,14 @@ toplevel
 tostring
 ubsan
 ubyte
+ucrtbased
 udvare
 undecryptable
 undraft
 undrafted
+vccorlib
+vcomp
+vcruntime
 vedantmgoyal
 vendored
 venv
@@ -179,6 +184,7 @@ wcsnicmp
 werror
 wextra
 wfopen
+wheelcheck
 winegcc
 winget
 winprefs
@@ -186,7 +192,6 @@ wiswa
 wiswa's
 wmain
 wmode
-worktree
 wpath
 wpedantic
 xdecref

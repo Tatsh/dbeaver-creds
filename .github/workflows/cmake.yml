@@ -37,6 +37,48 @@ jobs:
           cp dist/*.whl stage/
           bin=$(find "${{ github.workspace }}/build/src" -maxdepth 2 -name 'dbeaver-creds' -o -name 'dbeaver-creds.exe' | head -1)
           if [ -n "$bin" ]; then cp "$bin" stage/; fi
+      # Release binaries link the release CRT. The scan below reports markers
+      # such as VCRUNTIME140D or ucrtbased and fails the job when the staged
+      # executable or the extension module in the wheel references a debug
+      # runtime.
+      - if: "matrix.build-type == 'Release' && runner.os == 'Windows'"
+        name: 'Check for debug runtime linkage'
+        shell: 'pwsh'
+        run: |
+          $markers = @(
+            'VCRUNTIME140D',
+            'MSVCP140D',
+            'VCOMP140D',
+            'CONCRT140D',
+            'VCCORLIB140D',
+            'ucrtbased',
+            'MSVCRTD',
+            'MSVCPRTD'
+          )
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          Get-ChildItem stage/*.whl | ForEach-Object {
+            [System.IO.Compression.ZipFile]::ExtractToDirectory($_.FullName, 'wheelcheck', $true)
+          }
+          $binaries = @(Get-ChildItem stage/*.exe) +
+            @(Get-ChildItem wheelcheck -Recurse -Include *.dll, *.pyd)
+          if ($binaries.Count -eq 0) {
+            Write-Host '::error::No release binaries found to scan.'
+            exit 1
+          }
+          $failed = $false
+          $binaries | ForEach-Object {
+            $bytes = [System.IO.File]::ReadAllBytes($_.FullName)
+            $text = [System.Text.Encoding]::ASCII.GetString($bytes)
+            foreach ($marker in $markers) {
+              if ($text.Contains($marker)) {
+                Write-Host "::error::$($_.Name) references debug runtime $marker."
+                $failed = $true
+              }
+            }
+          }
+          if ($failed) {
+            exit 1
+          }
       - name: 'Upload workflow artifacts'
         uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
         with:
