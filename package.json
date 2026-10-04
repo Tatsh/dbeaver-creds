@@ -86,6 +86,12 @@
         "options": {
           "parser": "json"
         }
+      },
+      {
+        "files": ["*.toml"],
+        "options": {
+          "singleQuote": false
+        }
       }
     ],
     "plugins": [
