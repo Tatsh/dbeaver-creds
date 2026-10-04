@@ -1,8 +1,8 @@
 {
   "_wiswa": {
-    "commandLine": "wiswa -d",
-    "lastRun": "2026-08-05T01:35:35Z",
-    "version": "149a6b0"
+    "commandLine": "wiswa -q --skip-remote --cache-time 86400",
+    "lastRun": "2026-10-04T11:12:13Z",
+    "version": "e91526d"
   },
   "contributors": ["Andrew Udvare <audvare@gmail.com>"],
   "cspell": {
@@ -27,6 +27,7 @@
       ".git/**",
       ".yarn/**/*.cjs",
       ".vscode/extensions.json",
+      ".wiswa-ci/**",
       "dist/**",
       "man/**"
     ],
@@ -42,12 +43,12 @@
   "description": "Decrypt DBeaver's credentials-config.json file and display the output (a JSON string).",
   "devDependencies": {
     "@prettier/plugin-xml": "^3.4.2",
-    "cspell": "^10.3.3",
+    "cspell": "^10.3.4",
     "markdownlint-cli2": "^0.23.3",
-    "prettier": "^3.9.8",
+    "prettier": "^3.9.9",
     "prettier-plugin-ini": "^1.3.0",
     "prettier-plugin-sort-json": "^4.2.0",
-    "prettier-plugin-toml": "^2.0.6",
+    "prettier-plugin-toml": "^3.0.2",
     "pyright": "^1.1.414"
   },
   "files": ["LICENSE.txt", "README.md"],
@@ -75,7 +76,7 @@
     "showFound": true
   },
   "name": "dbeaver-creds",
-  "packageManager": "yarn@4.18.0",
+  "packageManager": "yarn@4.18.1",
   "prettier": {
     "endOfLine": "lf",
     "iniSpaceAroundEquals": true,

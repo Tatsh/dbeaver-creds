@@ -18,6 +18,7 @@
 *.psd1
 *.psm1
 *.so
+*.tsbuildinfo
 *~
 .*.swp
 .*_cache/
@@ -28,7 +29,6 @@
 .eslintignore
 .pnp.*
 .shellcheckrc
-.venv/
 /.bash_profile
 /.bashrc
 /.claude/auto-continue.md
@@ -49,6 +49,8 @@
 /.mcp.json
 /.profile
 /.ripgreprc
+/.sbclaude-venv/
+/.venv/
 /.vs/*
 /.wiswa-ci/
 /.yarn/**/*.cjs

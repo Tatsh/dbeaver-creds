@@ -2,6 +2,7 @@
 *.kate-swp
 *.log
 *.so
+*.tsbuildinfo
 *~
 .*.swp
 .*_cache/
@@ -10,7 +11,6 @@
 .cspellcache
 .directory
 .pnp.*
-.venv/
 /.bash_profile
 /.bashrc
 /.claude/auto-continue.md
@@ -32,6 +32,8 @@
 /.mcp.json
 /.profile
 /.ripgreprc
+/.sbclaude-venv/
+/.venv/
 /.vs/*
 /.wiswa-ci/
 /.yarn/install-state.gz

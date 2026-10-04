@@ -8,6 +8,7 @@ asyncio
 autobrief
 autodoc
 automodule
+autouse
 bascom
 behavior
 bsky
@@ -102,10 +103,13 @@ msystem
 myproject
 mypy
 namedtuples
+noone
+noqa
 nsis
 ntstatus
 nullptr
 numpy
+numpydoc
 oneline
 outm
 pacboy
@@ -114,6 +118,7 @@ pathlib
 pathsep
 pipx
 plistlib
+popen
 preapproved
 proc
 productversion
@@ -135,6 +140,7 @@ regen
 ripgreprc
 rstcheck
 sarif
+sbclaude
 schemafile
 scikit
 sdbc
@@ -157,7 +163,6 @@ strequal
 syft
 tatsh
 tolower
-tomlkit
 tomllib
 toplevel
 tostring

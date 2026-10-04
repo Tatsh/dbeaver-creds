@@ -4,13 +4,13 @@ requires = ["scikit-build-core>=0.12.2"]
 
 [dependency-groups]
 dev = [
-  "commitizen>=4.16.5",
-  "cryptography>=49.0.0",
+  "commitizen>=4.19.0",
+  "cryptography>=50.0.1",
   "cz-path>=0.0.7",
-  "mypy>=2.3.0",
-  "ruff==0.16.8",
-  "ty>=0.0.64",
-  "yapf>=0.43.0",
+  "mypy>=2.3.1",
+  "ruff==0.16.9",
+  "ty>=0.0.84",
+  "yapf>=0.43.0"
 ]
 docs = [
   "autodoc-pydantic>=2.2.0",
@@ -20,8 +20,7 @@ docs = [
   "restructuredtext-lint>=2.0.2",
   "sphinx-datatables>=1.0.0",
   "sphinx-immaterial>=0.13.9",
-  "sphinx>=9.1.0; python_version >= \"3.13\"",
-  "tomlkit>=0.15.1",
+  "sphinx>=9.1.0; python_version >= \"3.13\""
 ]
 
 [project]
@@ -35,14 +34,13 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Programming Language :: C",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
   "Topic :: Database",
   "Topic :: Utilities",
-  "Typing :: Typed",
+  "Typing :: Typed"
 ]
 dependencies = ["click>=8.3.2"]
 description = "Decrypt DBeaver's credentials-config.json file and display the output (a JSON string)."
@@ -50,7 +48,7 @@ keywords = ["authentication", "credentials", "dbeaver", "terminal"]
 license = "MIT"
 name = "dbeaver-creds"
 readme = "README.md"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
 version = "0.1.1"
 
 [[project.authors]]
@@ -83,7 +81,7 @@ version_files = [
   "man/dbeaver-creds.1",
   "man/dbeaver-creds.h.3",
   "sh.tat.dbeaver-creds.yml",
-  "snapcraft.yaml",
+  "snapcraft.yaml"
 ]
 version_provider = "pep621"
 
@@ -94,7 +92,7 @@ max-line-length = 100
 cache_dir = "~/.cache/mypy"
 explicit_package_bases = true
 platform = "linux"
-python_version = "3.10"
+python_version = "3.11"
 show_column_numbers = true
 strict = true
 strict_optional = true
@@ -103,10 +101,10 @@ warn_unreachable = true
 [tool.pyright]
 deprecateTypingAliases = true
 enableExperimentalFeatures = true
-exclude = [".venv", "**/node_modules", "**/__pycache__", "**/.*"]
+exclude = [".sbclaude-venv", ".venv", "**/node_modules", "**/__pycache__", "**/.*"]
 include = ["./dbeaver_creds"]
 pythonPlatform = "Linux"
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 reportCallInDefaultInitializer = "warning"
 reportImplicitOverride = "warning"
 reportImportCycles = "error"
@@ -122,7 +120,7 @@ cache-dir = "~/.cache/ruff"
 force-exclude = true
 line-length = 100
 namespace-packages = ["docs", "tests"]
-target-version = "py310"
+target-version = "py311"
 unsafe-fixes = true
 
 [tool.ruff.format]
@@ -134,19 +132,16 @@ quote-style = "single"
 [tool.ruff.lint]
 extend-select = ["ALL"]
 ignore = [
-  "ANN401",
-  "COM812",
-  "CPY001",
-  "D203",
-  "D204",
-  "D212",
-  "N818",
-  "RUF105",
-  "RUF106",
-  "RUF201",
-  "S404",
-  "S603",
-  "TD002",
+  "any-type",
+  "error-suffix-on-exception-name",
+  "incorrect-blank-line-after-class",
+  "incorrect-blank-line-before-class",
+  "missing-copyright-notice",
+  "missing-todo-author",
+  "missing-trailing-comma",
+  "multi-line-summary-first-line",
+  "subprocess-without-shell-equals-true",
+  "suspicious-subprocess-import"
 ]
 preview = true
 
@@ -161,8 +156,9 @@ multiline-quotes = "double"
 case-sensitive = true
 combine-as-imports = true
 from-first = true
+known-first-party = ["dbeaver_creds"]
 required-imports = ["from __future__ import annotations"]
-section-order = ["future", "standard-library", "third-party", "local-folder"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 20
@@ -208,7 +204,7 @@ include = [
   "/pyproject.toml",
   "/src/**/*.c",
   "/src/**/*.h",
-  "/src/CMakeLists.txt",
+  "/src/CMakeLists.txt"
 ]
 
 [tool.scikit-build.wheel]
@@ -266,4 +262,4 @@ split_penalty_logical_operator = 300
 use_tabs = false
 
 [tool.yapfignore]
-ignore_patterns = [".venv", ".wiswa-ci", "node_modules"]
+ignore_patterns = [".sbclaude-venv", ".venv", ".wiswa-ci", "node_modules"]
