@@ -93,6 +93,7 @@ metainfo
 mktemp
 modindex
 monkeypatch
+msix
 msvc
 msvcp
 msvcprtd

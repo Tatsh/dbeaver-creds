@@ -4,5 +4,6 @@ rules:
       - 'pyinstaller.yml'
   dangerous-triggers:
     ignore:
+      - 'publish-msys2.yml'
       - 'publish-winget.yml'
       - 'release.yml'

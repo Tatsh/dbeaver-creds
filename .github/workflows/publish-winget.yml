@@ -1,12 +1,46 @@
 jobs:
   check:
+    if: "github.event.workflow_run.conclusion == 'success'"
     outputs:
+      has_installer_assets: '${{ steps.check_assets.outputs.has_installer_assets }}'
       has_winget_token: '${{ steps.check_secret.outputs.has_winget_token }}'
+      tag: '${{ steps.release.outputs.tag }}'
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
-        with:
-          persist-credentials: false
+      - env:
+          GH_TOKEN: '${{ github.token }}'
+          HEAD_SHA: '${{ github.event.workflow_run.head_sha }}'
+          REPO: '${{ github.repository }}'
+        id: 'release'
+        name: 'Find the published release for this commit'
+        run: |
+          tag=''
+          while IFS=$'\t' read -r ref obj_type obj_sha; do
+            [[ -z "$ref" ]] && continue
+            if [[ "$obj_type" == 'commit' ]]; then
+              target_sha="$obj_sha"
+            else
+              target_sha=$(gh api "repos/${REPO}/git/tags/${obj_sha}" \
+                --jq '.object.sha' 2>/dev/null || echo '')
+            fi
+            if [[ "$target_sha" == "$HEAD_SHA" ]]; then
+              tag="${ref#refs/tags/}"
+              break
+            fi
+          done < <(gh api "repos/${REPO}/git/matching-refs/tags/v" \
+            --jq '.[] | [.ref, .object.type, .object.sha] | @tsv')
+          if [[ -z "$tag" ]]; then
+            echo "No v* tag points at ${HEAD_SHA}, nothing to do."
+            exit 0
+          fi
+          unpublished=$(gh release view "$tag" --repo "$REPO" --json isDraft,isPrerelease \
+            --jq '.isDraft or .isPrerelease' 2>/dev/null || echo 'true')
+          if [[ "$unpublished" != 'false' ]]; then
+            echo "Release ${tag} is not published, nothing to do."
+            exit 0
+          fi
+          echo "Found published release ${tag}."
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
       - env:
           WINGET_TOKEN: '${{ secrets.WINGET_TOKEN }}'
         id: 'check_secret'
@@ -19,50 +53,24 @@ jobs:
             echo '::warning::WINGET_TOKEN secret is empty; the update-winget job will be skipped.'
           fi
       - env:
-          COMMIT_SHA: '${{ github.sha }}'
           GH_TOKEN: '${{ github.token }}'
-        id: 'check'
-        name: 'Wait for workflows'
+          REPO: '${{ github.repository }}'
+          TAG: '${{ steps.release.outputs.tag }}'
+        id: 'check_assets'
+        if: "steps.release.outputs.tag != ''"
+        name: 'Check release has installer assets'
         run: |
-          sha="$COMMIT_SHA"
-          for i in $(seq 1 30); do
-            all_done=true
-            for workflow in Build Prettier Spelling clang-format markdownlint; do
-              run=$(gh run list --workflow "$workflow" --commit "$sha" --json status,conclusion --jq '.[0]')
-              if [[ -z "$run" || "$run" == 'null' ]]; then
-                echo "Workflow '$workflow' did not run for this commit; treating as optional."
-                continue
-              fi
-              status=$(echo "$run" | jq -r '.status')
-              conclusion=$(echo "$run" | jq -r '.conclusion')
-              case "$conclusion" in
-                failure|cancelled|timed_out|startup_failure|action_required)
-                  echo "::error::Workflow '$workflow' ${conclusion}."
-                  exit 1
-                  ;;
-                success|skipped|neutral)
-                  ;;
-                *)
-                  if [[ "$status" == 'completed' ]]; then
-                    echo "::error::Workflow '$workflow' completed with unexpected conclusion '${conclusion}'."
-                    exit 1
-                  fi
-                  echo "Workflow '$workflow' still pending (status=${status})."
-                  all_done=false
-                  ;;
-              esac
-            done
-            if [[ "$all_done" == 'true' ]]; then
-              echo 'All required workflows succeeded.'
-              exit 0
-            fi
-            echo "Waiting 60s for workflows to complete (attempt ${i}/30)..."
-            sleep 60
-          done
-          echo '::error::Timed out waiting for workflows.'
-          exit 1
+          count=$(gh release view --repo "$REPO" "$TAG" --json assets \
+            --jq '[.assets[].name | select(test("\\.(exe|msi|msix|appx)(bundle)?$"; "i"))] | length' \
+            || echo 0)
+          if [[ "$count" -gt 0 ]]; then
+            echo 'has_installer_assets=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'has_installer_assets=false' >> "$GITHUB_OUTPUT"
+            echo "::warning::Release ${TAG} has no installer assets; skipping update-winget."
+          fi
   update-winget:
-    if: "needs.check.outputs.has_winget_token == 'true'"
+    if: "needs.check.outputs.has_winget_token == 'true' && needs.check.outputs.has_installer_assets == 'true'"
     needs:
       - 'check'
     runs-on: 'windows-latest'
@@ -71,11 +79,14 @@ jobs:
         with:
           identifier: 'Tatsh.dbeaver-creds'
           max-versions-to-keep: 3
+          release-tag: '${{ needs.check.outputs.tag }}'
           token: '${{ secrets.WINGET_TOKEN }}'
 name: 'Publish to WinGet'
 'on':
-  release:
+  workflow_run:
     types:
-      - 'released'
+      - 'completed'
+    workflows:
+      - 'Release'
 permissions:
   contents: 'read'
