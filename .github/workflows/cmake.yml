@@ -22,18 +22,34 @@ jobs:
         run: 'brew install openssl@3'
       - env:
           BUILD_TYPE: '${{ matrix.build-type }}'
+        if: "runner.os != 'Windows'"
         name: 'Configure'
         run: >-
           cmake -B "$GITHUB_WORKSPACE/build"
           -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
-        shell: 'bash'
       - env:
           BUILD_TYPE: '${{ matrix.build-type }}'
+        if: "runner.os == 'Windows'"
+        name: 'Configure (Windows)'
+        run: >-
+          cmake -B "$env:GITHUB_WORKSPACE/build"
+          "-DCMAKE_BUILD_TYPE=$env:BUILD_TYPE"
+        shell: 'pwsh'
+      - env:
+          BUILD_TYPE: '${{ matrix.build-type }}'
+        if: "runner.os != 'Windows'"
         name: 'Build'
         run: >-
           cmake --build "$GITHUB_WORKSPACE/build"
           --config "$BUILD_TYPE" --verbose
-        shell: 'bash'
+      - env:
+          BUILD_TYPE: '${{ matrix.build-type }}'
+        if: "runner.os == 'Windows'"
+        name: 'Build (Windows)'
+        run: >-
+          cmake --build "$env:GITHUB_WORKSPACE/build"
+          --config "$env:BUILD_TYPE" --verbose
+        shell: 'pwsh'
       - name: 'Set up Python'
         uses: 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97'
         with:
