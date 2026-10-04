@@ -22,7 +22,7 @@ jobs:
       - id: 'shellcheck'
         name: 'Lint with Shellcheck'
         run: 'yarn shellcheck'
-name: 'QA'
+name: 'Shellcheck'
 'on':
   pull_request:
     branches:
