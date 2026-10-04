@@ -3,8 +3,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dbeaver_creds._dbeaver_creds import get_dbeaver_credentials
 import click
+
+from dbeaver_creds._dbeaver_creds import get_dbeaver_credentials
 
 
 @click.command(context_settings={'help_option_names': ['-h', '--help']})
