@@ -1,5 +1,9 @@
+concurrency:
+  cancel-in-progress: true
+  group: '${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}'
 jobs:
   clang-format:
+    name: 'clang-format'
     runs-on: 'ubuntu-latest'
     steps:
       - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -13,6 +17,7 @@ jobs:
             exit 1
           fi
           pipx run --spec "clang-format==${version#v}" clang-format --version
+          # shellcheck disable=SC2035,SC2046 # The file arguments are globs and command substitutions.
           pipx run --spec "clang-format==${version#v}" clang-format --dry-run --Werror $(git ls-files '*.c' '*.h')
         shell: 'bash'
 name: 'clang-format'

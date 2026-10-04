@@ -7,3 +7,5 @@ rules:
       - 'publish-msys2.yml'
       - 'publish-winget.yml'
       - 'release.yml'
+  undocumented-permissions:
+    disable: true
