@@ -1,6 +1,5 @@
 analyzer
 anchore
-Ångström
 appimage
 appimagetool
 asan
@@ -206,3 +205,4 @@ yapf
 yapfignore
 yarnrc
 zizmor
+Ångström
