@@ -27,11 +27,8 @@ NTSTATUS __wrap_BCryptOpenAlgorithmProvider(BCRYPT_ALG_HANDLE *phAlgorithm,
     return mock_type(NTSTATUS);
 }
 
-NTSTATUS __wrap_BCryptSetProperty(BCRYPT_HANDLE hObject,
-                                  LPCWSTR pszProperty,
-                                  PUCHAR pbInput,
-                                  ULONG cbInput,
-                                  ULONG dwFlags) {
+NTSTATUS __wrap_BCryptSetProperty(
+    BCRYPT_HANDLE hObject, LPCWSTR pszProperty, PUCHAR pbInput, ULONG cbInput, ULONG dwFlags) {
     (void)hObject;
     (void)pszProperty;
     (void)pbInput;

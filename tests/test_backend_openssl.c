@@ -38,11 +38,8 @@ int __wrap_EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx,
     return mock_type(int);
 }
 
-int __wrap_EVP_DecryptUpdate(EVP_CIPHER_CTX *ctx,
-                             unsigned char *out,
-                             int *outl,
-                             const unsigned char *in,
-                             int inl) {
+int __wrap_EVP_DecryptUpdate(
+    EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl, const unsigned char *in, int inl) {
     (void)ctx;
     (void)out;
     (void)outl;
