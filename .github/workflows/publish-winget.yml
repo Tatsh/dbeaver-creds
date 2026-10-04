@@ -1,6 +1,11 @@
+concurrency:
+  cancel-in-progress: false
+  group: '${{ github.workflow }}-${{ github.event.workflow_run.head_sha }}'
+  queue: 'max'
 jobs:
   check:
     if: "github.event.workflow_run.conclusion == 'success'"
+    name: 'Find Release'
     outputs:
       has_installer_assets: '${{ steps.check_assets.outputs.has_installer_assets }}'
       has_winget_token: '${{ steps.check_secret.outputs.has_winget_token }}'
@@ -71,6 +76,7 @@ jobs:
           fi
   update-winget:
     if: "needs.check.outputs.has_winget_token == 'true' && needs.check.outputs.has_installer_assets == 'true'"
+    name: 'Update WinGet'
     needs:
       - 'check'
     runs-on: 'windows-latest'

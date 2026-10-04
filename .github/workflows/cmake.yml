@@ -1,5 +1,12 @@
+concurrency:
+  cancel-in-progress: false
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  queue: 'max'
 jobs:
   build:
+    name: 'Build'
+    permissions:
+      contents: 'write'
     runs-on: '${{ matrix.os }}'
     steps:
       - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -13,14 +20,20 @@ jobs:
       - if: "runner.os == 'macOS'"
         name: 'Install dependencies (macOS)'
         run: 'brew install openssl@3'
-      - name: 'Configure'
+      - env:
+          BUILD_TYPE: '${{ matrix.build-type }}'
+        name: 'Configure'
         run: >-
-          cmake -B ${{ github.workspace }}/build
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-      - name: 'Build'
+          cmake -B "$GITHUB_WORKSPACE/build"
+          -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
+        shell: 'bash'
+      - env:
+          BUILD_TYPE: '${{ matrix.build-type }}'
+        name: 'Build'
         run: >-
-          cmake --build ${{ github.workspace }}/build
-          --config ${{ matrix.build-type }} --verbose
+          cmake --build "$GITHUB_WORKSPACE/build"
+          --config "$BUILD_TYPE" --verbose
+        shell: 'bash'
       - name: 'Set up Python'
         uses: 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97'
         with:
@@ -35,7 +48,7 @@ jobs:
           set -e
           mkdir -p stage
           cp dist/*.whl stage/
-          bin=$(find "${{ github.workspace }}/build/src" -maxdepth 2 -name 'dbeaver-creds' -o -name 'dbeaver-creds.exe' | head -1)
+          bin=$(find "${GITHUB_WORKSPACE}/build/src" -maxdepth 2 -name 'dbeaver-creds' -o -name 'dbeaver-creds.exe' | head -1)
           if [ -n "$bin" ]; then cp "$bin" stage/; fi
       # Release binaries link the release CRT. The scan below reports markers
       # such as VCRUNTIME140D or ucrtbased and fails the job when the staged
@@ -89,15 +102,17 @@ jobs:
         name: 'Install NSIS'
         shell: 'pwsh'
         run: 'choco install nsis -y --no-progress'
-      - if: "matrix.build-type == 'Release' && github.ref_type == 'tag' && runner.os != 'Linux'"
+      - env:
+          BUILD_TYPE: '${{ matrix.build-type }}'
+        if: "matrix.build-type == 'Release' && github.ref_type == 'tag' && runner.os != 'Linux'"
         name: 'Generate release packages via CPack'
         shell: 'bash'
         run: |
           set -e
-          mkdir -p '${{ github.workspace }}/release-stage'
-          (cd '${{ github.workspace }}/build' && \
-            cpack -C '${{ matrix.build-type }}' \
-                  -B '${{ github.workspace }}/release-stage')
+          mkdir -p "${GITHUB_WORKSPACE}/release-stage"
+          (cd "${GITHUB_WORKSPACE}/build" && \
+            cpack -C "${BUILD_TYPE}" \
+                  -B "${GITHUB_WORKSPACE}/release-stage")
       - env:
           GH_TOKEN: '${{ github.token }}'
           TAG: '${{ github.ref_name }}'
@@ -148,5 +163,4 @@ name: 'Build'
       - 'pyproject.toml'
     tags:
       - 'v*'
-permissions:
-  contents: 'write'
+permissions: {}

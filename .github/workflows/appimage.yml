@@ -1,5 +1,14 @@
+concurrency:
+  cancel-in-progress: false
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  queue: 'max'
 jobs:
   build:
+    name: 'Build'
+    permissions:
+      attestations: 'write'
+      contents: 'write'
+      id-token: 'write'
     runs-on: '${{ matrix.system.image }}'
     steps:
       - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -9,12 +18,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake ninja-build libssl-dev wget file
-      - id: 'meta'
+      - env:
+          ARCH: '${{ matrix.system.arch }}'
+        id: 'meta'
         name: 'Read project version'
         run: |
           version=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "filename=dbeaver-creds-${version}-${{ matrix.system.arch }}.AppImage" >> "$GITHUB_OUTPUT"
+          echo "filename=dbeaver-creds-${version}-${ARCH}.AppImage" >> "$GITHUB_OUTPUT"
       - name: 'Build native binary into AppDir'
         run: |
           cmake -B build -G Ninja \
@@ -24,14 +35,12 @@ jobs:
             -DBUILD_TESTS=OFF \
             -DCMAKE_INSTALL_PREFIX=/usr
           cmake --build build
-          DESTDIR="${{ github.workspace }}/AppDir" cmake --install build
+          DESTDIR="${GITHUB_WORKSPACE}/AppDir" cmake --install build
       - env:
           VERSION: '${{ steps.meta.outputs.version }}'
         name: 'Stage AppImage metadata'
         run: |
-          version="${VERSION}"
-          arch='${{ matrix.system.arch }}'
-          ws='${{ github.workspace }}'
+          ws="${GITHUB_WORKSPACE}"
           cat > "${ws}/AppDir/dbeaver-creds.desktop" <<EOF
           [Desktop Entry]
           Type=Application
@@ -40,7 +49,7 @@ jobs:
           Icon=dbeaver-creds
           Categories=Utility;
           Terminal=true
-          X-AppImage-Version=${version}
+          X-AppImage-Version=${VERSION}
           EOF
           wget -O "${ws}/AppDir/dbeaver-creds.svg" \
             'https://raw.githubusercontent.com/KDE/breeze-icons/refs/heads/master/icons/preferences/32/preferences-other.svg'
@@ -57,14 +66,15 @@ jobs:
               <p>Decrypt DBeaver's credentials-config.json file and display the JSON.</p>
             </description>
             <launchable type="desktop-id">dbeaver-creds.desktop</launchable>
-            <url type="homepage">${{ github.server_url }}/${{ github.repository }}</url>
+            <url type="homepage">${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}</url>
           </component>
           EOF
       - env:
           FILENAME: '${{ steps.meta.outputs.filename }}'
+          SYSTEM_ARCH: '${{ matrix.system.arch }}'
         name: 'Build AppImage'
         run: |
-          arch='${{ matrix.system.arch }}'
+          arch="${SYSTEM_ARCH}"
           wget -O appimagetool \
             "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-${arch}.AppImage"
           chmod +x appimagetool
@@ -72,7 +82,7 @@ jobs:
           ./appimagetool --appimage-extract
           mkdir -p dist
           ARCH="${arch}" ./squashfs-root/AppRun \
-            "${{ github.workspace }}/AppDir" \
+            "${GITHUB_WORKSPACE}/AppDir" \
             "dist/${FILENAME}"
       - env:
           FILENAME: '${{ steps.meta.outputs.filename }}'
@@ -140,7 +150,4 @@ name: 'AppImage'
     tags:
       - 'v*'
   workflow_dispatch: null
-permissions:
-  attestations: 'write'
-  contents: 'write'
-  id-token: 'write'
+permissions: {}
