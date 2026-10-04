@@ -112,6 +112,7 @@ pacboy
 padder
 pathlib
 pathsep
+pipx
 plistlib
 preapproved
 proc

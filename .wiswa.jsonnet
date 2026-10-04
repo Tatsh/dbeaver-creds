@@ -10,6 +10,11 @@ local utils = import 'utils.libsonnet';
   security_policy_supported_versions: { '0.1.x': ':white_check_mark:' },
   want_codeql: false,
   want_tests: false,
+  want_clang_format: true,
+  clang_format_args: "$(git ls-files '*.c' '*.h')",
+  pre_commit_config+: {
+    repos+: [import 'defaults/pre-commit-config/clang-format.libsonnet'],
+  },
   custom_project_badges: [
     {
       anchor: '[![Tests](https://github.com/Tatsh/dbeaver-creds/actions/workflows/tests.yml/badge.svg)]',

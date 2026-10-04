@@ -117,3 +117,10 @@ repos:
       - id: 'cspell'
     repo: 'https://github.com/streetsidesoftware/cspell-cli'
     rev: 'v10.2.0'
+  - hooks:
+      - id: 'clang-format'
+        types_or:
+          - 'c'
+          - 'c++'
+    repo: 'https://github.com/pre-commit/mirrors-clang-format'
+    rev: 'v23.1.2'
