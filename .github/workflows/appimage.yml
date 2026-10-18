@@ -93,7 +93,7 @@ jobs:
           test -x ./squashfs-root/usr/bin/dbeaver-creds
           file ./squashfs-root/usr/bin/dbeaver-creds | grep -q ELF
       - name: 'Upload Artifacts'
-        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
+        uses: 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9'
         with:
           if-no-files-found: 'error'
           name: 'dbeaver-creds-appimage-${{ matrix.system.arch }}'
