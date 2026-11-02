@@ -36,6 +36,8 @@ jobs:
             -DCMAKE_INSTALL_PREFIX=/usr
           cmake --build build
           DESTDIR="${GITHUB_WORKSPACE}/AppDir" cmake --install build
+          ln -s usr/bin/dbeaver-creds "${GITHUB_WORKSPACE}/AppDir/AppRun"
+          chmod -R a+rX "${GITHUB_WORKSPACE}/AppDir"
       - env:
           VERSION: '${{ steps.meta.outputs.version }}'
         name: 'Stage AppImage metadata'
