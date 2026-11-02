@@ -84,6 +84,7 @@ launchable
 lextudio
 libcmocka
 libera
+librsvg
 libsonnet
 linters
 lpwstr
@@ -138,6 +139,7 @@ reflow
 regen
 ripgreprc
 rstcheck
+rsvg
 sarif
 sbclaude
 schemafile

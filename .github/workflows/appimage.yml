@@ -17,7 +17,7 @@ jobs:
       - name: 'Install build dependencies'
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build libssl-dev wget file
+          sudo apt-get install -y cmake ninja-build libssl-dev wget file librsvg2-bin
       - env:
           ARCH: '${{ matrix.system.arch }}'
         id: 'meta'
@@ -53,6 +53,8 @@ jobs:
           EOF
           wget -O "${ws}/AppDir/dbeaver-creds.svg" \
             'https://raw.githubusercontent.com/KDE/breeze-icons/refs/heads/master/icons/preferences/32/preferences-other.svg'
+          rsvg-convert -w 256 -h 256 "${ws}/AppDir/dbeaver-creds.svg" \
+            -o "${ws}/AppDir/dbeaver-creds.png"
           mkdir -p "${ws}/AppDir/usr/share/metainfo"
           cat > "${ws}/AppDir/usr/share/metainfo/sh.tat.dbeaver-creds.appdata.xml" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
