@@ -72,6 +72,7 @@ hoverxref
 htmlcov
 ifdef
 isort
+iterdir
 itertools
 iwyu
 jinja
@@ -103,6 +104,7 @@ msystem
 myproject
 mypy
 namedtuples
+nojekyll
 noone
 noqa
 nsis
