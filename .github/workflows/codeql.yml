@@ -1,0 +1,73 @@
+concurrency:
+  cancel-in-progress: true
+  group: '${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}'
+jobs:
+  analyze:
+    name: 'Analyze'
+    permissions:
+      actions: 'read'
+      contents: 'read'
+      security-events: 'write'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          persist-credentials: false
+      - name: 'Initialize CodeQL'
+        uses: 'github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
+        with:
+          build-mode: 'none'
+          languages: '${{ matrix.language }}'
+      - name: 'Perform CodeQL Analysis'
+        uses: 'github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
+        with:
+          category: '/language:${{matrix.language}}'
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - 'python'
+          - 'c-cpp'
+          - 'actions'
+name: 'CodeQL'
+'on':
+  pull_request:
+    branches:
+      - 'master'
+    paths:
+      - '**/*.py'
+      - '**/*.pyi'
+      - '**/*.cpp'
+      - '**/*.cxx'
+      - '**/*.hpp'
+      - '**/*.hh'
+      - '**/*.hxx'
+      - '**/*.c'
+      - '**/*.cc'
+      - '**/*.h'
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+      - '**/action.yml'
+      - '**/action.yaml'
+  push:
+    branches:
+      - 'master'
+    paths:
+      - '**/*.py'
+      - '**/*.pyi'
+      - '**/*.cpp'
+      - '**/*.cxx'
+      - '**/*.hpp'
+      - '**/*.hh'
+      - '**/*.hxx'
+      - '**/*.c'
+      - '**/*.cc'
+      - '**/*.h'
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+      - '**/action.yml'
+      - '**/action.yaml'
+  schedule:
+    - cron: '15 4 * * 3'
+permissions: {}

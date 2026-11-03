@@ -8,7 +8,7 @@ local utils = import 'utils.libsonnet';
   project_name: 'dbeaver-creds',
   version: '0.1.1',
   security_policy_supported_versions: { '0.1.x': ':white_check_mark:' },
-  want_codeql: false,
+  want_codeql: true,
   want_tests: false,
   want_clang_format: true,
   clang_format_args: "$(git ls-files '*.c' '*.h')",
@@ -52,6 +52,11 @@ local utils = import 'utils.libsonnet';
     '!/.vs/launch.vs.json',
   ],
   github+: {
+    codeql+: {
+      languages: ['python', 'c-cpp', 'actions'],
+      runs_on: 'ubuntu-latest',
+      workflow_file: 'codeql.yml',
+    },
     dependabot+: {
       updates+: [
         {
