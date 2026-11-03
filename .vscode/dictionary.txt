@@ -118,6 +118,7 @@ pacboy
 padder
 pathlib
 pathsep
+pipefail
 pipx
 plistlib
 popen
