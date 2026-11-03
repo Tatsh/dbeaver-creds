@@ -22,6 +22,7 @@ commonprogramdata
 concrt
 conftest
 conv
+copytree
 coveragerc
 coverallsapp
 cpack
@@ -72,7 +73,6 @@ hoverxref
 htmlcov
 ifdef
 isort
-iterdir
 itertools
 iwyu
 jinja
@@ -141,6 +141,7 @@ recomputation
 reflow
 regen
 ripgreprc
+rmtree
 rstcheck
 rsvg
 sarif
@@ -154,6 +155,7 @@ shellcheck
 shellformat
 shfmt
 shopt
+shutil
 skbuild
 snapcore
 snapcraft
