@@ -1,101 +1,5 @@
 jobs:
-  analyze:
-    defaults:
-      run:
-        shell: bash
-    name: scan-build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Install build dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libssl-dev python3-dev
-      - name: Install current CMake
-        run: pipx install cmake
-      - name: Prepare scoped compiler wrappers
-        run: |
-          mkdir -p .wiswa-ci
-          install -m 755 .github/scripts/static-analysis.py .wiswa-ci/scan-build-cc
-          install -m 755 .github/scripts/static-analysis.py .wiswa-ci/scan-build-cxx
-      - name: Install Clang analyzer
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang clang-tools
-      - env:
-          SCAN_BUILD_CONFIGURE_COMMAND: |
-            export STATIC_ANALYSIS_CC="$CC" STATIC_ANALYSIS_CXX="$CXX"
-            export STATIC_ANALYSIS_REAL_CC=clang STATIC_ANALYSIS_REAL_CXX=clang++
-            export CC="$GITHUB_WORKSPACE/.wiswa-ci/scan-build-cc"
-            export CXX="$GITHUB_WORKSPACE/.wiswa-ci/scan-build-cxx"
-            cmake -S . -B build-scan -DCMAKE_BUILD_TYPE=Debug -DBUILD_PYTHON_EXTENSION=ON
-        name: Configure with compiler interception
-        run: |-
-          mkdir -p scan-build-report
-          scan-build --use-cc=clang --use-c++=clang++ --exclude "$(python3 .github/scripts/static-analysis.py --exclude)" -o "$RUNNER_TEMP/scan-configure" bash -eo pipefail -c "$SCAN_BUILD_CONFIGURE_COMMAND" 2>&1 | tee scan-build-report/build.log
-      - env:
-          SCAN_BUILD_BUILD_COMMAND: |
-            export STATIC_ANALYSIS_CC="$CC" STATIC_ANALYSIS_CXX="$CXX"
-            export STATIC_ANALYSIS_REAL_CC=clang STATIC_ANALYSIS_REAL_CXX=clang++
-            export CC="$GITHUB_WORKSPACE/.wiswa-ci/scan-build-cc"
-            export CXX="$GITHUB_WORKSPACE/.wiswa-ci/scan-build-cxx"
-            cmake --build build-scan --clean-first --parallel 2
-        id: analysis
-        name: Analyze a clean build
-        run: |
-          mkdir -p scan-build-report
-          scan-build --use-cc=clang --use-c++=clang++ --exclude "$(python3 .github/scripts/static-analysis.py --exclude)" -plist-html --keep-empty -v \
-            -o scan-build-report/results bash -eo pipefail -c "$SCAN_BUILD_BUILD_COMMAND" \
-            2>&1 | tee -a scan-build-report/build.log
-      - env:
-          ANALYSIS_OUTCOME: ${{ steps.analysis.outcome }}
-          ANALYSIS_SCOPE: Native sources selected by the configured build.
-        if: ${{ !cancelled() }}
-        name: Prepare report and verify analysis coverage
-        run: |
-          python3 - <<'PY'
-          import os
-          import shutil
-          from pathlib import Path
-
-          root = Path('scan-build-report')
-          root.mkdir(exist_ok=True)
-          reports = sorted(root.glob('results/*/index.html'))
-          units = list(root.glob('results/*/*.plist'))
-          failures = list(root.glob('results/*/failures/*'))
-          complete = os.environ['ANALYSIS_OUTCOME'] == 'success' and bool(units) and not failures
-          print(os.environ['ANALYSIS_SCOPE'])
-          print(f'{len(units)} translation units. {len(failures)} analyzer failure files.')
-          if not complete:
-              raise SystemExit('Incomplete analysis; inspect the build log and analyzer failures.')
-          if len(reports) > 1:
-              raise SystemExit('Expected a single Clang HTML report.')
-          if reports:
-              shutil.copytree(reports[0].parent, root, dirs_exist_ok=True)
-          else:
-              for unit in units:
-                  shutil.copy2(unit, root)
-              (root / 'index.html').write_text(
-                  '<!doctype html><html lang="en"><meta charset="utf-8">'
-                  '<title>Clang static analysis</title>'
-                  '<h1>No bugs reported by the enabled Clang checkers.</h1>', encoding='utf-8')
-          shutil.rmtree(root / 'results')
-          PY
-      - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
-        with:
-          if-no-files-found: error
-          name: scan-build-${{ github.sha }}
-          path: scan-build-report
   documentation:
-    if:
-      ${{ github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
-      }}
     name: Documentation
     permissions:
       contents: read
@@ -126,49 +30,25 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    if: ${{ !cancelled() && needs.analyze.result == 'success' && github.event_name != 'pull_request' }}
     name: Publish reports and documentation
     needs:
-      - analyze
       - documentation
     permissions:
-      contents: write
       id-token: write
       pages: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          persist-credentials: false
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: scan-build-${{ github.sha }}
           path: _report
-      - if: ${{ needs.documentation.result == 'success' }}
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: documentation
           path: _documentation
-      - env:
-          GH_TOKEN: ${{ github.token }}
-        name: Restore site
-        run: |
-          git init _site
-          git -C _site remote add origin "https://github.com/$GITHUB_REPOSITORY.git"
-          export GIT_CONFIG_COUNT=1
-          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
-          GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
-          export GIT_CONFIG_VALUE_0
-          status=0
-          git -C _site ls-remote --exit-code origin refs/heads/scan-build-pages || status=$?
-          if [ "$status" -eq 0 ]; then
-            git -C _site fetch --depth=1 origin scan-build-pages
-            git -C _site checkout -b scan-build-pages FETCH_HEAD
-          elif [ "$status" -ne 2 ]; then
-            exit "$status"
-          fi
       - name: Assemble site with latest report
         run: |
+          mkdir -p _site
           if [ -d _documentation ]; then
             cp -a _documentation/. _site/
           fi
@@ -186,21 +66,6 @@ jobs:
                   '<a href="scan-build/">Clang static analysis reports</a>', encoding='utf-8')
           (root / '.nojekyll').touch()
           PY
-      - env:
-          GH_TOKEN: ${{ github.token }}
-        name: Save site
-        run: |
-          export GIT_CONFIG_COUNT=1
-          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
-          GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
-          export GIT_CONFIG_VALUE_0
-          git -C _site config user.name 'github-actions[bot]'
-          git -C _site config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git -C _site add .
-          if ! git -C _site diff --cached --quiet; then
-            git -C _site commit -m "Reports for $GITHUB_SHA"
-            git -C _site push origin HEAD:refs/heads/scan-build-pages
-          fi
           tar --dereference --hard-dereference -cf "$RUNNER_TEMP/artifact.tar" \
             --exclude=.git -C _site .
       - name: Configure Pages
@@ -218,11 +83,7 @@ jobs:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         name: Report URL
         run: echo "[Clang report](${PAGE_URL}scan-build/)" >> "$GITHUB_STEP_SUMMARY"
-name: Static analysis and Pages
+name: Pages
 'on':
-  pull_request: {}
-  push:
-    branches-ignore:
-      - scan-build-pages
-  workflow_dispatch: {}
+  workflow_call: {}
 permissions: {}

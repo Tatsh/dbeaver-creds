@@ -246,7 +246,6 @@ local utils = import 'utils.libsonnet';
           run: 'pipx install cmake',
         },
       ],
-      workflow_file: 'pages.yml',
     },
   } },
 }

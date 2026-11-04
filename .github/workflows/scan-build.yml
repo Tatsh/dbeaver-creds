@@ -1,0 +1,110 @@
+jobs:
+  analyze:
+    defaults:
+      run:
+        shell: bash
+    name: scan-build
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev python3-dev
+      - name: Install current CMake
+        run: pipx install cmake
+      - name: Prepare scoped compiler wrappers
+        run: |
+          mkdir -p .wiswa-ci
+          install -m 755 .github/scripts/static-analysis.py .wiswa-ci/scan-build-cc
+          install -m 755 .github/scripts/static-analysis.py .wiswa-ci/scan-build-cxx
+      - name: Install Clang analyzer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang clang-tools
+      - env:
+          SCAN_BUILD_CONFIGURE_COMMAND: |
+            export STATIC_ANALYSIS_CC="$CC" STATIC_ANALYSIS_CXX="$CXX"
+            export STATIC_ANALYSIS_REAL_CC=clang STATIC_ANALYSIS_REAL_CXX=clang++
+            export CC="$GITHUB_WORKSPACE/.wiswa-ci/scan-build-cc"
+            export CXX="$GITHUB_WORKSPACE/.wiswa-ci/scan-build-cxx"
+            cmake -S . -B build-scan -DCMAKE_BUILD_TYPE=Debug -DBUILD_PYTHON_EXTENSION=ON
+        name: Configure with compiler interception
+        run: |-
+          mkdir -p scan-build-report
+          scan-build --use-cc=clang --use-c++=clang++ --exclude "$(python3 .github/scripts/static-analysis.py --exclude)" -o "$RUNNER_TEMP/scan-configure" bash -eo pipefail -c "$SCAN_BUILD_CONFIGURE_COMMAND" 2>&1 | tee scan-build-report/build.log
+      - env:
+          SCAN_BUILD_BUILD_COMMAND: |
+            export STATIC_ANALYSIS_CC="$CC" STATIC_ANALYSIS_CXX="$CXX"
+            export STATIC_ANALYSIS_REAL_CC=clang STATIC_ANALYSIS_REAL_CXX=clang++
+            export CC="$GITHUB_WORKSPACE/.wiswa-ci/scan-build-cc"
+            export CXX="$GITHUB_WORKSPACE/.wiswa-ci/scan-build-cxx"
+            cmake --build build-scan --clean-first --parallel 2
+        id: analysis
+        name: Analyze a clean build
+        run: |
+          mkdir -p scan-build-report
+          scan-build --use-cc=clang --use-c++=clang++ --exclude "$(python3 .github/scripts/static-analysis.py --exclude)" -plist-html --keep-empty -v \
+            -o scan-build-report/results bash -eo pipefail -c "$SCAN_BUILD_BUILD_COMMAND" \
+            2>&1 | tee -a scan-build-report/build.log
+      - env:
+          ANALYSIS_OUTCOME: ${{ steps.analysis.outcome }}
+          ANALYSIS_SCOPE: Native sources selected by the configured build.
+        if: ${{ !cancelled() }}
+        name: Prepare report and verify analysis coverage
+        run: |
+          python3 - <<'PY'
+          import os
+          import shutil
+          from pathlib import Path
+
+          root = Path('scan-build-report')
+          root.mkdir(exist_ok=True)
+          reports = sorted(root.glob('results/*/index.html'))
+          units = list(root.glob('results/*/*.plist'))
+          failures = list(root.glob('results/*/failures/*'))
+          complete = os.environ['ANALYSIS_OUTCOME'] == 'success' and bool(units) and not failures
+          print(os.environ['ANALYSIS_SCOPE'])
+          print(f'{len(units)} translation units. {len(failures)} analyzer failure files.')
+          if not complete:
+              raise SystemExit('Incomplete analysis; inspect the build log and analyzer failures.')
+          if len(reports) > 1:
+              raise SystemExit('Expected a single Clang HTML report.')
+          if reports:
+              shutil.copytree(reports[0].parent, root, dirs_exist_ok=True)
+          else:
+              for unit in units:
+                  shutil.copy2(unit, root)
+              (root / 'index.html').write_text(
+                  '<!doctype html><html lang="en"><meta charset="utf-8">'
+                  '<title>Clang static analysis</title>'
+                  '<h1>No bugs reported by the enabled Clang checkers.</h1>', encoding='utf-8')
+          shutil.rmtree(root / 'results')
+          PY
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          if-no-files-found: error
+          name: scan-build-${{ github.sha }}
+          path: scan-build-report
+  pages:
+    if: ${{ github.event_name != 'pull_request' }}
+    name: Pages
+    needs:
+      - analyze
+    permissions:
+      contents: read
+      id-token: write
+      pages: write
+    uses: $/.github/workflows/pages.yml
+name: Clang static analysis
+'on':
+  pull_request: {}
+  push: {}
+  workflow_dispatch: {}
+permissions: {}
