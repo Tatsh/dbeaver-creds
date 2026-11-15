@@ -16,7 +16,7 @@ workflows:
         - 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9'
     '.github/workflows/codeql.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
-        - 'github/codeql-action@9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
+        - 'github/codeql-action@33d7b85da1a04171e211befe2c739303b9a4c066'
     '.github/workflows/flatpak.yml':
         - 'actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6'
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -33,7 +33,7 @@ workflows:
         - 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9'
     '.github/workflows/powershell.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
-        - 'github/codeql-action@9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
+        - 'github/codeql-action@33d7b85da1a04171e211befe2c739303b9a4c066'
         - 'microsoft/psscriptanalyzer-action@6b2948b1944407914a58661c49941824d149734f'
     '.github/workflows/prettier.yml':
         - 'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
@@ -147,9 +147,9 @@ dependencies:
         commit: 'sha1-79327416609af08178ad73b352877e51450790b3'
         owner_id: 19473042
         repo_id: 211923252
-    'github/codeql-action@9b3254085494b55a0f7c4c2b3d2d52cc712ce370':
-        ref: 'v4.39.1'
-        commit: 'sha1-9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
+    'github/codeql-action@33d7b85da1a04171e211befe2c739303b9a4c066':
+        ref: 'v4.39.3'
+        commit: 'sha1-33d7b85da1a04171e211befe2c739303b9a4c066'
         owner_id: 9919
         repo_id: 259445878
     'microsoft/psscriptanalyzer-action@6b2948b1944407914a58661c49941824d149734f':
