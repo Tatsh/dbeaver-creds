@@ -22,7 +22,6 @@ commonprogramdata
 concrt
 conftest
 conv
-copytree
 coveragerc
 coverallsapp
 cpack
@@ -118,7 +117,6 @@ pacboy
 padder
 pathlib
 pathsep
-pipefail
 pipx
 plistlib
 popen
@@ -142,7 +140,6 @@ recomputation
 reflow
 regen
 ripgreprc
-rmtree
 rstcheck
 rsvg
 sarif
@@ -156,7 +153,6 @@ shellcheck
 shellformat
 shfmt
 shopt
-shutil
 skbuild
 snapcore
 snapcraft

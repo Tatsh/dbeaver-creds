@@ -20,6 +20,10 @@
       :target: https://github.com/Tatsh/dbeaver-creds/compare/v0.1.1...master
       :alt: GitHub commits since latest release (by SemVer including pre-releases)
 
+   .. image:: https://github.com/Tatsh/dbeaver-creds/actions/workflows/codeql.yml/badge.svg
+      :target: https://github.com/Tatsh/dbeaver-creds/actions/workflows/codeql.yml
+      :alt: CodeQL
+
    .. image:: https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml/badge.svg
       :target: https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml
       :alt: QA

@@ -9,6 +9,7 @@
 [![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/dbeaver-creds)](https://github.com/Tatsh/dbeaver-creds/tags)
 [![License](https://img.shields.io/github/license/Tatsh/dbeaver-creds)](https://github.com/Tatsh/dbeaver-creds/blob/master/LICENSE.txt)
 [![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/dbeaver-creds/v0.1.1/master)](https://github.com/Tatsh/dbeaver-creds/compare/v0.1.1...master)
+[![CodeQL](https://github.com/Tatsh/dbeaver-creds/actions/workflows/codeql.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/codeql.yml)
 [![QA](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/dbeaver-creds/actions/workflows/qa.yml)
 [![Dependabot](https://img.shields.io/badge/Dependabot-enabled-blue?logo=dependabot)](https://github.com/dependabot)
 [![Documentation Status](https://readthedocs.org/projects/dbeaver-creds/badge/?version=latest)](https://dbeaver-creds.readthedocs.org/?badge=latest)

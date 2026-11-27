@@ -4,12 +4,12 @@ requires = ["scikit-build-core>=0.12.2"]
 
 [dependency-groups]
 dev = [
-  "commitizen>=4.19.0",
-  "cryptography>=50.0.1",
+  "commitizen>=4.19.4",
+  "cryptography>=50.0.2",
   "cz-path>=0.0.7",
-  "mypy>=2.3.1",
-  "ruff==0.17.5",
-  "ty>=0.0.84",
+  "mypy>=2.4.1",
+  "ruff==0.17.6",
+  "ty>=0.0.107",
   "yapf>=0.43.0"
 ]
 docs = [
@@ -19,8 +19,8 @@ docs = [
   "esbonio>=2.1.0",
   "restructuredtext-lint>=2.0.2",
   "sphinx-datatables>=1.0.0",
-  "sphinx-immaterial>=0.13.9",
-  "sphinx>=9.1.0; python_version >= \"3.13\""
+  "sphinx-immaterial>=0.13.12",
+  "sphinx>=9.2.0; python_version >= \"3.13\""
 ]
 
 [project]
@@ -48,7 +48,7 @@ keywords = ["authentication", "credentials", "dbeaver", "terminal"]
 license = "MIT"
 name = "dbeaver-creds"
 readme = "README.md"
-requires-python = ">=3.11,<4.0"
+requires-python = ">=3.11.5,<4.0"
 version = "0.1.1"
 
 [[project.authors]]
