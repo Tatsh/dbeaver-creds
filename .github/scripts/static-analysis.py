@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scope scan-build compilation and filter CodeQL findings by source location."""
+"""Filter CodeQL findings by source location."""
 
 from __future__ import annotations
 
@@ -9,9 +9,6 @@ from urllib.parse import urljoin
 from urllib.request import url2pathname
 import json
 import os
-import re
-import shlex
-import subprocess as sp
 import sys
 
 __all__ = ()
@@ -42,60 +39,6 @@ def _in_scope(filename: str) -> bool:
     return not _EXCLUDED.intersection(relative.parts) and any(
         source == allowed or allowed in source.parents
         for allowed in ((root / path).resolve() for path in _PATHS))
-
-
-def _arguments(arguments: list[str], active: frozenset[Path] | None = None) -> list[str]:
-    """
-    Expand compiler response files before selecting the analyser.
-
-    Parameters
-    ----------
-    arguments : list[str]
-        Compiler arguments.
-    active : frozenset[Path] | None
-        Response files in the current expansion chain.
-
-    Returns
-    -------
-    list[str]
-
-    Raises
-    ------
-    RuntimeError
-        When response files include a cycle.
-    """
-    active = active or frozenset()
-    result = []
-    for argument in arguments:
-        path = Path(argument[1:]).resolve() if argument.startswith('@') else None
-        if path is not None and path.is_file():
-            if path in active:
-                msg = 'Recursive compiler response file.'
-                raise RuntimeError(msg)
-            result.extend(_arguments(shlex.split(path.read_text(encoding='utf-8')),
-                                     active | {path}))
-        else:
-            result.append(argument)
-    return result
-
-
-def _compiler() -> None:
-    """
-    Compile dependencies directly and analyse project translation units.
-
-    Raises
-    ------
-    SystemExit
-        With the compiler exit code.
-    """
-    arguments = _arguments(sys.argv[1:])
-    analyze = any(
-        Path(argument).suffix.lower() in {'.c', '.cc', '.cpp', '.cxx', '.m', '.mm'}
-        and _in_scope(argument) for argument in arguments)
-    language = 'CXX' if sys.argv[0].endswith('-cxx') else 'CC'
-    compiler = os.environ[('STATIC_ANALYSIS_' if analyze else 'STATIC_ANALYSIS_REAL_') + language]
-    result = sp.run([compiler, *sys.argv[1:]], check=False)
-    raise SystemExit(result.returncode)
 
 
 def _artifact_uri(artifact: dict[str, Any], run: dict[str, Any]) -> str | None:
@@ -174,17 +117,8 @@ def _filter_sarif(path: Path) -> None:
 
 
 if __name__ == '__main__':
-    if sys.argv[0].endswith(('-cc', '-cxx')):
-        _compiler()
-    elif len(sys.argv) == _SARIF_ARGUMENT_COUNT and sys.argv[1] == '--sarif':
+    if len(sys.argv) == _SARIF_ARGUMENT_COUNT and sys.argv[1] == '--sarif':
         _filter_sarif(Path(sys.argv[2]))
-    elif sys.argv[1:] == ['--exclude']:
-        root = Path(os.environ.get('GITHUB_WORKSPACE', '.')).resolve()
-        paths = '|'.join(
-            re.escape(str((root / path).resolve().parent)) +
-            '$' if (root / path).is_file() else re.escape(str((root / path).resolve())) + r'(?:/|$)'
-            for path in _PATHS)
-        sys.stdout.write(r'(?:^|/)(?:\.vcpkg|3rdparty)(?:/|$)|^(?!(?:' + paths + '))' + '\n')
     else:
         msg = 'Usage: static-analysis.py --sarif FILE_OR_DIRECTORY'
         raise SystemExit(msg)

@@ -1,5 +1,8 @@
 jobs:
   documentation:
+    # A release tag is pushed after its commit, and the push of the commit already publishes the
+    # pages. A second deployment of the commit competes for the github-pages artifact.
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     name: Documentation
     permissions:
       contents: read
@@ -30,7 +33,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    name: Publish reports and documentation
+    name: Publish documentation
     needs:
       - documentation
     permissions:
@@ -40,32 +43,13 @@ jobs:
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
-          name: scan-build-${{ github.sha }}
-          path: _report
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
-        with:
           name: documentation
           path: _documentation
-      - name: Assemble site with latest report
+      - name: Assemble documentation site
         run: |
           mkdir -p _site
-          if [ -d _documentation ]; then
-            cp -a _documentation/. _site/
-          fi
-          rm -rf _site/scan-build
-          mkdir -p _site/scan-build
-          cp -a _report/. _site/scan-build/
-          python3 - <<'PY'
-          from pathlib import Path
-
-          root = Path('_site')
-          if not (root / 'index.html').exists():
-              (root / 'index.html').write_text(
-                  '<!doctype html><html lang="en"><meta charset="utf-8">'
-                  '<title>Clang static analysis</title>'
-                  '<a href="scan-build/">Clang static analysis reports</a>', encoding='utf-8')
-          (root / '.nojekyll').touch()
-          PY
+          cp -a _documentation/. _site/
+          touch _site/.nojekyll
           tar --dereference --hard-dereference -cf "$RUNNER_TEMP/artifact.tar" \
             --exclude=.git -C _site .
       - name: Configure Pages
@@ -81,9 +65,10 @@ jobs:
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
       - env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
-        name: Report URL
-        run: echo "[Clang report](${PAGE_URL}scan-build/)" >> "$GITHUB_STEP_SUMMARY"
+        name: Documentation URL
+        run: echo "[Documentation](${PAGE_URL})" >> "$GITHUB_STEP_SUMMARY"
 name: Pages
 'on':
-  workflow_call: {}
+  push: {}
+  workflow_dispatch: {}
 permissions: {}
